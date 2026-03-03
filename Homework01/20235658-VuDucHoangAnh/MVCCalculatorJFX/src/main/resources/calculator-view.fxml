@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="group15.CalculatorControllerJFX"
+      spacing="8">
+
+    <children>
+        <Label text="First number:"/>
+        <TextField fx:id="txtFirst"/>
+
+        <Label text="Operator:"/>
+        <ComboBox fx:id="cbOperator" prefWidth="80.0"/>
+
+        <Label text="Second number:"/>
+        <TextField fx:id="txtSecond" promptText="Second number"/>
+
+        <Label text="Result:"/>
+        <TextField fx:id="txtResult" editable="false"/>
+
+        <HBox spacing="10">
+            <children>
+                <Button fx:id="btnCalculate" text="Calculate" onAction="#onCalculate"/>
+                <Label fx:id="lblError" textFill="red"/>
+            </children>
+        </HBox>
+    </children>
+
+</VBox>
