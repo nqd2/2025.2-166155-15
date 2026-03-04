@@ -1,0 +1,284 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{float}
+
+\geometry{margin=2.5cm}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    frame=single,
+    breaklines=true,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    language=Java
+}
+
+\title{\textbf{BÁO CÁO BÀI TẬP 01} \\ Lập trình hướng đối tượng}
+\author{
+    Họ tên: Lương Quốc Khánh \\
+    MSSV: 20235754 \\
+    Nhóm: 15
+}
+\date{Tháng 3, 2026}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{HelloWorld.java}
+% ============================================================
+
+Chương trình yêu cầu người dùng nhập tên, sau đó hiển thị lời chào.
+
+\begin{lstlisting}
+import java.util.Scanner;
+
+public class HelloWorld {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Nhap ten cua ban: ");
+        String ten = sc.nextLine();
+        System.out.println("Xin chao, " + ten + "!");
+        sc.close();
+    }
+}
+\end{lstlisting}
+
+% ============================================================
+\section{MVCTutorial}
+% ============================================================
+
+Ứng dụng Calculator đơn giản sử dụng mô hình MVC với Java Swing. Gồm 4 file:
+
+\subsection{CalculatorModel.java}
+Thực hiện các phép tính cộng, trừ, nhân, chia. Không biết sự tồn tại của View.
+
+\subsection{CalculatorView.java}
+Giao diện người dùng dùng Swing (JFrame, JTextField, JComboBox, JButton). Chỉ hiển thị, không tính toán.
+
+\subsection{CalculatorController.java}
+Điều phối giữa Model và View. Lắng nghe sự kiện click nút ``Tinh'', lấy dữ liệu từ View, gọi Model tính toán, rồi gửi kết quả về View.
+
+\subsection{MVCCalculator.java}
+File main khởi tạo Model, View, Controller và hiển thị cửa sổ.
+
+% ============================================================
+\section{MVC Calculator - Swing}
+% ============================================================
+
+Phiên bản Calculator riêng dùng Swing, cấu trúc tương tự MVCTutorial nhưng đặt tên class có hậu tố ``Swing''. Gồm 4 file:
+
+\begin{itemize}
+    \item \texttt{CalculatorModelSwing.java} -- Model xử lý phép tính
+    \item \texttt{CalculatorViewSwing.java} -- Giao diện Swing
+    \item \texttt{CalculatorControllerSwing.java} -- Controller điều phối
+    \item \texttt{MVCCalculatorSwing.java} -- Main
+\end{itemize}
+
+Các điểm khác biệt: sử dụng tên biến tiếng Việt (\texttt{txtSo1}, \texttt{cboPhepTinh}, \texttt{btnTinh}), thông báo lỗi bằng tiếng Việt.
+
+% ============================================================
+\section{MVC Calculator - JavaFX}
+% ============================================================
+
+Phiên bản Calculator dùng JavaFX với FXML (Scene Builder). Dự án Maven gồm:
+
+\begin{itemize}
+    \item \texttt{pom.xml} -- Cấu hình Maven, dependency JavaFX 21.0.2
+    \item \texttt{Main.java} -- Khởi tạo JavaFX Application, load FXML
+    \item \texttt{CalculatorModelJFX.java} -- Model xử lý phép tính
+    \item \texttt{CalculatorControllerJFX.java} -- Controller dùng annotation \texttt{@FXML}
+    \item \texttt{calculator-view.fxml} -- Giao diện được thiết kế bằng FXML
+\end{itemize}
+
+Trong JavaFX, View được định nghĩa trong file FXML, Controller sử dụng \texttt{@FXML} annotation để bind các thành phần UI. Model vẫn giữ chức năng xử lý logic tính toán.
+
+% ============================================================
+\section{Các thao tác Git}
+% ============================================================
+
+Dưới đây là minh chứng các thao tác Git đã thực hiện.
+
+% ---------- Git Add ----------
+\subsection{Git Add}
+Thêm các file bài tập vào staging area.
+
+\begin{lstlisting}[language=bash]
+git add Homework01/20235754-LuongQuocKhanh/
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-add.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: git add]}\vspace{3cm}}}
+    \caption{Git Add}
+\end{figure}
+
+% ---------- Git Commit ----------
+\subsection{Git Commit}
+Commit các file đã thêm.
+
+\begin{lstlisting}[language=bash]
+git commit -m "Add homework files for 20235754-LuongQuocKhanh"
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-commit.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: git commit]}\vspace{3cm}}}
+    \caption{Git Commit}
+\end{figure}
+
+% ---------- Git Push ----------
+\subsection{Git Push}
+Đẩy code lên remote repository.
+
+\begin{lstlisting}[language=bash]
+git push origin main
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-push.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: git push]}\vspace{3cm}}}
+    \caption{Git Push}
+\end{figure}
+
+% ---------- Modify File ----------
+\subsection{Modify File}
+Sửa file HelloWorld.java rồi commit lại.
+
+\begin{lstlisting}[language=bash]
+git add Homework01/20235754-LuongQuocKhanh/HelloWorld.java
+git commit -m "Modify HelloWorld.java"
+git push origin main
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-modify.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: git modify]}\vspace{3cm}}}
+    \caption{Modify File}
+\end{figure}
+
+% ---------- Git Pull ----------
+\subsection{Git Pull}
+Kéo code mới từ remote.
+
+\begin{lstlisting}[language=bash]
+git pull origin main
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-pull.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: git pull]}\vspace{3cm}}}
+    \caption{Git Pull}
+\end{figure}
+
+% ---------- Remove File ----------
+\subsection{Remove File}
+Xóa file bằng git rm rồi commit.
+
+\begin{lstlisting}[language=bash]
+git rm Homework01/20235754-LuongQuocKhanh/temp.txt
+git commit -m "Remove temp file"
+git push origin main
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-remove.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: git rm]}\vspace{3cm}}}
+    \caption{Remove File}
+\end{figure}
+
+% ---------- Create Branch ----------
+\subsection{Create Branch}
+Tạo nhánh mới.
+
+\begin{lstlisting}[language=bash]
+git checkout -b feature-khanh
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-branch.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: git checkout -b]}\vspace{3cm}}}
+    \caption{Create Branch}
+\end{figure}
+
+% ---------- Merge Branch ----------
+\subsection{Merge Branch}
+Merge nhánh feature-khanh vào main.
+
+\begin{lstlisting}[language=bash]
+git checkout main
+git merge feature-khanh
+git push origin main
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-merge.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: git merge]}\vspace{3cm}}}
+    \caption{Merge Branch}
+\end{figure}
+
+% ---------- Resolve Conflict ----------
+\subsection{Merge - Resolve Conflict}
+Tạo conflict giữa 2 branch rồi giải quyết.
+
+\begin{lstlisting}[language=bash]
+# Tao branch conflict-test, sua file
+git checkout -b conflict-test
+# Sua MVCCalculator.java, commit
+
+# Quay lai main, sua cung file do
+git checkout main
+# Sua MVCCalculator.java, commit
+
+# Merge -> conflict
+git merge conflict-test
+# Resolve conflict trong file
+git add .
+git commit -m "Resolve merge conflict"
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-conflict.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: merge conflict]}\vspace{3cm}}}
+    \caption{Merge Conflict}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{screenshots/git-resolve.png}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textit{[Screenshot: resolve conflict]}\vspace{3cm}}}
+    \caption{Resolve Conflict}
+\end{figure}
+
+% ============================================================
+\section{Kết luận}
+% ============================================================
+
+Bài tập đã hoàn thành các yêu cầu:
+\begin{itemize}
+    \item Viết chương trình HelloWorld.java
+    \item Implement MVCTutorial example
+    \item Implement Calculator theo mô hình MVC với 2 phiên bản: Swing và JavaFX (FXML)
+    \item Thực hiện đầy đủ các thao tác Git: add, remove, modify, commit, push, pull, create branch, merge branch, resolve conflict
+\end{itemize}
+
+\end{document}
