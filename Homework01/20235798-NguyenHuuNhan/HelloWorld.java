@@ -11,5 +11,3 @@ public class HelloWorld {
         scanner.close();
     }
 }
-
-// Test
