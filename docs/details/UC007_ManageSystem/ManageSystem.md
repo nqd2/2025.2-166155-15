@@ -87,51 +87,49 @@
     <td><strong>Hậu điều kiện</strong></td>
     <td colspan="3">Cấu hình hệ thống, dữ liệu master, phân quyền và bản ghi vận hành được cập nhật đầy đủ; hoạt động sao lưu/khôi phục có nhật ký truy vết.</td>
   </tr>
+</table>
+<br/>
+
+**Dữ liệu đầu vào:**
+<table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
   <tr>
-    <td><strong>Dữ liệu đầu vào</strong></td>
-    <td colspan="3">
-      <table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <tr>
-          <th>STT</th>
-          <th>Trường dữ liệu</th>
-          <th>Mô tả</th>
-          <th>Bắt buộc</th>
-          <th>Điều kiện hợp lệ</th>
-          <th>Ví dụ</th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>userAccount</td>
-          <td>Thông tin tài khoản người dùng nội bộ</td>
-          <td>Có</td>
-          <td>Tên đăng nhập duy nhất, email hợp lệ, trạng thái rõ ràng</td>
-          <td>iord.nguyenvana</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>actorRole</td>
-          <td>Vai trò nghiệp vụ được gán cho tài khoản</td>
-          <td>Có</td>
-          <td>Nằm trong tập vai trò đã định nghĩa</td>
-          <td>InternationalOrderingDepartment</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>sharedMasterData</td>
-          <td>Dữ liệu danh mục dùng chung</td>
-          <td>Có</td>
-          <td>Bản ghi không trùng khóa và đúng định dạng</td>
-          <td>unit=box, merchandiseCode=MH-001</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>backupSchedule</td>
-          <td>Lịch sao lưu dữ liệu</td>
-          <td>Có</td>
-          <td>Có tần suất và thời điểm hợp lệ</td>
-          <td>Daily 23:00</td>
-        </tr>
-      </table>
-    </td>
+    <th>STT</th>
+    <th>Trường dữ liệu</th>
+    <th>Mô tả</th>
+    <th>Bắt buộc</th>
+    <th>Điều kiện hợp lệ</th>
+    <th>Ví dụ</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>userAccount</td>
+    <td>Thông tin tài khoản người dùng nội bộ</td>
+    <td>Có</td>
+    <td>Tên đăng nhập duy nhất, email hợp lệ, trạng thái rõ ràng</td>
+    <td>iord.nguyenvana</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>actorRole</td>
+    <td>Vai trò nghiệp vụ được gán cho tài khoản</td>
+    <td>Có</td>
+    <td>Nằm trong tập vai trò đã định nghĩa</td>
+    <td>InternationalOrderingDepartment</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>sharedMasterData</td>
+    <td>Dữ liệu danh mục dùng chung</td>
+    <td>Có</td>
+    <td>Bản ghi không trùng khóa và đúng định dạng</td>
+    <td>unit=box, merchandiseCode=MH-001</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>backupSchedule</td>
+    <td>Lịch sao lưu dữ liệu</td>
+    <td>Có</td>
+    <td>Có tần suất và thời điểm hợp lệ</td>
+    <td>Daily 23:00</td>
   </tr>
 </table>

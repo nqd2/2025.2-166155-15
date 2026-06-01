@@ -319,14 +319,15 @@
     <td><strong>Hậu điều kiện</strong></td>
     <td colspan="3">${alternativePreconditions}</td>
   </tr>
+</table>
+<br/>
+
+**Dữ liệu đầu vào:**
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%;">
   <tr>
-    <td><strong>Dữ liệu đầu vào</strong></td>
-    <td colspan="3">
-      <table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <tr>
-          <th>STT</th>
-          <th>Trường dữ liệu</th>
-          <th>Mô tả</th>
+    <td><strong>STT</strong></td>
+    <td><strong>Trường dữ liệu</strong></td>
+    <td><strong>Mô tả</strong></td>
           <th>Bắt buộc</th>
           <th>Điều kiện hợp lệ</th>
           <th>Ví dụ</th>

@@ -92,51 +92,49 @@
     <td><strong>Hậu điều kiện</strong></td>
     <td colspan="3">Tệp thông tin kho được cập nhật với dữ liệu tồn kho mới nhất theo từng Site và từng mặt hàng để phục vụ phân bổ nhập hàng.</td>
   </tr>
+</table>
+<br/>
+
+**Dữ liệu đầu vào:**
+<table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
   <tr>
-    <td><strong>Dữ liệu đầu vào</strong></td>
-    <td colspan="3">
-      <table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <tr>
-          <th>STT</th>
-          <th>Trường dữ liệu</th>
-          <th>Mô tả</th>
-          <th>Bắt buộc</th>
-          <th>Điều kiện hợp lệ</th>
-          <th>Ví dụ</th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>siteCode</td>
-          <td>Mã Site nhận yêu cầu tồn kho</td>
-          <td>Có</td>
-          <td>Tồn tại trong tệp thông tin Site</td>
-          <td>SITE-SEA-01</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>merchandiseCode</td>
-          <td>Mã mặt hàng cần kiểm tra tồn kho</td>
-          <td>Có</td>
-          <td>Tồn tại trong danh mục mặt hàng</td>
-          <td>MH-001</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>inStockQuantity</td>
-          <td>Số lượng tồn kho Site phản hồi</td>
-          <td>Có</td>
-          <td>Số nguyên không âm</td>
-          <td>320</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>unit</td>
-          <td>Đơn vị của số lượng tồn kho</td>
-          <td>Có</td>
-          <td>Khớp đơn vị chuẩn của mặt hàng</td>
-          <td>box</td>
-        </tr>
-      </table>
-    </td>
+    <th>STT</th>
+    <th>Trường dữ liệu</th>
+    <th>Mô tả</th>
+    <th>Bắt buộc</th>
+    <th>Điều kiện hợp lệ</th>
+    <th>Ví dụ</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>siteCode</td>
+    <td>Mã Site nhận yêu cầu tồn kho</td>
+    <td>Có</td>
+    <td>Tồn tại trong tệp thông tin Site</td>
+    <td>SITE-SEA-01</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>merchandiseCode</td>
+    <td>Mã mặt hàng cần kiểm tra tồn kho</td>
+    <td>Có</td>
+    <td>Tồn tại trong danh mục mặt hàng</td>
+    <td>MH-001</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>inStockQuantity</td>
+    <td>Số lượng tồn kho Site phản hồi</td>
+    <td>Có</td>
+    <td>Số nguyên không âm</td>
+    <td>320</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>unit</td>
+    <td>Đơn vị của số lượng tồn kho</td>
+    <td>Có</td>
+    <td>Khớp đơn vị chuẩn của mặt hàng</td>
+    <td>box</td>
   </tr>
 </table>
