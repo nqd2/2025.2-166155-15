@@ -1,0 +1,18 @@
+classDiagram
+  class SiteCatalogFacade {
+    <<facade>>
+    +updateCatalog(siteCode String, data List) boolean
+  }
+
+  class ProductCatalogService {
+    <<service>>
+    +validateProducts(data List) boolean
+  }
+
+  class NotificationService {
+    <<service>>
+    +triggerSiteChangeNotification(siteCode String) boolean
+  }
+
+  SiteCatalogFacade --> ProductCatalogService
+  SiteCatalogFacade --> NotificationService

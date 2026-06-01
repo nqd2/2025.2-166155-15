@@ -1,0 +1,15 @@
+@startuml communication_analysis_manage_site_information
+title Communication Diagram (Analysis Level) - ManageSiteInformation
+
+object "OverseasImportSite" as Actor
+object "SiteInformationUI" as Boundary
+object "SiteInformationController" as Control
+object "ImportSite" as Entity
+object "InternationalOrderingDepartment" as OrderingDept
+
+Actor -- Boundary : 1: selectSiteProfile(siteCode) / 4: updateSiteData(profileData)
+Boundary -- Control : 2: getSiteDetails(siteCode) / 5: updateProfile(siteCode, profileData)
+Control -- Entity : 3: findByCode(siteCode) / 6: saveProfile(profileData)
+Control -- OrderingDept : 7: notifyOrderingDepartmentOfSiteChanges(siteCode)
+Boundary -- Actor : showProfileForm() / showSuccessMessage() / showErrorMessage(errors)
+@enduml

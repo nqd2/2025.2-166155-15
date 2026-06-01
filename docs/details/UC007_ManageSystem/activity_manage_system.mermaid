@@ -1,0 +1,21 @@
+flowchart TD
+  Start([Start]) --> Open[Admin logs in and opens Admin Panel]
+  Open --> Choice{Select category}
+  Choice -->|Users & Roles| Users[Manage user accounts & roles RBAC]
+  Choice -->|Master Data| Master[Manage shared catalogs & units]
+  Choice -->|Logs| Logs[Query cross-department operations]
+  Choice -->|Backup/Restore| Backup[Trigger backup or restore process]
+  
+  Users --> Submit[Submit request]
+  Master --> Submit
+  Logs --> Submit
+  Backup --> Submit
+  
+  Submit --> Check{Valid & Authorized?}
+  Check -->|Yes| Save[System executes & persists changes]
+  Save --> LogAction[Log administrative action]
+  LogAction --> Show[Show success confirmation]
+  Show --> End([End])
+  
+  Check -->|No| Error[Display Error]
+  Error --> End

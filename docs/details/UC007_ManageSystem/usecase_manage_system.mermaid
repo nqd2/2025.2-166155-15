@@ -1,0 +1,16 @@
+graph LR
+  SystemAdministrator["SystemAdministrator"]
+
+  subgraph ImportAssignmentSystem ["ImportAssignmentSystem"]
+    ManageSystem(["ManageSystem"])
+    ManageUsersAndActorRoles(["ManageUsersAndActorRoles"])
+    ManageSharedMasterData(["ManageSharedMasterData"])
+    ViewCrossDepartmentOperationLogs(["ViewCrossDepartmentOperationLogs"])
+    BackupAndRestoreBusinessData(["BackupAndRestoreBusinessData"])
+  end
+
+  SystemAdministrator --> ManageSystem
+  ManageSystem -.->|"<<include>>"| ManageUsersAndActorRoles
+  ManageSystem -.->|"<<include>>"| ManageSharedMasterData
+  ManageSystem -.->|"<<include>>"| ViewCrossDepartmentOperationLogs
+  ManageSystem -.->|"<<include>>"| BackupAndRestoreBusinessData

@@ -1,0 +1,50 @@
+@startuml sequence_design_place_overseas_orders
+title Design Sequence Diagram - PlaceOverseasOrders
+
+actor InternationalOrderingDepartment as Actor
+participant "OverseasOrderingUI" as Boundary
+participant "OverseasOrderingController" as Control
+participant "OrderTransmissionFacade" as Subsystem
+participant "OverseasOrderRepository" as Repo
+entity "OverseasOrder" as Entity
+actor OverseasImportSite as SiteActor
+
+Actor -> Boundary : triggerOrderGeneration(planId)
+activate Boundary
+
+Boundary -> Control : generateOrders(planId)
+activate Control
+
+Control -> Entity : composeOrdersFromPlan(planId)
+activate Entity
+Entity --> Control : ordersList
+deactivate Entity
+
+loop for each order in ordersList
+  Control -> Subsystem : transmitOrder(order.siteCode, order.details)
+  activate Subsystem
+  
+  Subsystem -> SiteActor : sendStockInquiry(siteCode, order.details)
+  activate SiteActor
+  SiteActor --> Subsystem : returnAcknowledgement(ackToken)
+  deactivate SiteActor
+  
+  Subsystem --> Control : transmissionResult(true, ackToken)
+  deactivate Subsystem
+  
+  Control -> Entity : order.updateStatus("Transmitted", ackToken)
+  activate Entity
+  Entity --> Control : updatedOrder
+  deactivate Entity
+  
+  Control -> Repo : save(updatedOrder)
+  activate Repo
+  Repo -> Repo : persistToDatabase()
+  Repo --> Control : savedOrder
+  deactivate Repo
+end
+
+Control --> Boundary : ordersPlacedSuccessfully()
+Boundary --> Actor : showSuccessMessage()
+deactivate Boundary
+@enduml

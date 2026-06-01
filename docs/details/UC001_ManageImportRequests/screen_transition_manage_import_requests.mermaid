@@ -1,0 +1,19 @@
+graph LR
+  SC001["ManageImportRequestsScreen (SC001)"]
+  SC00101["CreateImportRequestScreen (SC00101)"]
+  SC00102["ValidateImportRequestInputDialog (SC00102)"]
+  SC00103["SubmitImportRequestConfirmation (SC00103)"]
+  SC00104["TrackImportRequestStatusScreen (SC00104)"]
+  SC00105["UpdateImportRequestScreen (SC00105)"]
+  SC00106["CancelImportRequestDialog (SC00106)"]
+
+  SC001 -->|create request| SC00101
+  SC00101 -->|validate input| SC00102
+  SC00102 -->|invalid data| SC00101
+  SC00102 -->|valid data| SC00103
+  SC00103 -->|done| SC001
+  SC001 -->|track status| SC00104
+  SC001 -->|edit request| SC00105
+  SC00105 -->|re-validate| SC00102
+  SC001 -->|cancel request| SC00106
+  SC00106 -->|done| SC001

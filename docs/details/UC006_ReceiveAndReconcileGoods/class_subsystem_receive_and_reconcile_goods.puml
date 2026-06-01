@@ -1,0 +1,27 @@
+@startuml class_subsystem_receive_and_reconcile_goods
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - ReconciliationSubsystem (ReceiveAndReconcileGoods)
+
+class ReconciliationFacade <<facade>> {
+  +reconcile(expected: List, received: List): ReconciliationResult
+}
+
+class DiscrepancyCalculator <<service>> {
+  +compareQuantities(expected: List, received: List): List<Map>
+}
+
+class ReconciliationReportService <<service>> {
+  +generateReport(discrepancies: List): Object
+}
+
+ReconciliationFacade --> DiscrepancyCalculator
+ReconciliationFacade --> ReconciliationReportService
+@enduml

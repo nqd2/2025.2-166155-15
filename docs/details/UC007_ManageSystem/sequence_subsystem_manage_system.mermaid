@@ -1,0 +1,23 @@
+sequenceDiagram
+  participant Client as SystemAdminController
+  box SecuritySubsystem
+    participant Facade as SecurityFacade
+    participant RBAC as RBACAuthorizationService
+    participant Session as UserSessionManager
+  end box
+
+  Client->>Facade: checkPermission(operatorId, requiredPermission)
+  activate Facade
+
+  Facade->>Session: getActiveSession(operatorId)
+  activate Session
+  Session-->>Facade: sessionDetails
+  deactivate Session
+
+  Facade->>RBAC: verifyAccess(sessionDetails.role, requiredPermission)
+  activate RBAC
+  RBAC-->>Facade: accessGranted
+  deactivate RBAC
+
+  Facade-->>Client: authorizationResult(accessGranted)
+  deactivate Facade

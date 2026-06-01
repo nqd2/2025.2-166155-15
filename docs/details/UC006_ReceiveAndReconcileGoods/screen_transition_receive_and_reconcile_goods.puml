@@ -1,0 +1,21 @@
+@startuml screen_transition_receive_and_reconcile_goods
+left to right direction
+
+title ScreenTransitionReceiveAndReconcileGoods
+
+[ReceiveAndReconcileGoodsScreen] as SC006
+[LoadExpectedOrderQuantitiesScreen] as SC00601
+[RecordGoodsReceiptScreen] as SC00602
+[CompareReceivedVsOrderedScreen] as SC00603
+[RecordQuantityDiscrepancyDialog] as SC00604
+[UpdateInternalWarehouseStockScreen] as SC00605
+
+SC006 --> SC00601 : load expected
+SC00601 --> SC00602 : receive goods
+SC00602 --> SC00603 : compare
+SC00603 --> SC00604 : has discrepancy
+SC00603 --> SC00605 : no discrepancy
+SC00604 --> SC00605 : finalize
+SC00605 --> SC006 : done
+
+@enduml

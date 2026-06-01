@@ -1,0 +1,66 @@
+@startuml class_design_place_overseas_orders
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - PlaceOverseasOrders
+
+class OverseasOrderingUI {
+  +displayOrderStatus(): void
+  +showSuccessMessage(): void
+}
+
+class OverseasOrderingController {
+  -transmissionFacade: OrderTransmissionFacade
+  -repository: OverseasOrderRepository
+  +generateOrders(planId: String): void
+}
+
+class OverseasOrder {
+  -orderId: String
+  -siteCode: String
+  -status: String
+  -acknowledgementToken: String
+  -orderLines: List<OrderLine>
+  +OverseasOrder(siteCode: String, lines: List<OrderLine>)
+  +getOrderId(): String
+  +getSiteCode(): String
+  +getStatus(): String
+  +getOrderLines(): List<OrderLine>
+  +updateStatus(status: String, token: String): void
+}
+
+class OrderLine {
+  -merchandiseCode: String
+  -quantityOrdered: int
+  -unit: String
+  -deliveryMeans: String
+  +getMerchandiseCode(): String
+  +getQuantityOrdered(): int
+  +getUnit(): String
+  +getDeliveryMeans(): String
+}
+
+class OverseasOrderRepository {
+  -dbConnection: Object
+  +save(order: OverseasOrder): OverseasOrder
+  +findById(orderId: String): OverseasOrder
+}
+
+class OrderTransmissionFacade {
+  -xmlGen: Object
+  -sftp: Object
+  +transmitOrder(siteCode: String, details: List): boolean
+}
+
+OverseasOrderingUI --> OverseasOrderingController
+OverseasOrderingController --> OrderTransmissionFacade
+OverseasOrderingController --> OverseasOrderRepository
+OverseasOrderRepository --> OverseasOrder
+OverseasOrder "1" *-- "*" OrderLine
+@enduml

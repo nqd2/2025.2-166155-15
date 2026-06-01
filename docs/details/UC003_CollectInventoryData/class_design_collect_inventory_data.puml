@@ -1,0 +1,65 @@
+@startuml class_design_collect_inventory_data
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - CollectInventoryData
+
+class InventoryCollectionUI {
+  +displayStatus(): void
+  +showSuccessMessage(): void
+}
+
+class InventoryCollectionController {
+  -stockQueryFacade: StockQueryFacade
+  -siteRepository: ImportSiteRepository
+  -recordRepository: InventoryRecordRepository
+  +collectStockInfo(requestList: List<Map>): void
+  +filterMerchandiseForSite(site: ImportSite, list: List<Map>): List<String>
+}
+
+class ImportSite {
+  -siteCode: String
+  -siteName: String
+  +getSiteCode(): String
+  +getSiteName(): String
+}
+
+class InventoryRecord {
+  -siteCode: String
+  -merchandiseCode: String
+  -inStockQuantity: int
+  -unit: String
+  +getSiteCode(): String
+  +getMerchandiseCode(): String
+  +getInStockQuantity(): int
+  +getUnit(): String
+}
+
+class ImportSiteRepository {
+  -dbConnection: Object
+  +findCandidateSites(list: List<Map>): List<ImportSite>
+}
+
+class InventoryRecordRepository {
+  -dbConnection: Object
+  +saveStockResponse(siteCode: String, code: String, qty: int, unit: String): boolean
+}
+
+class StockQueryFacade {
+  -queryService: StockQueryService
+  +queryStock(siteCode: String, items: List<String>): Map<String, Object>
+}
+
+InventoryCollectionUI --> InventoryCollectionController
+InventoryCollectionController --> StockQueryFacade
+InventoryCollectionController --> ImportSiteRepository
+InventoryCollectionController --> InventoryRecordRepository
+ImportSiteRepository --> ImportSite
+InventoryRecordRepository --> InventoryRecord
+@enduml

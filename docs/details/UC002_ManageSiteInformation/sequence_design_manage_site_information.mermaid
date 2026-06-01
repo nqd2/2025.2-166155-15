@@ -1,0 +1,46 @@
+sequenceDiagram
+  actor Actor as OverseasImportSite
+  participant Boundary as SiteInformationUI
+  participant Control as SiteInformationController
+  participant Subsystem as SiteCatalogFacade
+  participant Repo as ImportSiteRepository
+  participant Entity as ImportSite
+
+  Actor->>Boundary: updateSiteData(profileData)
+  activate Boundary
+
+  Boundary->>Control: updateProfile(siteCode, profileData)
+  activate Control
+
+  Control->>Subsystem: updateCatalog(siteCode, profileData.catalog)
+  activate Subsystem
+  Subsystem-->>Control: updateSuccess
+  deactivate Subsystem
+
+  alt updateSuccess is true
+    Control->>Repo: findByCode(siteCode)
+    activate Repo
+    Repo-->>Control: siteInstance
+    deactivate Repo
+
+    Control->>Entity: siteInstance.updateProfile(profileData)
+    activate Entity
+    Entity-->>Control: updatedSiteInstance
+    deactivate Entity
+
+    Control->>Repo: save(updatedSiteInstance)
+    activate Repo
+    rect rgb(200, 220, 240)
+      note over Repo: persistToDatabase()
+    end
+    Repo-->>Control: savedSite
+    deactivate Repo
+
+    Control-->>Boundary: success()
+    Boundary-->>Actor: showSuccessMessage()
+  else updateSuccess is false
+    Control-->>Boundary: failure(errors)
+    deactivate Control
+    Boundary-->>Actor: showErrorMessage(errors)
+    deactivate Boundary
+  end

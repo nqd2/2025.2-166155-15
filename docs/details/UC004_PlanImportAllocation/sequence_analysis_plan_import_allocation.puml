@@ -1,0 +1,42 @@
+@startuml sequence_analysis_plan_import_allocation
+title Analysis Sequence Diagram - PlanImportAllocation
+
+actor InternationalOrderingDepartment as Actor
+participant "ImportAllocationUI" as Boundary <<boundary>>
+participant "ImportAllocationController" as Control <<control>>
+entity "InventoryRecord" as Record <<entity>>
+entity "ImportSite" as Site <<entity>>
+entity "AllocationPlan" as Entity <<entity>>
+
+Actor -> Boundary : triggerAllocation(requestId)
+activate Boundary
+Boundary -> Control : generateAllocationPlan(requestId)
+activate Control
+
+Control -> Record : getStockInfoForRequest(requestId)
+activate Record
+Record --> Control : stockInfoList
+deactivate Record
+
+Control -> Site : getSiteTransitTimes()
+activate Site
+Site --> Control : siteTransitTimesList
+deactivate Site
+
+Control -> Control : filterAndRankSites(stockInfoList, siteTransitTimesList)
+Control -> Control : calculateSplits()
+
+alt Allocation Successful
+  Control -> Entity : createPlan(requestId, splits)
+  activate Entity
+  Entity --> Control : allocationPlanInstance
+  deactivate Entity
+  Control --> Boundary : showDraftPlan(allocationPlanInstance)
+  Boundary --> Actor : displayDraftPlan()
+else Allocation Failed (Insufficient Supply)
+  Control --> Boundary : showError(errorCode)
+  deactivate Control
+  Boundary --> Actor : displayInsufficientSupplyError()
+  deactivate Boundary
+end
+@enduml

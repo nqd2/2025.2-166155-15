@@ -1,0 +1,41 @@
+sequenceDiagram
+  actor Actor as SalesDepartment
+  participant Boundary as ImportRequestUI
+  participant Control as ImportRequestController
+  participant Subsystem as ValidationFacade
+  participant Repo as ImportRequestRepository
+  participant Entity as ImportRequest
+
+  Actor->>Boundary: submitRequestData(data)
+  activate Boundary
+
+  Boundary->>Control: validateAndProcessRequest(data)
+  activate Control
+
+  Control->>Subsystem: validateRequest(data)
+  activate Subsystem
+  Subsystem-->>Control: validationResult(errors)
+  deactivate Subsystem
+
+  alt errors is empty
+    Control->>Entity: new ImportRequest(data)
+    activate Entity
+    Entity-->>Control: requestInstance
+    deactivate Entity
+
+    Control->>Repo: save(requestInstance)
+    activate Repo
+    rect rgb(200, 220, 240)
+      note over Repo: generateUniqueId() & persistToDatabase()
+    end
+    Repo-->>Control: savedRequestWithId
+    deactivate Repo
+
+    Control-->>Boundary: success(savedRequestWithId.requestId)
+    Boundary-->>Actor: showSuccessMessage(requestId)
+  else errors is not empty
+    Control-->>Boundary: failure(errors)
+    deactivate Control
+    Boundary-->>Actor: showErrorMessage(errors)
+    deactivate Boundary
+  end

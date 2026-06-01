@@ -1,0 +1,22 @@
+@startuml usecase_manage_system
+left to right direction
+
+title DecomposeManageSystem
+
+actor "SystemAdministrator" as SystemAdministrator
+
+rectangle "ImportAssignmentSystem" {
+  usecase "ManageSystem" as ManageSystem
+  usecase "ManageUsersAndActorRoles" as ManageUsersAndActorRoles
+  usecase "ManageSharedMasterData" as ManageSharedMasterData
+  usecase "ViewCrossDepartmentOperationLogs" as ViewCrossDepartmentOperationLogs
+  usecase "BackupAndRestoreBusinessData" as BackupAndRestoreBusinessData
+}
+
+SystemAdministrator --> ManageSystem
+ManageSystem ..> ManageUsersAndActorRoles
+ManageSystem ..> ManageSharedMasterData
+ManageSystem ..> ViewCrossDepartmentOperationLogs
+ManageSystem ..> BackupAndRestoreBusinessData
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml screen_transition_manage_import_requests
+left to right direction
+
+title ScreenTransitionManageImportRequests
+
+[ManageImportRequestsScreen] as SC001
+[CreateImportRequestScreen] as SC00101
+[ValidateImportRequestInputDialog] as SC00102
+[SubmitImportRequestConfirmation] as SC00103
+[TrackImportRequestStatusScreen] as SC00104
+[UpdateImportRequestScreen] as SC00105
+[CancelImportRequestDialog] as SC00106
+
+SC001 --> SC00101 : create request
+SC00101 --> SC00102 : validate input
+SC00102 --> SC00101 : invalid data
+SC00102 --> SC00103 : valid data
+SC00103 --> SC001 : done
+SC001 --> SC00104 : track status
+SC001 --> SC00105 : edit request
+SC00105 --> SC00102 : re-validate
+SC001 --> SC00106 : cancel request
+SC00106 --> SC001 : done
+
+@enduml

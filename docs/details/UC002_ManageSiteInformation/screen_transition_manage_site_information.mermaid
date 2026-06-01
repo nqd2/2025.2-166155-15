@@ -1,0 +1,14 @@
+graph LR
+  SC002["ManageSiteInformationScreen (SC002)"]
+  SC00201["UpdateSiteProfileScreen (SC00201)"]
+  SC00202["UpdateDeliveryTimesByShipAndAirScreen (SC00202)"]
+  SC00203["UpdateSiteMerchandiseCatalogScreen (SC00203)"]
+  SC00204["NotifyOrderingDepartmentOfSiteChangesDialog (SC00204)"]
+
+  SC002 -->|update profile| SC00201
+  SC002 -->|update delivery times| SC00202
+  SC002 -->|update catalog| SC00203
+  SC00201 -->|notify change| SC00204
+  SC00202 -->|notify change| SC00204
+  SC00203 -->|notify change| SC00204
+  SC00204 -->|done| SC002

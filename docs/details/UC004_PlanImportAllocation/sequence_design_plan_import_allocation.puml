@@ -1,0 +1,54 @@
+@startuml sequence_design_plan_import_allocation
+title Design Sequence Diagram - PlanImportAllocation
+
+actor InternationalOrderingDepartment as Actor
+participant "ImportAllocationUI" as Boundary
+participant "ImportAllocationController" as Control
+participant "AllocationFacade" as Subsystem
+participant "InventoryRecordRepository" as RecordRepo
+participant "ImportSiteRepository" as SiteRepo
+participant "AllocationPlanRepository" as PlanRepo
+entity "AllocationPlan" as Entity
+
+Actor -> Boundary : triggerAllocation(requestId)
+activate Boundary
+
+Boundary -> Control : generateAllocationPlan(requestId)
+activate Control
+
+Control -> RecordRepo : getStockInfoForRequest(requestId)
+activate RecordRepo
+RecordRepo --> Control : stockInfoList
+deactivate RecordRepo
+
+Control -> SiteRepo : getSiteTransitTimes()
+activate SiteRepo
+SiteRepo --> Control : siteTransitTimesList
+deactivate SiteRepo
+
+Control -> Subsystem : calculateAllocation(requestId, stockInfoList, siteTransitTimesList)
+activate Subsystem
+Subsystem --> Control : allocationSplits
+deactivate Subsystem
+
+alt splits is not empty (Allocation Successful)
+  Control -> Entity : new AllocationPlan(requestId, allocationSplits)
+  activate Entity
+  Entity --> Control : allocationPlanInstance
+  deactivate Entity
+  
+  Control -> PlanRepo : save(allocationPlanInstance)
+  activate PlanRepo
+  PlanRepo -> PlanRepo : persistToDatabase()
+  PlanRepo --> Control : savedPlan
+  deactivate PlanRepo
+  
+  Control --> Boundary : showDraftPlan(savedPlan)
+  Boundary --> Actor : displayDraftPlan()
+else splits is empty (Allocation Failed)
+  Control --> Boundary : showError(104) (Insufficient Supply)
+  deactivate Control
+  Boundary --> Actor : displayInsufficientSupplyError()
+  deactivate Boundary
+end
+@enduml

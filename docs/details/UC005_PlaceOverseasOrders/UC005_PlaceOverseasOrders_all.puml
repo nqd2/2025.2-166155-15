@@ -1,0 +1,402 @@
+' ========================================== 
+' MERGED PLANTUML DIAGRAMS FOR USE CASE: UC005_PlaceOverseasOrders
+' Total Diagrams: 11
+' ========================================== 
+
+' ------------------------------------------
+' Source File: activity_place_overseas_orders.puml
+' ------------------------------------------
+@startuml activity_place_overseas_orders
+title Activity Diagram - PlaceOverseasOrders
+
+start
+:International Ordering Department triggers order generation;
+:System retrieves active Allocation Plan;
+:Group allocation lines by Import Site;
+:For each Site, compose an Overseas Order;
+:Specify delivery means (ship delivery / air delivery);
+:Transmit official orders to selected Sites;
+:Overseas Import Sites receive and process orders;
+:Sites send Acknowledgements back to the system;
+:System updates Order status to Transmitted;
+stop
+@enduml
+
+' ------------------------------------------
+' Source File: class_analysis_place_overseas_orders.puml
+' ------------------------------------------
+@startuml class_analysis_place_overseas_orders
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - PlaceOverseasOrders
+
+class OverseasOrderingUI <<boundary>> {
+  +displayOrderStatus()
+  +showSuccessMessage()
+}
+
+class OverseasOrderingController <<control>> {
+  +generateOrders(planId: String)
+}
+
+class OverseasOrder <<entity>> {
+  -orderId: String
+  -siteCode: String
+  -status: String
+  -acknowledgementToken: String
+  -orderLines: List<OrderLine>
+  +composeOrdersFromPlan(planId: String): List<OverseasOrder>
+  +setOrderStatus(orderId: String, status: String, token: String)
+}
+
+class OrderLine <<entity>> {
+  -merchandiseCode: String
+  -quantityOrdered: int
+  -unit: String
+  -deliveryMeans: String
+}
+
+class ImportSite <<entity>> {
+  -siteCode: String
+  -siteName: String
+}
+
+OverseasOrderingUI --> OverseasOrderingController
+OverseasOrderingController --> OverseasOrder
+OverseasOrderingController --> ImportSite
+OverseasOrder "1" *-- "*" OrderLine
+@enduml
+
+' ------------------------------------------
+' Source File: class_design_place_overseas_orders.puml
+' ------------------------------------------
+@startuml class_design_place_overseas_orders
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - PlaceOverseasOrders
+
+class OverseasOrderingUI {
+  +displayOrderStatus(): void
+  +showSuccessMessage(): void
+}
+
+class OverseasOrderingController {
+  -transmissionFacade: OrderTransmissionFacade
+  -repository: OverseasOrderRepository
+  +generateOrders(planId: String): void
+}
+
+class OverseasOrder {
+  -orderId: String
+  -siteCode: String
+  -status: String
+  -acknowledgementToken: String
+  -orderLines: List<OrderLine>
+  +OverseasOrder(siteCode: String, lines: List<OrderLine>)
+  +getOrderId(): String
+  +getSiteCode(): String
+  +getStatus(): String
+  +getOrderLines(): List<OrderLine>
+  +updateStatus(status: String, token: String): void
+}
+
+class OrderLine {
+  -merchandiseCode: String
+  -quantityOrdered: int
+  -unit: String
+  -deliveryMeans: String
+  +getMerchandiseCode(): String
+  +getQuantityOrdered(): int
+  +getUnit(): String
+  +getDeliveryMeans(): String
+}
+
+class OverseasOrderRepository {
+  -dbConnection: Object
+  +save(order: OverseasOrder): OverseasOrder
+  +findById(orderId: String): OverseasOrder
+}
+
+class OrderTransmissionFacade {
+  -xmlGen: Object
+  -sftp: Object
+  +transmitOrder(siteCode: String, details: List): boolean
+}
+
+OverseasOrderingUI --> OverseasOrderingController
+OverseasOrderingController --> OrderTransmissionFacade
+OverseasOrderingController --> OverseasOrderRepository
+OverseasOrderRepository --> OverseasOrder
+OverseasOrder "1" *-- "*" OrderLine
+@enduml
+
+' ------------------------------------------
+' Source File: class_subsystem_place_overseas_orders.puml
+' ------------------------------------------
+@startuml class_subsystem_place_overseas_orders
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - OrderTransmissionSubsystem (PlaceOverseasOrders)
+
+class OrderTransmissionFacade <<facade>> {
+  +transmitOrder(siteCode: String, orderDetails: Map): boolean
+}
+
+class XMLGeneratorService <<service>> {
+  +generateOrderXML(orderDetails: Map): Object
+}
+
+class SFTPUploadService <<service>> {
+  +uploadToSiteServer(siteCode: String, file: Object): boolean
+}
+
+OrderTransmissionFacade --> XMLGeneratorService
+OrderTransmissionFacade --> SFTPUploadService
+@enduml
+
+' ------------------------------------------
+' Source File: communication_analysis_place_overseas_orders.puml
+' ------------------------------------------
+@startuml communication_analysis_place_overseas_orders
+title Communication Diagram (Analysis Level) - PlaceOverseasOrders
+
+object "InternationalOrderingDepartment" as Actor
+object "OverseasOrderingUI" as Boundary
+object "OverseasOrderingController" as Control
+object "OverseasOrder" as Entity
+object "OverseasImportSite" as SiteActor
+
+Actor -- Boundary : 1: triggerOrderGeneration(planId)
+Boundary -- Control : 2: generateOrders(planId)
+Control -- Entity : 3: composeOrdersFromPlan(planId) / 6: setOrderStatus(orderId, status, ackToken)
+Control -- SiteActor : 4: transmitOrder(siteCode, details) / 5: returnAcknowledgement(siteCode, details)
+Boundary -- Actor : showSuccessMessage()
+@enduml
+
+' ------------------------------------------
+' Source File: package_design_place_overseas_orders.puml
+' ------------------------------------------
+@startuml package_design_place_overseas_orders
+title Package Dependency Diagram - PlaceOverseasOrders
+
+package "Presentation Layer" as Presentation {
+  class OverseasOrderingUI
+}
+
+package "Business Layer" as Business {
+  class OverseasOrderingController
+  class OrderTransmissionFacade
+}
+
+package "Domain Layer" as Domain {
+  class OverseasOrder
+  class OrderLine
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class OverseasOrderRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml
+
+' ------------------------------------------
+' Source File: screen_transition_place_overseas_orders.puml
+' ------------------------------------------
+@startuml screen_transition_place_overseas_orders
+left to right direction
+
+title ScreenTransitionPlaceOverseasOrders
+
+[PlaceOverseasOrdersScreen] as SC005
+[ComposeOrderLinesScreen] as SC00501
+[SetDeliveryMeansShipOrAirDialog] as SC00502
+[TransmitOrdersToSelectedSitesScreen] as SC00503
+[AcknowledgeOrderAtSiteScreen] as SC00504
+
+SC005 --> SC00501 : compose order
+SC00501 --> SC00502 : set delivery means
+SC00502 --> SC00503 : transmit orders
+SC00503 --> SC00504 : site acknowledges
+SC00504 --> SC005 : done
+
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_analysis_place_overseas_orders.puml
+' ------------------------------------------
+@startuml sequence_analysis_place_overseas_orders
+title Analysis Sequence Diagram - PlaceOverseasOrders
+
+actor InternationalOrderingDepartment as Actor
+participant "OverseasOrderingUI" as Boundary <<boundary>>
+participant "OverseasOrderingController" as Control <<control>>
+entity "OverseasOrder" as Entity <<entity>>
+actor OverseasImportSite as SiteActor
+
+Actor -> Boundary : triggerOrderGeneration(planId)
+activate Boundary
+Boundary -> Control : generateOrders(planId)
+activate Control
+
+Control -> Entity : composeOrdersFromPlan(planId)
+activate Entity
+Entity --> Control : ordersList
+deactivate Entity
+
+loop for each order in ordersList
+  Control -> SiteActor : transmitOrder(order.siteCode, order.details)
+  activate SiteActor
+  SiteActor --> Control : returnAcknowledgement(ackToken)
+  deactivate SiteActor
+  
+  Control -> Entity : setOrderStatus(order.orderId, "Transmitted", ackToken)
+  activate Entity
+  Entity --> Control : orderUpdated
+  deactivate Entity
+end
+
+Control --> Boundary : ordersPlacedSuccessfully()
+deactivate Control
+Boundary --> Actor : showSuccessMessage()
+deactivate Boundary
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_design_place_overseas_orders.puml
+' ------------------------------------------
+@startuml sequence_design_place_overseas_orders
+title Design Sequence Diagram - PlaceOverseasOrders
+
+actor InternationalOrderingDepartment as Actor
+participant "OverseasOrderingUI" as Boundary
+participant "OverseasOrderingController" as Control
+participant "OrderTransmissionFacade" as Subsystem
+participant "OverseasOrderRepository" as Repo
+entity "OverseasOrder" as Entity
+actor OverseasImportSite as SiteActor
+
+Actor -> Boundary : triggerOrderGeneration(planId)
+activate Boundary
+
+Boundary -> Control : generateOrders(planId)
+activate Control
+
+Control -> Entity : composeOrdersFromPlan(planId)
+activate Entity
+Entity --> Control : ordersList
+deactivate Entity
+
+loop for each order in ordersList
+  Control -> Subsystem : transmitOrder(order.siteCode, order.details)
+  activate Subsystem
+  
+  Subsystem -> SiteActor : sendStockInquiry(siteCode, order.details)
+  activate SiteActor
+  SiteActor --> Subsystem : returnAcknowledgement(ackToken)
+  deactivate SiteActor
+  
+  Subsystem --> Control : transmissionResult(true, ackToken)
+  deactivate Subsystem
+  
+  Control -> Entity : order.updateStatus("Transmitted", ackToken)
+  activate Entity
+  Entity --> Control : updatedOrder
+  deactivate Entity
+  
+  Control -> Repo : save(updatedOrder)
+  activate Repo
+  Repo -> Repo : persistToDatabase()
+  Repo --> Control : savedOrder
+  deactivate Repo
+end
+
+Control --> Boundary : ordersPlacedSuccessfully()
+Boundary --> Actor : showSuccessMessage()
+deactivate Boundary
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_subsystem_place_overseas_orders.puml
+' ------------------------------------------
+@startuml sequence_subsystem_place_overseas_orders
+title Subsystem Sequence Diagram - OrderTransmissionSubsystem (PlaceOverseasOrders)
+
+participant "OverseasOrderingController" as Client
+box "OrderTransmissionSubsystem" #LightBlue
+  participant "OrderTransmissionFacade" as Facade <<subsystem>>
+  participant "XMLGeneratorService" as XMLGen <<service>>
+  participant "SFTPUploadService" as SFTP <<service>>
+end box
+
+Client -> Facade : transmitOrder(siteCode, orderDetails)
+activate Facade
+
+Facade -> XMLGen : generateOrderXML(orderDetails)
+activate XMLGen
+XMLGen --> Facade : xmlDocument
+deactivate XMLGen
+
+Facade -> SFTP : uploadToSiteServer(siteCode, xmlDocument)
+activate SFTP
+SFTP --> Facade : sftpSuccess
+deactivate SFTP
+
+Facade --> Client : transmissionResult(sftpSuccess)
+deactivate Facade
+@enduml
+
+' ------------------------------------------
+' Source File: usecase_place_overseas_orders.puml
+' ------------------------------------------
+@startuml usecase_place_overseas_orders
+left to right direction
+
+title DecomposePlaceOverseasOrders
+
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+actor "OverseasImportSite" as OverseasImportSite
+
+rectangle "ImportAssignmentSystem" {
+  usecase "PlaceOverseasOrders" as PlaceOverseasOrders
+  usecase "ComposeOrderLines" as ComposeOrderLines
+  usecase "SetDeliveryMeansShipOrAir" as SetDeliveryMeansShipOrAir
+  usecase "TransmitOrdersToSelectedSites" as TransmitOrdersToSelectedSites
+  usecase "AcknowledgeOrderAtSite" as AcknowledgeOrderAtSite
+}
+
+InternationalOrderingDepartment --> PlaceOverseasOrders
+OverseasImportSite --> AcknowledgeOrderAtSite
+
+PlaceOverseasOrders ..> ComposeOrderLines : <<include>>
+PlaceOverseasOrders ..> TransmitOrdersToSelectedSites : <<include>>
+ComposeOrderLines ..> SetDeliveryMeansShipOrAir : <<include>>
+TransmitOrdersToSelectedSites ..> SetDeliveryMeansShipOrAir : <<include>>
+TransmitOrdersToSelectedSites ..> AcknowledgeOrderAtSite : <<include>>
+
+@enduml
+

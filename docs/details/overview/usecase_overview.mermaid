@@ -1,0 +1,32 @@
+graph LR
+  SalesDepartment["SalesDepartment"]
+  InternationalOrderingDepartment["InternationalOrderingDepartment"]
+  OverseasImportSite["OverseasImportSite"]
+  WarehouseManagementDepartment["WarehouseManagementDepartment"]
+  SystemAdministrator["SystemAdministrator"]
+
+  subgraph ImportAssignmentSystem ["ImportAssignmentSystem"]
+    ManageImportRequests(["ManageImportRequests"])
+    ManageSiteInformation(["ManageSiteInformation"])
+    CollectInventoryData(["CollectInventoryData"])
+    PlanImportAllocation(["PlanImportAllocation"])
+    PlaceOverseasOrders(["PlaceOverseasOrders"])
+    ReceiveAndReconcileGoods(["ReceiveAndReconcileGoods"])
+    ManageSystem(["ManageSystem"])
+  end
+
+  SalesDepartment --> ManageImportRequests
+  InternationalOrderingDepartment --> ManageImportRequests
+  InternationalOrderingDepartment --> ManageSiteInformation
+  InternationalOrderingDepartment --> CollectInventoryData
+  InternationalOrderingDepartment --> PlanImportAllocation
+  InternationalOrderingDepartment --> PlaceOverseasOrders
+  OverseasImportSite --> ManageSiteInformation
+  OverseasImportSite --> CollectInventoryData
+  OverseasImportSite --> PlaceOverseasOrders
+  WarehouseManagementDepartment --> ReceiveAndReconcileGoods
+  SystemAdministrator --> ManageSystem
+
+  PlanImportAllocation -.->|"<<include>>"| CollectInventoryData
+  PlaceOverseasOrders -.->|"<<include>>"| PlanImportAllocation
+  ReceiveAndReconcileGoods -.->|"<<include>>"| PlaceOverseasOrders

@@ -1,0 +1,6 @@
+flowchart TD
+  Actor([InternationalOrderingDepartment]) <-->|1: triggerCollection| Boundary[InventoryCollectionUI]
+  Boundary <-->|2: collectStockInfo| Control[InventoryCollectionController]
+  Control <-->|3: findCandidateSites| Site[ImportSite]
+  Control <-->|4: sendStockInquiry<br/>5: returnStockResponse| SiteActor([OverseasImportSite])
+  Control <-->|6: persistResponse| Record[InventoryRecord]

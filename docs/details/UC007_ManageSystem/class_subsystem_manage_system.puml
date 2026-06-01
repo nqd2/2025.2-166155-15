@@ -1,0 +1,27 @@
+@startuml class_subsystem_manage_system
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - SecuritySubsystem (ManageSystem)
+
+class SecurityFacade <<facade>> {
+  +checkPermission(operatorId: String, requiredPermission: String): boolean
+}
+
+class RBACAuthorizationService <<service>> {
+  +verifyAccess(roleName: String, permission: String): boolean
+}
+
+class UserSessionManager <<service>> {
+  +getActiveSession(userId: String): Object
+}
+
+SecurityFacade --> RBACAuthorizationService
+SecurityFacade --> UserSessionManager
+@enduml

@@ -1,0 +1,51 @@
+classDiagram
+  class ImportRequestUI {
+    +displayForm() void
+    +getInputData() Map
+    +showSuccessMessage(requestId String) void
+    +showErrorMessage(errors List) void
+  }
+
+  class ImportRequestController {
+    -validationFacade: ValidationFacade
+    -repository: ImportRequestRepository
+    +validateAndProcessRequest(data Map) void
+  }
+
+  class ImportRequest {
+    -requestId: String
+    -status: String
+    -createdDate: Date
+    -items: List
+    +ImportRequest(data Map)
+    +getRequestId() String
+    +getStatus() String
+    +getItems() List
+  }
+
+  class Merchandise {
+    -merchandiseCode: String
+    -quantityOrdered: int
+    -unit: String
+    -desiredDeliveryDate: Date
+    +getMerchandiseCode() String
+    +getQuantityOrdered() int
+    +getUnit() String
+    +getDesiredDeliveryDate() Date
+  }
+
+  class ImportRequestRepository {
+    -dbConnection: Object
+    +save(request ImportRequest) ImportRequest
+    +findById(id String) ImportRequest
+  }
+
+  class ValidationFacade {
+    +validateRequest(data Map) List
+  }
+
+  ImportRequestUI --> ImportRequestController
+  ImportRequestController --> ValidationFacade
+  ImportRequestController --> ImportRequestRepository
+  ImportRequestRepository --> ImportRequest
+  ImportRequest "1" *-- "*" Merchandise

@@ -1,0 +1,17 @@
+flowchart TD
+  Start([Start]) --> Open[Overseas Import Site opens profile management]
+  Open --> Select[Select site profile to update]
+  Select --> UpdateBranch{Update Types}
+  UpdateBranch -->|Profile| UpdateProfile[Update Site profile name/info]
+  UpdateBranch -->|Delivery Times| UpdateTimes[Update delivery times ship/air]
+  UpdateBranch -->|Catalog| UpdateCatalog[Update merchandise catalog]
+  
+  UpdateProfile --> Submit[Submit changes]
+  UpdateTimes --> Submit
+  UpdateCatalog --> Submit
+
+  Submit --> Validate{Times are positive integers?}
+  Validate -->|No| Error[Display Validation Error & Prompt re-entry]
+  Error --> UpdateTimes
+  Validate -->|Yes| Save[System saves changes & Notifies Ordering Department]
+  Save --> End([End])

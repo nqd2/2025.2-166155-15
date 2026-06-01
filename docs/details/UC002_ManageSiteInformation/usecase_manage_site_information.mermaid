@@ -1,0 +1,22 @@
+graph LR
+  OverseasImportSite["OverseasImportSite"]
+  InternationalOrderingDepartment["InternationalOrderingDepartment"]
+
+  subgraph ImportAssignmentSystem ["ImportAssignmentSystem"]
+    ManageSiteInformation(["ManageSiteInformation"])
+    UpdateSiteProfile(["UpdateSiteProfile"])
+    UpdateDeliveryTimesByShipAndAir(["UpdateDeliveryTimesByShipAndAir"])
+    UpdateSiteMerchandiseCatalog(["UpdateSiteMerchandiseCatalog"])
+    NotifyOrderingDepartmentOfSiteChanges(["NotifyOrderingDepartmentOfSiteChanges"])
+  end
+
+  OverseasImportSite --> ManageSiteInformation
+  InternationalOrderingDepartment --> ManageSiteInformation
+
+  ManageSiteInformation -.->|"<<include>>"| UpdateSiteProfile
+  ManageSiteInformation -.->|"<<include>>"| UpdateDeliveryTimesByShipAndAir
+  ManageSiteInformation -.->|"<<include>>"| UpdateSiteMerchandiseCatalog
+  ManageSiteInformation -.->|"<<include>>"| NotifyOrderingDepartmentOfSiteChanges
+  NotifyOrderingDepartmentOfSiteChanges -.->|"<<include>>"| UpdateSiteProfile
+  NotifyOrderingDepartmentOfSiteChanges -.->|"<<include>>"| UpdateDeliveryTimesByShipAndAir
+  NotifyOrderingDepartmentOfSiteChanges -.->|"<<include>>"| UpdateSiteMerchandiseCatalog

@@ -1,0 +1,26 @@
+@startuml usecase_place_overseas_orders
+left to right direction
+
+title DecomposePlaceOverseasOrders
+
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+actor "OverseasImportSite" as OverseasImportSite
+
+rectangle "ImportAssignmentSystem" {
+  usecase "PlaceOverseasOrders" as PlaceOverseasOrders
+  usecase "ComposeOrderLines" as ComposeOrderLines
+  usecase "SetDeliveryMeansShipOrAir" as SetDeliveryMeansShipOrAir
+  usecase "TransmitOrdersToSelectedSites" as TransmitOrdersToSelectedSites
+  usecase "AcknowledgeOrderAtSite" as AcknowledgeOrderAtSite
+}
+
+InternationalOrderingDepartment --> PlaceOverseasOrders
+OverseasImportSite --> AcknowledgeOrderAtSite
+
+PlaceOverseasOrders ..> ComposeOrderLines : <<include>>
+PlaceOverseasOrders ..> TransmitOrdersToSelectedSites : <<include>>
+ComposeOrderLines ..> SetDeliveryMeansShipOrAir : <<include>>
+TransmitOrdersToSelectedSites ..> SetDeliveryMeansShipOrAir : <<include>>
+TransmitOrdersToSelectedSites ..> AcknowledgeOrderAtSite : <<include>>
+
+@enduml

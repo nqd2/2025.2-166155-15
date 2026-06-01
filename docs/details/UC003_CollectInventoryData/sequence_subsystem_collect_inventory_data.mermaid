@@ -1,0 +1,27 @@
+sequenceDiagram
+  participant Client as InventoryCollectionController
+  box StockQuerySubsystem
+    participant Facade as StockQueryFacade
+    participant Service as StockQueryService
+    participant Connection as APIConnectionPool
+  end box
+
+  Client->>Facade: queryStock(siteCode, items)
+  activate Facade
+
+  Facade->>Service: dispatchStockQuery(siteCode, items)
+  activate Service
+
+  Service->>Connection: getConnection(siteCode)
+  activate Connection
+  Connection-->>Service: connectionInstance
+  deactivate Connection
+
+  rect rgb(230, 240, 250)
+    note over Service: sendRequestViaAPI()
+  end
+  Service-->>Facade: apiResponse(stockData)
+  deactivate Service
+
+  Facade-->>Client: queryResult(stockData)
+  deactivate Facade

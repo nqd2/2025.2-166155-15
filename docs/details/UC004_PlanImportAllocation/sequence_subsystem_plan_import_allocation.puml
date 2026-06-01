@@ -1,0 +1,32 @@
+@startuml sequence_subsystem_plan_import_allocation
+title Subsystem Sequence Diagram - AllocationEngineSubsystem (PlanImportAllocation)
+
+participant "ImportAllocationController" as Client
+box "AllocationEngineSubsystem" #LightBlue
+  participant "AllocationFacade" as Facade <<subsystem>>
+  participant "FeasibilityChecker" as Checker <<service>>
+  participant "SiteRanker" as Ranker <<service>>
+  participant "SplitCalculator" as Splitter <<service>>
+end box
+
+Client -> Facade : calculateAllocation(requestId, stockRecords, sites)
+activate Facade
+
+Facade -> Checker : checkDeliveryFeasibility(stockRecords, sites)
+activate Checker
+Checker --> Facade : feasibleSites
+deactivate Checker
+
+Facade -> Ranker : rankSites(feasibleSites)
+activate Ranker
+Ranker --> Facade : rankedSitesList
+deactivate Ranker
+
+Facade -> Splitter : splitQuantity(requestId, rankedSitesList)
+activate Splitter
+Splitter --> Facade : allocationSplits
+deactivate Splitter
+
+Facade --> Client : allocationResult(allocationSplits)
+deactivate Facade
+@enduml

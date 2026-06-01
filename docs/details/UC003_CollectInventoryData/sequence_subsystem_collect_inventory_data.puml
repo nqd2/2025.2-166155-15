@@ -1,0 +1,28 @@
+@startuml sequence_subsystem_collect_inventory_data
+title Subsystem Sequence Diagram - StockQuerySubsystem (CollectInventoryData)
+
+participant "InventoryCollectionController" as Client
+box "StockQuerySubsystem" #LightBlue
+  participant "StockQueryFacade" as Facade <<subsystem>>
+  participant "StockQueryService" as Service <<service>>
+  participant "APIConnectionPool" as Connection <<service>>
+end box
+
+Client -> Facade : queryStock(siteCode, items)
+activate Facade
+
+Facade -> Service : dispatchStockQuery(siteCode, items)
+activate Service
+
+Service -> Connection : getConnection(siteCode)
+activate Connection
+Connection --> Service : connectionInstance
+deactivate Connection
+
+Service -> Service : sendRequestViaAPI(connectionInstance, items)
+Service --> Facade : apiResponse(stockData)
+deactivate Service
+
+Facade --> Client : queryResult(stockData)
+deactivate Facade
+@enduml

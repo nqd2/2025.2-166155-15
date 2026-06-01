@@ -1,0 +1,18 @@
+@startuml screen_transition_place_overseas_orders
+left to right direction
+
+title ScreenTransitionPlaceOverseasOrders
+
+[PlaceOverseasOrdersScreen] as SC005
+[ComposeOrderLinesScreen] as SC00501
+[SetDeliveryMeansShipOrAirDialog] as SC00502
+[TransmitOrdersToSelectedSitesScreen] as SC00503
+[AcknowledgeOrderAtSiteScreen] as SC00504
+
+SC005 --> SC00501 : compose order
+SC00501 --> SC00502 : set delivery means
+SC00502 --> SC00503 : transmit orders
+SC00503 --> SC00504 : site acknowledges
+SC00504 --> SC005 : done
+
+@enduml

@@ -1,0 +1,28 @@
+@startuml usecase_manage_site_information
+left to right direction
+
+title DecomposeManageSiteInformation
+
+actor "OverseasImportSite" as OverseasImportSite
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+
+rectangle "ImportAssignmentSystem" {
+  usecase "ManageSiteInformation" as ManageSiteInformation
+  usecase "UpdateSiteProfile" as UpdateSiteProfile
+  usecase "UpdateDeliveryTimesByShipAndAir" as UpdateDeliveryTimesByShipAndAir
+  usecase "UpdateSiteMerchandiseCatalog" as UpdateSiteMerchandiseCatalog
+  usecase "NotifyOrderingDepartmentOfSiteChanges" as NotifyOrderingDepartmentOfSiteChanges
+}
+
+OverseasImportSite --> ManageSiteInformation
+InternationalOrderingDepartment --> ManageSiteInformation
+
+ManageSiteInformation ..> UpdateSiteProfile : <<include>>
+ManageSiteInformation ..> UpdateDeliveryTimesByShipAndAir : <<include>>
+ManageSiteInformation ..> UpdateSiteMerchandiseCatalog : <<include>>
+ManageSiteInformation ..> NotifyOrderingDepartmentOfSiteChanges : <<include>>
+NotifyOrderingDepartmentOfSiteChanges ..> UpdateSiteProfile : <<include>>
+NotifyOrderingDepartmentOfSiteChanges ..> UpdateDeliveryTimesByShipAndAir : <<include>>
+NotifyOrderingDepartmentOfSiteChanges ..> UpdateSiteMerchandiseCatalog : <<include>>
+
+@enduml

@@ -1,0 +1,22 @@
+graph LR
+  InternationalOrderingDepartment["InternationalOrderingDepartment"]
+  OverseasImportSite["OverseasImportSite"]
+
+  subgraph ImportAssignmentSystem ["ImportAssignmentSystem"]
+    CollectInventoryData(["CollectInventoryData"])
+    FindCandidateSitesForMerchandise(["FindCandidateSitesForMerchandise"])
+    FilterMerchandiseListPerSite(["FilterMerchandiseListPerSite"])
+    SendStockInquiryToSite(["SendStockInquiryToSite"])
+    ReceiveStockResponseFromSite(["ReceiveStockResponseFromSite"])
+    PersistInventoryInformationFile(["PersistInventoryInformationFile"])
+  end
+
+  InternationalOrderingDepartment --> CollectInventoryData
+  OverseasImportSite --> ReceiveStockResponseFromSite
+
+  CollectInventoryData -.->|"<<include>>"| FindCandidateSitesForMerchandise
+  FindCandidateSitesForMerchandise -.->|"<<include>>"| FilterMerchandiseListPerSite
+  FilterMerchandiseListPerSite -.->|"<<include>>"| SendStockInquiryToSite
+  SendStockInquiryToSite -.->|"<<include>>"| ReceiveStockResponseFromSite
+  CollectInventoryData -.->|"<<include>>"| PersistInventoryInformationFile
+  PersistInventoryInformationFile -.->|"<<include>>"| ReceiveStockResponseFromSite

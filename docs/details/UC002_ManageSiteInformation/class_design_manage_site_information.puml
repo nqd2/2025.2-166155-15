@@ -1,0 +1,66 @@
+@startuml class_design_manage_site_information
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - ManageSiteInformation
+
+class SiteInformationUI {
+  +displaySiteDetails(siteDetails: Object): void
+  +showProfileForm(): void
+  +getUpdatedProfileData(): Map<String, Object>
+  +showSuccessMessage(): void
+  +showErrorMessage(errors: List<String>): void
+}
+
+class SiteInformationController {
+  -catalogFacade: SiteCatalogFacade
+  -repository: ImportSiteRepository
+  +getSiteDetails(siteCode: String): void
+  +updateProfile(siteCode: String, data: Map<String, Object>): void
+}
+
+class ImportSite {
+  -siteCode: String
+  -siteName: String
+  -deliveryDaysByShip: int
+  -deliveryDaysByAir: int
+  -otherInformation: String
+  -merchandiseCatalog: List<Merchandise>
+  +ImportSite(data: Map<String, Object>)
+  +getSiteCode(): String
+  +getSiteName(): String
+  +getDeliveryDaysByShip(): int
+  +getDeliveryDaysByAir(): int
+  +getMerchandiseCatalog(): List<Merchandise>
+  +updateProfile(data: Map<String, Object>): void
+}
+
+class Merchandise {
+  -merchandiseCode: String
+  +getMerchandiseCode(): String
+}
+
+class ImportSiteRepository {
+  -dbConnection: Object
+  +save(site: ImportSite): ImportSite
+  +findByCode(siteCode: String): ImportSite
+}
+
+class SiteCatalogFacade {
+  -productService: ProductCatalogService
+  -notificationService: NotificationService
+  +updateCatalog(siteCode: String, data: List<String>): boolean
+}
+
+SiteInformationUI --> SiteInformationController
+SiteInformationController --> SiteCatalogFacade
+SiteInformationController --> ImportSiteRepository
+ImportSiteRepository --> ImportSite
+ImportSite "1" *-- "*" Merchandise
+@enduml

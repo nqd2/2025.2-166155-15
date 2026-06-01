@@ -1,0 +1,6 @@
+flowchart TD
+  Actor([WarehouseManagementDepartment]) <-->|1: selectOrderToReceive<br/>4: submitReceiptDetails| Boundary[GoodsReceiptUI]
+  Boundary <-->|2: getExpectedOrderDetails<br/>5: processReceipt| Control[GoodsReceiptController]
+  Control <-->|3: findById| Order[OverseasOrder]
+  Control <-->|6: createReceipt| Entity[GoodsReceipt]
+  Control <-->|7: updateStockLevels| Stock[WarehouseStock]

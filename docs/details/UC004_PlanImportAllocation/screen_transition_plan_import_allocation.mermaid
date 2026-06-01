@@ -1,0 +1,15 @@
+graph LR
+  SC004["PlanImportAllocationScreen (SC004)"]
+  SC00401["ProcessEachMerchandiseIndependentlyPanel (SC00401)"]
+  SC00402["CheckDesiredDeliveryFeasibilityPanel (SC00402)"]
+  SC00403["RankSitesPanel (SC00403)"]
+  SC00404["SplitQuantityAcrossSelectedSitesPanel (SC00404)"]
+  SC00405["InsufficientSupplyErrorDialog (SC00405)"]
+
+  SC004 -->|run allocation| SC00401
+  SC00401 -->|per item| SC00402
+  SC00402 -->|feasible| SC00403
+  SC00402 -->|infeasible| SC00405
+  SC00403 -->|ranked| SC00404
+  SC00404 -->|save plan| SC004
+  SC00405 -->|acknowledge| SC004

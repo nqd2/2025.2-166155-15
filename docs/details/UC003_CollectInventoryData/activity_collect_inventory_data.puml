@@ -1,0 +1,14 @@
+@startuml activity_collect_inventory_data
+title Activity Diagram - CollectInventoryData
+
+start
+:International Ordering Department initiates stock check;
+:System filters candidate sites trading at least one item;
+:For each candidate site, generate filtered item list;
+:Send stock inquiry requests to candidate sites;
+:Sites query their local database for quantities;
+:Sites reply with in-stock quantities (0 if out of stock);
+:System consolidates all site responses;
+:System persists data in Inventory Information File;
+stop
+@enduml

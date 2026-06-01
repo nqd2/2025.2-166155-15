@@ -1,0 +1,24 @@
+flowchart TD
+  subgraph Presentation ["Presentation Layer"]
+    UI[InventoryCollectionUI]
+  end
+
+  subgraph Business ["Business Layer"]
+    Controller[InventoryCollectionController]
+    Facade[StockQueryFacade]
+  end
+
+  subgraph Domain ["Domain Layer"]
+    Site[ImportSite]
+    Record[InventoryRecord]
+  end
+
+  subgraph Infrastructure ["Infrastructure Layer"]
+    SiteRepo[ImportSiteRepository]
+    RecordRepo[InventoryRecordRepository]
+  end
+
+  Presentation -.->|uses| Business
+  Business -.->|manipulates| Domain
+  Business -.->|uses| Infrastructure
+  Infrastructure -.->|persists| Domain

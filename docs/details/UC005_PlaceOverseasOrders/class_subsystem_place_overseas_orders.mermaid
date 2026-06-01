@@ -1,0 +1,18 @@
+classDiagram
+  class OrderTransmissionFacade {
+    <<facade>>
+    +transmitOrder(siteCode String, orderDetails Map) boolean
+  }
+
+  class XMLGeneratorService {
+    <<service>>
+    +generateOrderXML(orderDetails Map) Object
+  }
+
+  class SFTPUploadService {
+    <<service>>
+    +uploadToSiteServer(siteCode String, file Object) boolean
+  }
+
+  OrderTransmissionFacade --> XMLGeneratorService
+  OrderTransmissionFacade --> SFTPUploadService

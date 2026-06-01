@@ -1,0 +1,27 @@
+@startuml package_design_collect_inventory_data
+title Package Dependency Diagram - CollectInventoryData
+
+package "Presentation Layer" as Presentation {
+  class InventoryCollectionUI
+}
+
+package "Business Layer" as Business {
+  class InventoryCollectionController
+  class StockQueryFacade
+}
+
+package "Domain Layer" as Domain {
+  class ImportSite
+  class InventoryRecord
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class ImportSiteRepository
+  class InventoryRecordRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml

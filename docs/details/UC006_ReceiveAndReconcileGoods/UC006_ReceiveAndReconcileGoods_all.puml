@@ -1,0 +1,484 @@
+' ========================================== 
+' MERGED PLANTUML DIAGRAMS FOR USE CASE: UC006_ReceiveAndReconcileGoods
+' Total Diagrams: 11
+' ========================================== 
+
+' ------------------------------------------
+' Source File: activity_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml activity_receive_and_reconcile_goods
+title Activity Diagram - ReceiveAndReconcileGoods
+
+start
+:Warehouse Department receives physical delivery of goods;
+:System loads expected order quantities from Overseas Order;
+:Unpack and count received merchandise;
+:Compare actual received quantity with expected ordered quantity;
+if (Is there a discrepancy?) then (yes)
+  :Record discrepancy (surplus/deficit/damaged);
+else (no)
+  :Mark as fully matched;
+endif
+:Save Goods Receipt details;
+:Update internal warehouse stock levels;
+stop
+@enduml
+
+' ------------------------------------------
+' Source File: class_analysis_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml class_analysis_receive_and_reconcile_goods
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - ReceiveAndReconcileGoods
+
+class GoodsReceiptUI <<boundary>> {
+  +displayExpectedQuantities()
+  +showReconciliationForm(order: Object)
+  +showReceiptSummary(receipt: Object)
+}
+
+class GoodsReceiptController <<control>> {
+  +getExpectedOrderDetails(orderId: String)
+  +processReceipt(orderId: String, received: Object)
+  -compareAndDetectDiscrepancies(order: Object, received: Object): Object
+}
+
+class OverseasOrder <<entity>> {
+  -orderId: String
+  -siteCode: String
+  -status: String
+  +findById(orderId: String): OverseasOrder
+}
+
+class GoodsReceipt <<entity>> {
+  -receiptId: String
+  -orderId: String
+  -receivedDate: Date
+  -receiptLines: List<ReceiptLine>
+  +createReceipt(orderId: String, received: Object, discrepancies: Object)
+}
+
+class ReceiptLine <<entity>> {
+  -merchandiseCode: String
+  -receivedQty: int
+  -discrepancyQty: int
+  -discrepancyType: String
+}
+
+class WarehouseStock <<entity>> {
+  -merchandiseCode: String
+  -quantityInStock: int
+  +updateStockLevels(received: Object)
+}
+
+GoodsReceiptUI --> GoodsReceiptController
+GoodsReceiptController --> OverseasOrder
+GoodsReceiptController --> GoodsReceipt
+GoodsReceiptController --> WarehouseStock
+GoodsReceipt "1" *-- "*" ReceiptLine
+@enduml
+
+' ------------------------------------------
+' Source File: class_design_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml class_design_receive_and_reconcile_goods
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - ReceiveAndReconcileGoods
+
+class GoodsReceiptUI {
+  +displayExpectedQuantities(): void
+  +showReconciliationForm(order: Object): void
+  +showReceiptSummary(receipt: GoodsReceipt): void
+}
+
+class GoodsReceiptController {
+  -reconciliationFacade: ReconciliationFacade
+  -orderRepo: OverseasOrderRepository
+  -receiptRepo: GoodsReceiptRepository
+  -stockRepo: WarehouseStockRepository
+  +getExpectedOrderDetails(orderId: String): void
+  +processReceipt(orderId: String, received: List<Map>): void
+}
+
+class OverseasOrder {
+  -orderId: String
+  -siteCode: String
+  -status: String
+  -orderLines: List<Object>
+  +getOrderId(): String
+  +getOrderLines(): List<Object>
+}
+
+class GoodsReceipt {
+  -receiptId: String
+  -orderId: String
+  -receivedDate: Date
+  -receiptLines: List<ReceiptLine>
+  +GoodsReceipt(orderId: String, lines: List<ReceiptLine>)
+  +getReceiptId(): String
+  +getOrderId(): String
+  +getReceiptLines(): List<ReceiptLine>
+}
+
+class ReceiptLine {
+  -merchandiseCode: String
+  -receivedQty: int
+  -discrepancyQty: int
+  -discrepancyType: String
+  +getMerchandiseCode(): String
+  +getReceivedQty(): int
+  +getDiscrepancyQty(): int
+  +getDiscrepancyType(): String
+}
+
+class WarehouseStock {
+  -merchandiseCode: String
+  -quantityInStock: int
+  +WarehouseStock(merchandiseCode: String, quantityInStock: int)
+  +getMerchandiseCode(): String
+  +getQuantityInStock(): int
+  +addQuantity(qty: int): void
+}
+
+class OverseasOrderRepository {
+  -dbConnection: Object
+  +findById(orderId: String): OverseasOrder
+}
+
+class GoodsReceiptRepository {
+  -dbConnection: Object
+  +save(receipt: GoodsReceipt): GoodsReceipt
+}
+
+class WarehouseStockRepository {
+  -dbConnection: Object
+  +findByCode(code: String): WarehouseStock
+  +save(stock: WarehouseStock): boolean
+}
+
+class ReconciliationFacade {
+  -calculator: Object
+  -reporter: Object
+  +reconcile(expected: List, received: List): ReconciliationResult
+}
+
+GoodsReceiptUI --> GoodsReceiptController
+GoodsReceiptController --> ReconciliationFacade
+GoodsReceiptController --> OverseasOrderRepository
+GoodsReceiptController --> GoodsReceiptRepository
+GoodsReceiptController --> WarehouseStockRepository
+OverseasOrderRepository --> OverseasOrder
+GoodsReceiptRepository --> GoodsReceipt
+GoodsReceipt "1" *-- "*" ReceiptLine
+WarehouseStockRepository --> WarehouseStock
+@enduml
+
+' ------------------------------------------
+' Source File: class_subsystem_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml class_subsystem_receive_and_reconcile_goods
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - ReconciliationSubsystem (ReceiveAndReconcileGoods)
+
+class ReconciliationFacade <<facade>> {
+  +reconcile(expected: List, received: List): ReconciliationResult
+}
+
+class DiscrepancyCalculator <<service>> {
+  +compareQuantities(expected: List, received: List): List<Map>
+}
+
+class ReconciliationReportService <<service>> {
+  +generateReport(discrepancies: List): Object
+}
+
+ReconciliationFacade --> DiscrepancyCalculator
+ReconciliationFacade --> ReconciliationReportService
+@enduml
+
+' ------------------------------------------
+' Source File: communication_analysis_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml communication_analysis_receive_and_reconcile_goods
+title Communication Diagram (Analysis Level) - ReceiveAndReconcileGoods
+
+object "WarehouseManagementDepartment" as Actor
+object "GoodsReceiptUI" as Boundary
+object "GoodsReceiptController" as Control
+object "OverseasOrder" as Order
+object "GoodsReceipt" as Entity
+object "WarehouseStock" as Stock
+
+Actor -- Boundary : 1: selectOrderToReceive(orderId) / 4: submitReceiptDetails(receivedQuantities)
+Boundary -- Control : 2: getExpectedOrderDetails(orderId) / 5: processReceipt(orderId, receivedQuantities)
+Control -- Order : 3: findById(orderId)
+Control -- Entity : 6: createReceipt(orderId, receivedQuantities, discrepancies)
+Control -- Stock : 7: updateStockLevels(receivedQuantities)
+Boundary -- Actor : showReconciliationForm() / showReceiptSummary(receiptInstance)
+@enduml
+
+' ------------------------------------------
+' Source File: package_design_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml package_design_receive_and_reconcile_goods
+title Package Dependency Diagram - ReceiveAndReconcileGoods
+
+package "Presentation Layer" as Presentation {
+  class GoodsReceiptUI
+}
+
+package "Business Layer" as Business {
+  class GoodsReceiptController
+  class ReconciliationFacade
+}
+
+package "Domain Layer" as Domain {
+  class GoodsReceipt
+  class ReceiptLine
+  class WarehouseStock
+  class OverseasOrder
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class OverseasOrderRepository
+  class GoodsReceiptRepository
+  class WarehouseStockRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml
+
+' ------------------------------------------
+' Source File: screen_transition_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml screen_transition_receive_and_reconcile_goods
+left to right direction
+
+title ScreenTransitionReceiveAndReconcileGoods
+
+[ReceiveAndReconcileGoodsScreen] as SC006
+[LoadExpectedOrderQuantitiesScreen] as SC00601
+[RecordGoodsReceiptScreen] as SC00602
+[CompareReceivedVsOrderedScreen] as SC00603
+[RecordQuantityDiscrepancyDialog] as SC00604
+[UpdateInternalWarehouseStockScreen] as SC00605
+
+SC006 --> SC00601 : load expected
+SC00601 --> SC00602 : receive goods
+SC00602 --> SC00603 : compare
+SC00603 --> SC00604 : has discrepancy
+SC00603 --> SC00605 : no discrepancy
+SC00604 --> SC00605 : finalize
+SC00605 --> SC006 : done
+
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_analysis_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml sequence_analysis_receive_and_reconcile_goods
+title Analysis Sequence Diagram - ReceiveAndReconcileGoods
+
+actor WarehouseManagementDepartment as Actor
+participant "GoodsReceiptUI" as Boundary <<boundary>>
+participant "GoodsReceiptController" as Control <<control>>
+entity "OverseasOrder" as Order <<entity>>
+entity "GoodsReceipt" as Entity <<entity>>
+entity "WarehouseStock" as Stock <<entity>>
+
+Actor -> Boundary : selectOrderToReceive(orderId)
+activate Boundary
+Boundary -> Control : getExpectedOrderDetails(orderId)
+activate Control
+Control -> Order : findById(orderId)
+activate Order
+Order --> Control : orderDetails
+deactivate Order
+Control --> Boundary : showReconciliationForm(orderDetails)
+deactivate Control
+Boundary --> Actor : displayExpectedQuantities()
+deactivate Boundary
+
+Actor -> Boundary : submitReceiptDetails(receivedQuantities)
+activate Boundary
+Boundary -> Control : processReceipt(orderId, receivedQuantities)
+activate Control
+
+Control -> Control : compareAndDetectDiscrepancies(orderDetails, receivedQuantities)
+
+Control -> Entity : createReceipt(orderId, receivedQuantities, discrepancies)
+activate Entity
+Entity --> Control : receiptInstance
+deactivate Entity
+
+Control -> Stock : updateStockLevels(receivedQuantities)
+activate Stock
+Stock --> Control : stockUpdated
+deactivate Stock
+
+Control --> Boundary : receiptSuccessfullyProcessed(receiptInstance)
+deactivate Control
+Boundary --> Actor : showReceiptSummary(receiptInstance)
+deactivate Boundary
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_design_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml sequence_design_receive_and_reconcile_goods
+title Design Sequence Diagram - ReceiveAndReconcileGoods
+
+actor WarehouseManagementDepartment as Actor
+participant "GoodsReceiptUI" as Boundary
+participant "GoodsReceiptController" as Control
+participant "ReconciliationFacade" as Subsystem
+participant "OverseasOrderRepository" as OrderRepo
+participant "GoodsReceiptRepository" as ReceiptRepo
+participant "WarehouseStockRepository" as StockRepo
+entity "GoodsReceipt" as Entity
+entity "WarehouseStock" as Stock
+
+Actor -> Boundary : submitReceiptDetails(receivedQuantities)
+activate Boundary
+
+Boundary -> Control : processReceipt(orderId, receivedQuantities)
+activate Control
+
+Control -> OrderRepo : findById(orderId)
+activate OrderRepo
+OrderRepo --> Control : expectedOrderInstance
+deactivate OrderRepo
+
+Control -> Subsystem : reconcile(expectedOrderInstance.orderLines, receivedQuantities)
+activate Subsystem
+Subsystem --> Control : reconciliationResult
+deactivate Subsystem
+
+Control -> Entity : new GoodsReceipt(orderId, receivedQuantities, reconciliationResult.discrepancies)
+activate Entity
+Entity --> Control : receiptInstance
+deactivate Entity
+
+Control -> ReceiptRepo : save(receiptInstance)
+activate ReceiptRepo
+ReceiptRepo -> ReceiptRepo : persistToDatabase()
+ReceiptRepo --> Control : savedReceipt
+deactivate ReceiptRepo
+
+loop for each item in receivedQuantities
+  Control -> StockRepo : findByCode(item.merchandiseCode)
+  activate StockRepo
+  StockRepo --> Control : stockInstance
+  deactivate StockRepo
+  
+  Control -> Stock : stockInstance.addQuantity(item.receivedQty)
+  activate Stock
+  Stock --> Control : updatedStockInstance
+  deactivate Stock
+  
+  Control -> StockRepo : save(updatedStockInstance)
+  activate StockRepo
+  StockRepo -> StockRepo : persistToDatabase()
+  StockRepo --> Control : saveSuccess
+  deactivate StockRepo
+end
+
+Control --> Boundary : receiptSuccessfullyProcessed(savedReceipt)
+Boundary --> Actor : showReceiptSummary(savedReceipt)
+deactivate Boundary
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_subsystem_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml sequence_subsystem_receive_and_reconcile_goods
+title Subsystem Sequence Diagram - ReconciliationSubsystem (ReceiveAndReconcileGoods)
+
+participant "GoodsReceiptController" as Client
+box "ReconciliationSubsystem" #LightBlue
+  participant "ReconciliationFacade" as Facade <<subsystem>>
+  participant "DiscrepancyCalculator" as Calculator <<service>>
+  participant "ReconciliationReportService" as Reporter <<service>>
+end box
+
+Client -> Facade : reconcile(expectedItems, receivedItems)
+activate Facade
+
+Facade -> Calculator : compareQuantities(expectedItems, receivedItems)
+activate Calculator
+Calculator --> Facade : discrepancyDetails
+deactivate Calculator
+
+Facade -> Reporter : generateReport(discrepancyDetails)
+activate Reporter
+Reporter --> Facade : reportDocument
+deactivate Reporter
+
+Facade --> Client : reconciliationResult(discrepancyDetails, reportDocument)
+deactivate Facade
+@enduml
+
+' ------------------------------------------
+' Source File: usecase_receive_and_reconcile_goods.puml
+' ------------------------------------------
+@startuml usecase_receive_and_reconcile_goods
+left to right direction
+
+title DecomposeReceiveAndReconcileGoods
+
+actor "WarehouseManagementDepartment" as WarehouseManagementDepartment
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+
+rectangle "ImportAssignmentSystem" {
+  usecase "ReceiveAndReconcileGoods" as ReceiveAndReconcileGoods
+  usecase "LoadExpectedOrderQuantities" as LoadExpectedOrderQuantities
+  usecase "RecordGoodsReceipt" as RecordGoodsReceipt
+  usecase "CompareReceivedVsOrdered" as CompareReceivedVsOrdered
+  usecase "RecordQuantityDiscrepancy" as RecordQuantityDiscrepancy
+  usecase "UpdateInternalWarehouseStock" as UpdateInternalWarehouseStock
+}
+
+WarehouseManagementDepartment --> ReceiveAndReconcileGoods
+InternationalOrderingDepartment --> LoadExpectedOrderQuantities
+
+ReceiveAndReconcileGoods ..> LoadExpectedOrderQuantities : <<include>>
+ReceiveAndReconcileGoods ..> RecordGoodsReceipt : <<include>>
+ReceiveAndReconcileGoods ..> CompareReceivedVsOrdered : <<include>>
+ReceiveAndReconcileGoods ..> UpdateInternalWarehouseStock : <<include>>
+CompareReceivedVsOrdered ..> LoadExpectedOrderQuantities : <<include>>
+UpdateInternalWarehouseStock ..> CompareReceivedVsOrdered : <<include>>
+RecordQuantityDiscrepancy ..> CompareReceivedVsOrdered : <<extend>>
+
+WarehouseManagementDepartment --> RecordGoodsReceipt
+WarehouseManagementDepartment --> RecordQuantityDiscrepancy
+WarehouseManagementDepartment --> UpdateInternalWarehouseStock
+
+@enduml
+

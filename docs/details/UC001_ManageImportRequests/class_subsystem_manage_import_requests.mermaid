@@ -1,0 +1,24 @@
+classDiagram
+  class ValidationFacade {
+    <<facade>>
+    +validateRequest(data) ValidationResult
+  }
+
+  class CatalogValidator {
+    <<service>>
+    +checkExistence(code String) boolean
+  }
+
+  class QuantityValidator {
+    <<service>>
+    +validatePositive(qty int) boolean
+  }
+
+  class DateValidator {
+    <<service>>
+    +validateFutureDate(date Date) boolean
+  }
+
+  ValidationFacade --> CatalogValidator
+  ValidationFacade --> QuantityValidator
+  ValidationFacade --> DateValidator

@@ -1,0 +1,12 @@
+graph LR
+  SC005["PlaceOverseasOrdersScreen (SC005)"]
+  SC00501["ComposeOrderLinesScreen (SC00501)"]
+  SC00502["SetDeliveryMeansShipOrAirDialog (SC00502)"]
+  SC00503["TransmitOrdersToSelectedSitesScreen (SC00503)"]
+  SC00504["AcknowledgeOrderAtSiteScreen (SC00504)"]
+
+  SC005 -->|compose order| SC00501
+  SC00501 -->|set delivery means| SC00502
+  SC00502 -->|transmit orders| SC00503
+  SC00503 -->|site acknowledges| SC00504
+  SC00504 -->|done| SC005

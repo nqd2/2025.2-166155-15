@@ -1,0 +1,415 @@
+' ========================================== 
+' MERGED PLANTUML DIAGRAMS FOR USE CASE: UC002_ManageSiteInformation
+' Total Diagrams: 11
+' ========================================== 
+
+' ------------------------------------------
+' Source File: activity_manage_site_information.puml
+' ------------------------------------------
+@startuml activity_manage_site_information
+title Activity Diagram - ManageSiteInformation
+
+start
+:Overseas Import Site opens profile management;
+:Select site profile to update;
+fork
+  :Update Site profile name/info;
+fork again
+  :Update delivery times (ship and air);
+fork again
+  :Update merchandise catalog;
+end fork
+:Submit changes;
+if (Delivery times are positive integers?) then (yes)
+  :System saves changes in Site Information;
+  :System notifies International Ordering Department of changes;
+  stop
+else (no)
+  :Display Validation Error (invalid times);
+  :Prompt to re-enter delivery times;
+  stop
+endif
+@enduml
+
+' ------------------------------------------
+' Source File: class_analysis_manage_site_information.puml
+' ------------------------------------------
+@startuml class_analysis_manage_site_information
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - ManageSiteInformation
+
+class SiteInformationUI <<boundary>> {
+  +displaySiteDetails(siteDetails: Object)
+  +showProfileForm()
+  +getUpdatedProfileData(): Object
+  +showSuccessMessage()
+  +showErrorMessage(errors: List)
+}
+
+class SiteInformationController <<control>> {
+  +getSiteDetails(siteCode: String)
+  +updateProfile(siteCode: String, data: Object)
+  -validateSiteData(data: Object): boolean
+}
+
+class ImportSite <<entity>> {
+  -siteCode: String
+  -siteName: String
+  -deliveryDaysByShip: int
+  -deliveryDaysByAir: int
+  -otherInformation: String
+  -merchandiseCatalog: List<Merchandise>
+  +findByCode(siteCode: String): ImportSite
+  +saveProfile(data: Object)
+}
+
+class Merchandise <<entity>> {
+  -merchandiseCode: String
+}
+
+SiteInformationUI --> SiteInformationController
+SiteInformationController --> ImportSite
+ImportSite "1" *-- "*" Merchandise
+@enduml
+
+' ------------------------------------------
+' Source File: class_design_manage_site_information.puml
+' ------------------------------------------
+@startuml class_design_manage_site_information
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - ManageSiteInformation
+
+class SiteInformationUI {
+  +displaySiteDetails(siteDetails: Object): void
+  +showProfileForm(): void
+  +getUpdatedProfileData(): Map<String, Object>
+  +showSuccessMessage(): void
+  +showErrorMessage(errors: List<String>): void
+}
+
+class SiteInformationController {
+  -catalogFacade: SiteCatalogFacade
+  -repository: ImportSiteRepository
+  +getSiteDetails(siteCode: String): void
+  +updateProfile(siteCode: String, data: Map<String, Object>): void
+}
+
+class ImportSite {
+  -siteCode: String
+  -siteName: String
+  -deliveryDaysByShip: int
+  -deliveryDaysByAir: int
+  -otherInformation: String
+  -merchandiseCatalog: List<Merchandise>
+  +ImportSite(data: Map<String, Object>)
+  +getSiteCode(): String
+  +getSiteName(): String
+  +getDeliveryDaysByShip(): int
+  +getDeliveryDaysByAir(): int
+  +getMerchandiseCatalog(): List<Merchandise>
+  +updateProfile(data: Map<String, Object>): void
+}
+
+class Merchandise {
+  -merchandiseCode: String
+  +getMerchandiseCode(): String
+}
+
+class ImportSiteRepository {
+  -dbConnection: Object
+  +save(site: ImportSite): ImportSite
+  +findByCode(siteCode: String): ImportSite
+}
+
+class SiteCatalogFacade {
+  -productService: ProductCatalogService
+  -notificationService: NotificationService
+  +updateCatalog(siteCode: String, data: List<String>): boolean
+}
+
+SiteInformationUI --> SiteInformationController
+SiteInformationController --> SiteCatalogFacade
+SiteInformationController --> ImportSiteRepository
+ImportSiteRepository --> ImportSite
+ImportSite "1" *-- "*" Merchandise
+@enduml
+
+' ------------------------------------------
+' Source File: class_subsystem_manage_site_information.puml
+' ------------------------------------------
+@startuml class_subsystem_manage_site_information
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - SiteCatalogSubsystem (ManageSiteInformation)
+
+class SiteCatalogFacade <<facade>> {
+  +updateCatalog(siteCode: String, data: List): boolean
+}
+
+class ProductCatalogService <<service>> {
+  +validateProducts(data: List): boolean
+}
+
+class NotificationService <<service>> {
+  +triggerSiteChangeNotification(siteCode: String): boolean
+}
+
+SiteCatalogFacade --> ProductCatalogService
+SiteCatalogFacade --> NotificationService
+@enduml
+
+' ------------------------------------------
+' Source File: communication_analysis_manage_site_information.puml
+' ------------------------------------------
+@startuml communication_analysis_manage_site_information
+title Communication Diagram (Analysis Level) - ManageSiteInformation
+
+object "OverseasImportSite" as Actor
+object "SiteInformationUI" as Boundary
+object "SiteInformationController" as Control
+object "ImportSite" as Entity
+object "InternationalOrderingDepartment" as OrderingDept
+
+Actor -- Boundary : 1: selectSiteProfile(siteCode) / 4: updateSiteData(profileData)
+Boundary -- Control : 2: getSiteDetails(siteCode) / 5: updateProfile(siteCode, profileData)
+Control -- Entity : 3: findByCode(siteCode) / 6: saveProfile(profileData)
+Control -- OrderingDept : 7: notifyOrderingDepartmentOfSiteChanges(siteCode)
+Boundary -- Actor : showProfileForm() / showSuccessMessage() / showErrorMessage(errors)
+@enduml
+
+' ------------------------------------------
+' Source File: package_design_manage_site_information.puml
+' ------------------------------------------
+@startuml package_design_manage_site_information
+title Package Dependency Diagram - ManageSiteInformation
+
+package "Presentation Layer" as Presentation {
+  class SiteInformationUI
+}
+
+package "Business Layer" as Business {
+  class SiteInformationController
+  class SiteCatalogFacade
+}
+
+package "Domain Layer" as Domain {
+  class ImportSite
+  class Merchandise
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class ImportSiteRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml
+
+' ------------------------------------------
+' Source File: screen_transition_manage_site_information.puml
+' ------------------------------------------
+@startuml screen_transition_manage_site_information
+left to right direction
+
+title ScreenTransitionManageSiteInformation
+
+[ManageSiteInformationScreen] as SC002
+[UpdateSiteProfileScreen] as SC00201
+[UpdateDeliveryTimesByShipAndAirScreen] as SC00202
+[UpdateSiteMerchandiseCatalogScreen] as SC00203
+[NotifyOrderingDepartmentOfSiteChangesDialog] as SC00204
+
+SC002 --> SC00201 : update profile
+SC002 --> SC00202 : update delivery times
+SC002 --> SC00203 : update catalog
+SC00201 --> SC00204 : notify change
+SC00202 --> SC00204 : notify change
+SC00203 --> SC00204 : notify change
+SC00204 --> SC002 : done
+
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_analysis_manage_site_information.puml
+' ------------------------------------------
+@startuml sequence_analysis_manage_site_information
+title Analysis Sequence Diagram - ManageSiteInformation
+
+actor OverseasImportSite as Actor
+participant "SiteInformationUI" as Boundary <<boundary>>
+participant "SiteInformationController" as Control <<control>>
+entity "ImportSite" as Entity <<entity>>
+actor InternationalOrderingDepartment as OrderingDept
+
+Actor -> Boundary : selectSiteProfile(siteCode)
+activate Boundary
+Boundary -> Control : getSiteDetails(siteCode)
+activate Control
+Control -> Entity : findByCode(siteCode)
+activate Entity
+Entity --> Control : siteDetails
+deactivate Entity
+Control --> Boundary : displaySiteDetails(siteDetails)
+deactivate Control
+Boundary --> Actor : showProfileForm()
+deactivate Boundary
+
+Actor -> Boundary : updateSiteData(profileData)
+activate Boundary
+Boundary -> Control : updateProfile(siteCode, profileData)
+activate Control
+
+alt Validation Success
+  Control -> Entity : saveProfile(profileData)
+  activate Entity
+  Entity --> Control : saveSuccess
+  deactivate Entity
+  Control --> OrderingDept : notifyOrderingDepartmentOfSiteChanges(siteCode)
+  Control --> Boundary : success()
+  Boundary --> Actor : showSuccessMessage()
+else Validation Failure
+  Control --> Boundary : failure(errors)
+  deactivate Control
+  Boundary --> Actor : showErrorMessage(errors)
+  deactivate Boundary
+end
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_design_manage_site_information.puml
+' ------------------------------------------
+@startuml sequence_design_manage_site_information
+title Design Sequence Diagram - ManageSiteInformation
+
+actor OverseasImportSite as Actor
+participant "SiteInformationUI" as Boundary
+participant "SiteInformationController" as Control
+participant "SiteCatalogFacade" as Subsystem
+participant "ImportSiteRepository" as Repo
+entity "ImportSite" as Entity
+
+Actor -> Boundary : updateSiteData(profileData)
+activate Boundary
+
+Boundary -> Control : updateProfile(siteCode, profileData)
+activate Control
+
+Control -> Subsystem : updateCatalog(siteCode, profileData.catalog)
+activate Subsystem
+Subsystem --> Control : updateSuccess
+deactivate Subsystem
+
+alt updateSuccess is true
+  Control -> Repo : findByCode(siteCode)
+  activate Repo
+  Repo --> Control : siteInstance
+  deactivate Repo
+  
+  Control -> Entity : siteInstance.updateProfile(profileData)
+  activate Entity
+  Entity --> Control : updatedSiteInstance
+  deactivate Entity
+  
+  Control -> Repo : save(updatedSiteInstance)
+  activate Repo
+  Repo -> Repo : persistToDatabase(updatedSiteInstance)
+  Repo --> Control : savedSite
+  deactivate Repo
+  
+  Control --> Boundary : success()
+  Boundary --> Actor : showSuccessMessage()
+else updateSuccess is false
+  Control --> Boundary : failure(errors)
+  deactivate Control
+  Boundary --> Actor : showErrorMessage(errors)
+  deactivate Boundary
+end
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_subsystem_manage_site_information.puml
+' ------------------------------------------
+@startuml sequence_subsystem_manage_site_information
+title Subsystem Sequence Diagram - SiteCatalogSubsystem (ManageSiteInformation)
+
+participant "SiteInformationController" as Client
+box "SiteCatalogSubsystem" #LightBlue
+  participant "SiteCatalogFacade" as Facade <<subsystem>>
+  participant "ProductCatalogService" as Catalog <<service>>
+  participant "NotificationService" as Notify <<service>>
+end box
+
+Client -> Facade : updateCatalog(siteCode, catalogData)
+activate Facade
+
+Facade -> Catalog : validateProducts(catalogData)
+activate Catalog
+Catalog --> Facade : validationResult
+deactivate Catalog
+
+Facade -> Notify : triggerSiteChangeNotification(siteCode)
+activate Notify
+Notify --> Facade : notificationSent
+deactivate Notify
+
+Facade --> Client : updateResult(success)
+deactivate Facade
+@enduml
+
+' ------------------------------------------
+' Source File: usecase_manage_site_information.puml
+' ------------------------------------------
+@startuml usecase_manage_site_information
+left to right direction
+
+title DecomposeManageSiteInformation
+
+actor "OverseasImportSite" as OverseasImportSite
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+
+rectangle "ImportAssignmentSystem" {
+  usecase "ManageSiteInformation" as ManageSiteInformation
+  usecase "UpdateSiteProfile" as UpdateSiteProfile
+  usecase "UpdateDeliveryTimesByShipAndAir" as UpdateDeliveryTimesByShipAndAir
+  usecase "UpdateSiteMerchandiseCatalog" as UpdateSiteMerchandiseCatalog
+  usecase "NotifyOrderingDepartmentOfSiteChanges" as NotifyOrderingDepartmentOfSiteChanges
+}
+
+OverseasImportSite --> ManageSiteInformation
+InternationalOrderingDepartment --> ManageSiteInformation
+
+ManageSiteInformation ..> UpdateSiteProfile : <<include>>
+ManageSiteInformation ..> UpdateDeliveryTimesByShipAndAir : <<include>>
+ManageSiteInformation ..> UpdateSiteMerchandiseCatalog : <<include>>
+ManageSiteInformation ..> NotifyOrderingDepartmentOfSiteChanges : <<include>>
+NotifyOrderingDepartmentOfSiteChanges ..> UpdateSiteProfile : <<include>>
+NotifyOrderingDepartmentOfSiteChanges ..> UpdateDeliveryTimesByShipAndAir : <<include>>
+NotifyOrderingDepartmentOfSiteChanges ..> UpdateSiteMerchandiseCatalog : <<include>>
+
+@enduml
+

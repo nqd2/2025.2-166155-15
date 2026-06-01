@@ -1,0 +1,21 @@
+@startuml screen_transition_manage_system
+left to right direction
+
+title ScreenTransitionManageSystem
+
+[ManageSystemScreen] as SC007
+[ManageUsersAndActorRolesScreen] as SC00701
+[ManageSharedMasterDataScreen] as SC00702
+[ViewCrossDepartmentOperationLogsScreen] as SC00703
+[BackupAndRestoreBusinessDataScreen] as SC00704
+
+SC007 --> SC00701 : users and roles
+SC007 --> SC00702 : master data
+SC007 --> SC00703 : operation logs
+SC007 --> SC00704 : backup/restore
+SC00701 --> SC007 : done
+SC00702 --> SC007 : done
+SC00703 --> SC007 : done
+SC00704 --> SC007 : done
+
+@enduml

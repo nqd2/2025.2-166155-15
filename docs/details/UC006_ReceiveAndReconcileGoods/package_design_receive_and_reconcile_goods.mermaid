@@ -1,0 +1,27 @@
+flowchart TD
+  subgraph Presentation ["Presentation Layer"]
+    UI[GoodsReceiptUI]
+  end
+
+  subgraph Business ["Business Layer"]
+    Controller[GoodsReceiptController]
+    Facade[ReconciliationFacade]
+  end
+
+  subgraph Domain ["Domain Layer"]
+    Receipt[GoodsReceipt]
+    Line[ReceiptLine]
+    Stock[WarehouseStock]
+    Order[OverseasOrder]
+  end
+
+  subgraph Infrastructure ["Infrastructure Layer"]
+    OrderRepo[OverseasOrderRepository]
+    ReceiptRepo[GoodsReceiptRepository]
+    StockRepo[WarehouseStockRepository]
+  end
+
+  Presentation -.->|uses| Business
+  Business -.->|manipulates| Domain
+  Business -.->|uses| Infrastructure
+  Infrastructure -.->|persists| Domain

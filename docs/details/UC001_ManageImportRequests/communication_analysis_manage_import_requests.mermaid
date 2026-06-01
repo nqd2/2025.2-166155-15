@@ -1,0 +1,5 @@
+flowchart TD
+  Actor([SalesDepartment]) <-->|1: openCreateRequestForm<br/>2: displayForm<br/>3: submitRequestData| Boundary[ImportRequestUI]
+  Boundary <-->|4: validateAndProcessRequest<br/>7: success / failure| Control[ImportRequestController]
+  Control <-->|5: checkExistence| Merchandise[Merchandise]
+  Control <-->|6: create| Entity[ImportRequest]

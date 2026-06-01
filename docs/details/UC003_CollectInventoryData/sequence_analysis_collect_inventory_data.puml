@@ -1,0 +1,40 @@
+@startuml sequence_analysis_collect_inventory_data
+title Analysis Sequence Diagram - CollectInventoryData
+
+actor InternationalOrderingDepartment as Actor
+participant "InventoryCollectionUI" as Boundary <<boundary>>
+participant "InventoryCollectionController" as Control <<control>>
+entity "ImportSite" as Site <<entity>>
+entity "InventoryRecord" as Record <<entity>>
+actor OverseasImportSite as SiteActor
+
+Actor -> Boundary : triggerCollection(requestList)
+activate Boundary
+Boundary -> Control : collectStockInfo(requestList)
+activate Control
+
+Control -> Site : findCandidateSites(requestList)
+activate Site
+Site --> Control : candidateSitesList
+deactivate Site
+
+loop for each candidateSite
+  Control -> Control : filterMerchandiseForSite(candidateSite, requestList)
+  Control -> SiteActor : sendStockInquiry(siteCode, filteredList)
+  activate SiteActor
+  SiteActor --> Control : returnStockResponse(siteCode, stockData)
+  deactivate SiteActor
+  
+  loop for each item in stockData
+    Control -> Record : persistResponse(siteCode, merchandiseCode, inStockQty, unit)
+    activate Record
+    Record --> Control : saved
+    deactivate Record
+  end
+end
+
+Control --> Boundary : collectionCompleted()
+deactivate Control
+Boundary --> Actor : showSuccessMessage()
+deactivate Boundary
+@enduml

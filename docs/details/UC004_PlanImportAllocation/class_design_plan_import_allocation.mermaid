@@ -1,0 +1,84 @@
+classDiagram
+  class ImportAllocationUI {
+    +displayDraftPlan(plan AllocationPlan) void
+    +displayInsufficientSupplyError() void
+  }
+
+  class ImportAllocationController {
+    -allocationFacade: AllocationFacade
+    -recordRepo: InventoryRecordRepository
+    -siteRepo: ImportSiteRepository
+    -planRepo: AllocationPlanRepository
+    +generateAllocationPlan(requestId String) void
+  }
+
+  class AllocationPlan {
+    -planId: String
+    -requestId: String
+    -status: String
+    -allocationLines: List
+    +AllocationPlan(requestId String, splits List)
+    +getPlanId() String
+    +getRequestId() String
+    +getStatus() String
+    +getAllocationLines() List
+  }
+
+  class AllocationLine {
+    -siteCode: String
+    -merchandiseCode: String
+    -allocatedQty: int
+    -deliveryMeans: String
+    +getSiteCode() String
+    +getMerchandiseCode() String
+    +getAllocatedQty() int
+    +getDeliveryMeans() String
+  }
+
+  class InventoryRecord {
+    -siteCode: String
+    -merchandiseCode: String
+    -inStockQuantity: int
+    -unit: String
+    +getInStockQuantity() int
+  }
+
+  class ImportSite {
+    -siteCode: String
+    -deliveryDaysByShip: int
+    -deliveryDaysByAir: int
+    +getDeliveryDaysByShip() int
+    +getDeliveryDaysByAir() int
+  }
+
+  class InventoryRecordRepository {
+    -dbConnection: Object
+    +getStockInfoForRequest(requestId String) List
+  }
+
+  class ImportSiteRepository {
+    -dbConnection: Object
+    +getSiteTransitTimes() List
+  }
+
+  class AllocationPlanRepository {
+    -dbConnection: Object
+    +save(plan AllocationPlan) AllocationPlan
+  }
+
+  class AllocationFacade {
+    -feasibilityChecker: Object
+    -siteRanker: Object
+    -splitCalculator: Object
+    +calculateAllocation(requestId String, records List, sites List) List
+  }
+
+  ImportAllocationUI --> ImportAllocationController
+  ImportAllocationController --> AllocationFacade
+  ImportAllocationController --> InventoryRecordRepository
+  ImportAllocationController --> ImportSiteRepository
+  ImportAllocationController --> AllocationPlanRepository
+  AllocationPlanRepository --> AllocationPlan
+  AllocationPlan "1" *-- "*" AllocationLine
+  InventoryRecordRepository --> InventoryRecord
+  ImportSiteRepository --> ImportSite

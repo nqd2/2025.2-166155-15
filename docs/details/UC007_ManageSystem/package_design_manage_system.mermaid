@@ -1,0 +1,26 @@
+flowchart TD
+  subgraph Presentation ["Presentation Layer"]
+    UI[SystemAdminUI]
+  end
+
+  subgraph Business ["Business Layer"]
+    Controller[SystemAdminController]
+    Facade[SecurityFacade]
+  end
+
+  subgraph Domain ["Domain Layer"]
+    User[UserAccount]
+    Role[UserRole]
+    Log[OperationLog]
+  end
+
+  subgraph Infrastructure ["Infrastructure Layer"]
+    UserRepo[UserAccountRepository]
+    RoleRepo[UserRoleRepository]
+    LogRepo[OperationLogRepository]
+  end
+
+  Presentation -.->|uses| Business
+  Business -.->|manipulates| Domain
+  Business -.->|uses| Infrastructure
+  Infrastructure -.->|persists| Domain

@@ -1,0 +1,33 @@
+sequenceDiagram
+  actor Actor as InternationalOrderingDepartment
+  participant Boundary as OverseasOrderingUI
+  participant Control as OverseasOrderingController
+  participant Entity as OverseasOrder
+  actor SiteActor as OverseasImportSite
+
+  Actor->>Boundary: triggerOrderGeneration(planId)
+  activate Boundary
+  Boundary->>Control: generateOrders(planId)
+  activate Control
+
+  Control->>Entity: composeOrdersFromPlan(planId)
+  activate Entity
+  Entity-->>Control: ordersList
+  deactivate Entity
+
+  loop for each order in ordersList
+    Control->>SiteActor: transmitOrder(order.siteCode, order.details)
+    activate SiteActor
+    SiteActor-->>Control: returnAcknowledgement(ackToken)
+    deactivate SiteActor
+
+    Control->>Entity: setOrderStatus(order.orderId, "Transmitted", ackToken)
+    activate Entity
+    Entity-->>Control: orderUpdated
+    deactivate Entity
+  end
+
+  Control-->>Boundary: ordersPlacedSuccessfully()
+  deactivate Control
+  Boundary-->>Actor: showSuccessMessage()
+  deactivate Boundary

@@ -1,0 +1,29 @@
+@startuml package_design_manage_system
+title Package Dependency Diagram - ManageSystem
+
+package "Presentation Layer" as Presentation {
+  class SystemAdminUI
+}
+
+package "Business Layer" as Business {
+  class SystemAdminController
+  class SecurityFacade
+}
+
+package "Domain Layer" as Domain {
+  class UserAccount
+  class UserRole
+  class OperationLog
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class UserAccountRepository
+  class UserRoleRepository
+  class OperationLogRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml

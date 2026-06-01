@@ -1,0 +1,47 @@
+' ========================================== 
+' MERGED PLANTUML DIAGRAMS FOR USE CASE: overview
+' Total Diagrams: 1
+' ========================================== 
+
+' ------------------------------------------
+' Source File: usecase_overview.puml
+' ------------------------------------------
+@startuml usecase_overview
+left to right direction
+
+title UseCaseOverview - HeThongDatHangNhapKhau
+
+actor "SalesDepartment" as SalesDepartment
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+actor "OverseasImportSite" as OverseasImportSite
+actor "WarehouseManagementDepartment" as WarehouseManagementDepartment
+actor "SystemAdministrator" as SystemAdministrator
+
+rectangle "ImportAssignmentSystem" {
+  usecase "ManageImportRequests" as ManageImportRequests
+  usecase "ManageSiteInformation" as ManageSiteInformation
+  usecase "CollectInventoryData" as CollectInventoryData
+  usecase "PlanImportAllocation" as PlanImportAllocation
+  usecase "PlaceOverseasOrders" as PlaceOverseasOrders
+  usecase "ReceiveAndReconcileGoods" as ReceiveAndReconcileGoods
+  usecase "ManageSystem" as ManageSystem
+}
+
+SalesDepartment --> ManageImportRequests
+InternationalOrderingDepartment --> ManageImportRequests
+InternationalOrderingDepartment --> ManageSiteInformation
+InternationalOrderingDepartment --> CollectInventoryData
+InternationalOrderingDepartment --> PlanImportAllocation
+InternationalOrderingDepartment --> PlaceOverseasOrders
+OverseasImportSite --> ManageSiteInformation
+OverseasImportSite --> CollectInventoryData
+OverseasImportSite --> PlaceOverseasOrders
+WarehouseManagementDepartment --> ReceiveAndReconcileGoods
+SystemAdministrator --> ManageSystem
+
+PlanImportAllocation ..> CollectInventoryData : <<include>>
+PlaceOverseasOrders ..> PlanImportAllocation : <<include>>
+ReceiveAndReconcileGoods ..> PlaceOverseasOrders : <<include>>
+
+@enduml
+

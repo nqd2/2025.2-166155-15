@@ -1,0 +1,26 @@
+@startuml package_design_manage_site_information
+title Package Dependency Diagram - ManageSiteInformation
+
+package "Presentation Layer" as Presentation {
+  class SiteInformationUI
+}
+
+package "Business Layer" as Business {
+  class SiteInformationController
+  class SiteCatalogFacade
+}
+
+package "Domain Layer" as Domain {
+  class ImportSite
+  class Merchandise
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class ImportSiteRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml

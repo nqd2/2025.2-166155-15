@@ -1,0 +1,492 @@
+' ========================================== 
+' MERGED PLANTUML DIAGRAMS FOR USE CASE: UC007_ManageSystem
+' Total Diagrams: 11
+' ========================================== 
+
+' ------------------------------------------
+' Source File: activity_manage_system.puml
+' ------------------------------------------
+@startuml activity_manage_system
+title Activity Diagram - ManageSystem
+
+start
+:System Administrator logs in and opens Admin Panel;
+:Select administrative category;
+if (Category?) then (Users & Roles)
+  :Manage user accounts & roles (RBAC);
+elseif (Master Data) then (Shared Lists)
+  :Manage shared catalogs (merchandise, units);
+elseif (Operation Logs) then (View Logs)
+  :Query cross-department operations;
+else (Backup & Restore)
+  :Trigger backup or restore process;
+endif
+:Submit request;
+if (Data is valid & Authorized?) then (yes)
+  :System executes operation and persists changes;
+  :Log administrative action;
+  :Show success confirmation;
+  stop
+else (no)
+  :Display Validation/Authorization Error;
+  stop
+endif
+@enduml
+
+' ------------------------------------------
+' Source File: class_analysis_manage_system.puml
+' ------------------------------------------
+@startuml class_analysis_manage_system
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - ManageSystem
+
+class SystemAdminUI <<boundary>> {
+  +displayCategories()
+  +showSuccessMessage()
+  +showErrorMessage(errors: List)
+}
+
+class SystemAdminController <<control>> {
+  +updateUserRole(userId: String, newRole: String)
+  +backupDatabase()
+  +restoreDatabase(backupId: String)
+  +viewLogs(filters: Object)
+}
+
+class UserAccount <<entity>> {
+  -userId: String
+  -username: String
+  -status: String
+  -roles: List<UserRole>
+  +findById(userId: String): UserAccount
+  +assignRole(role: UserRole)
+}
+
+class UserRole <<entity>> {
+  -roleId: String
+  -roleName: String
+  -permissions: List<String>
+  +findByName(name: String): UserRole
+}
+
+class OperationLog <<entity>> {
+  -logId: String
+  -operatorId: String
+  -actionType: String
+  -timestamp: Date
+  -details: String
+  +logAction(action: String, userId: String, details: String)
+}
+
+class SystemConfig <<entity>> {
+  -configKey: String
+  -configValue: String
+}
+
+SystemAdminUI --> SystemAdminController
+SystemAdminController --> UserAccount
+SystemAdminController --> UserRole
+SystemAdminController --> OperationLog
+SystemAdminController --> SystemConfig
+UserAccount "1" *-- "*" UserRole
+@enduml
+
+' ------------------------------------------
+' Source File: class_design_manage_system.puml
+' ------------------------------------------
+@startuml class_design_manage_system
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - ManageSystem
+
+class SystemAdminUI {
+  +displayCategories(): void
+  +showSuccessMessage(): void
+  +showErrorMessage(errorCode: int): void
+}
+
+class SystemAdminController {
+  -securityFacade: SecurityFacade
+  -userRepo: UserAccountRepository
+  -roleRepo: UserRoleRepository
+  -logRepo: OperationLogRepository
+  +updateUserRole(userId: String, newRole: String): void
+  +backupDatabase(): void
+  +restoreDatabase(backupId: String): void
+}
+
+class UserAccount {
+  -userId: String
+  -username: String
+  -status: String
+  -roles: List<UserRole>
+  +UserAccount(userId: String, username: String, status: String)
+  +getUserId(): String
+  +getUsername(): String
+  +getStatus(): String
+  +getRoles(): List<UserRole>
+  +assignRole(role: UserRole): void
+}
+
+class UserRole {
+  -roleId: String
+  -roleName: String
+  -permissions: List<String>
+  +UserRole(roleId: String, roleName: String)
+  +getRoleId(): String
+  +getRoleName(): String
+  +getPermissions(): List<String>
+}
+
+class OperationLog {
+  -logId: String
+  -operatorId: String
+  -actionType: String
+  -timestamp: Date
+  -details: String
+  +OperationLog(action: String, userId: String, details: String)
+  +getLogId(): String
+  +getOperatorId(): String
+  +getActionType(): String
+  +getTimestamp(): Date
+  +getDetails(): String
+}
+
+class UserAccountRepository {
+  -dbConnection: Object
+  +findById(userId: String): UserAccount
+  +save(user: UserAccount): boolean
+}
+
+class UserRoleRepository {
+  -dbConnection: Object
+  +findByName(name: String): UserRole
+}
+
+class OperationLogRepository {
+  -dbConnection: Object
+  +save(log: OperationLog): boolean
+}
+
+class SecurityFacade {
+  -sessionManager: Object
+  -rbacService: Object
+  +checkPermission(operatorId: String, permission: String): boolean
+}
+
+SystemAdminUI --> SystemAdminController
+SystemAdminController --> SecurityFacade
+SystemAdminController --> UserAccountRepository
+SystemAdminController --> UserRoleRepository
+SystemAdminController --> OperationLogRepository
+UserAccountRepository --> UserAccount
+UserRoleRepository --> UserRole
+OperationLogRepository --> OperationLog
+UserAccount "1" *-- "*" UserRole
+@enduml
+
+' ------------------------------------------
+' Source File: class_subsystem_manage_system.puml
+' ------------------------------------------
+@startuml class_subsystem_manage_system
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - SecuritySubsystem (ManageSystem)
+
+class SecurityFacade <<facade>> {
+  +checkPermission(operatorId: String, requiredPermission: String): boolean
+}
+
+class RBACAuthorizationService <<service>> {
+  +verifyAccess(roleName: String, permission: String): boolean
+}
+
+class UserSessionManager <<service>> {
+  +getActiveSession(userId: String): Object
+}
+
+SecurityFacade --> RBACAuthorizationService
+SecurityFacade --> UserSessionManager
+@enduml
+
+' ------------------------------------------
+' Source File: communication_analysis_manage_system.puml
+' ------------------------------------------
+@startuml communication_analysis_manage_system
+title Communication Diagram (Analysis Level) - ManageSystem
+
+object "SystemAdministrator" as Actor
+object "SystemAdminUI" as Boundary
+object "SystemAdminController" as Control
+object "UserAccount" as User
+object "UserRole" as Role
+object "OperationLog" as Log
+
+Actor -- Boundary : 1: openAdminPanel() / 3: modifyUserRole(userId, newRole)
+Boundary -- Control : 2: displayCategories() / 4: updateUserRole(userId, newRole)
+Control -- User : 5: findById(userId) / 7: assignRole(roleInstance)
+Control -- Role : 6: findByName(newRole)
+Control -- Log : 8: logAction("RoleChanged", userId, newRole)
+Boundary -- Actor : showSuccessMessage() / showErrorMessage(errorCode)
+@enduml
+
+' ------------------------------------------
+' Source File: package_design_manage_system.puml
+' ------------------------------------------
+@startuml package_design_manage_system
+title Package Dependency Diagram - ManageSystem
+
+package "Presentation Layer" as Presentation {
+  class SystemAdminUI
+}
+
+package "Business Layer" as Business {
+  class SystemAdminController
+  class SecurityFacade
+}
+
+package "Domain Layer" as Domain {
+  class UserAccount
+  class UserRole
+  class OperationLog
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class UserAccountRepository
+  class UserRoleRepository
+  class OperationLogRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml
+
+' ------------------------------------------
+' Source File: screen_transition_manage_system.puml
+' ------------------------------------------
+@startuml screen_transition_manage_system
+left to right direction
+
+title ScreenTransitionManageSystem
+
+[ManageSystemScreen] as SC007
+[ManageUsersAndActorRolesScreen] as SC00701
+[ManageSharedMasterDataScreen] as SC00702
+[ViewCrossDepartmentOperationLogsScreen] as SC00703
+[BackupAndRestoreBusinessDataScreen] as SC00704
+
+SC007 --> SC00701 : users and roles
+SC007 --> SC00702 : master data
+SC007 --> SC00703 : operation logs
+SC007 --> SC00704 : backup/restore
+SC00701 --> SC007 : done
+SC00702 --> SC007 : done
+SC00703 --> SC007 : done
+SC00704 --> SC007 : done
+
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_analysis_manage_system.puml
+' ------------------------------------------
+@startuml sequence_analysis_manage_system
+title Analysis Sequence Diagram - ManageSystem
+
+actor SystemAdministrator as Actor
+participant "SystemAdminUI" as Boundary <<boundary>>
+participant "SystemAdminController" as Control <<control>>
+entity "UserAccount" as User <<entity>>
+entity "UserRole" as Role <<entity>>
+entity "OperationLog" as Log <<entity>>
+
+Actor -> Boundary : openAdminPanel()
+activate Boundary
+Boundary --> Actor : displayCategories()
+deactivate Boundary
+
+Actor -> Boundary : modifyUserRole(userId, newRole)
+activate Boundary
+Boundary -> Control : updateUserRole(userId, newRole)
+activate Control
+
+Control -> User : findById(userId)
+activate User
+User --> Control : userInstance
+deactivate User
+
+Control -> Role : findByName(newRole)
+activate Role
+Role --> Control : roleInstance
+deactivate Role
+
+alt Access Authorized and Valid Role
+  Control -> User : assignRole(roleInstance)
+  activate User
+  User --> Control : roleAssigned
+  deactivate User
+  
+  Control -> Log : logAction("RoleChanged", userId, newRole)
+  activate Log
+  Log --> Control : logged
+  deactivate Log
+  
+  Control --> Boundary : success()
+  Boundary --> Actor : showSuccessMessage()
+else Invalid Request
+  Control --> Boundary : failure(errorCode)
+  deactivate Control
+  Boundary --> Actor : showErrorMessage(errorCode)
+  deactivate Boundary
+end
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_design_manage_system.puml
+' ------------------------------------------
+@startuml sequence_design_manage_system
+title Design Sequence Diagram - ManageSystem
+
+actor SystemAdministrator as Actor
+participant "SystemAdminUI" as Boundary
+participant "SystemAdminController" as Control
+participant "SecurityFacade" as Subsystem
+participant "UserAccountRepository" as UserRepo
+participant "UserRoleRepository" as RoleRepo
+participant "OperationLogRepository" as LogRepo
+entity "UserAccount" as User
+entity "OperationLog" as Log
+
+Actor -> Boundary : modifyUserRole(userId, newRole)
+activate Boundary
+
+Boundary -> Control : updateUserRole(userId, newRole)
+activate Control
+
+Control -> Subsystem : checkPermission(session.operatorId, "ManageRoles")
+activate Subsystem
+Subsystem --> Control : authorizationResult(true)
+deactivate Subsystem
+
+Control -> UserRepo : findById(userId)
+activate UserRepo
+UserRepo --> Control : userInstance
+deactivate UserRepo
+
+Control -> RoleRepo : findByName(newRole)
+activate RoleRepo
+RoleRepo --> Control : roleInstance
+deactivate RoleRepo
+
+alt validation success
+  Control -> User : userInstance.assignRole(roleInstance)
+  activate User
+  User --> Control : updatedUserInstance
+  deactivate User
+  
+  Control -> UserRepo : save(updatedUserInstance)
+  activate UserRepo
+  UserRepo -> UserRepo : persistToDatabase()
+  UserRepo --> Control : saveSuccess
+  deactivate UserRepo
+  
+  Control -> Log : new OperationLog("RoleChanged", userId, newRole)
+  activate Log
+  Log --> Control : logInstance
+  deactivate Log
+  
+  Control -> LogRepo : save(logInstance)
+  activate LogRepo
+  LogRepo -> LogRepo : persistToDatabase()
+  LogRepo --> Control : logSuccess
+  deactivate LogRepo
+  
+  Control --> Boundary : success()
+  Boundary --> Actor : showSuccessMessage()
+else validation failed
+  Control --> Boundary : failure(errorCode)
+  deactivate Control
+  Boundary --> Actor : showErrorMessage(errorCode)
+  deactivate Boundary
+end
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_subsystem_manage_system.puml
+' ------------------------------------------
+@startuml sequence_subsystem_manage_system
+title Subsystem Sequence Diagram - SecuritySubsystem (ManageSystem)
+
+participant "SystemAdminController" as Client
+box "SecuritySubsystem" #LightBlue
+  participant "SecurityFacade" as Facade <<subsystem>>
+  participant "RBACAuthorizationService" as RBAC <<service>>
+  participant "UserSessionManager" as Session <<service>>
+end box
+
+Client -> Facade : checkPermission(operatorId, requiredPermission)
+activate Facade
+
+Facade -> Session : getActiveSession(operatorId)
+activate Session
+Session --> Facade : sessionDetails
+deactivate Session
+
+Facade -> RBAC : verifyAccess(sessionDetails.role, requiredPermission)
+activate RBAC
+RBAC --> Facade : accessGranted
+deactivate RBAC
+
+Facade --> Client : authorizationResult(accessGranted)
+deactivate Facade
+@enduml
+
+' ------------------------------------------
+' Source File: usecase_manage_system.puml
+' ------------------------------------------
+@startuml usecase_manage_system
+left to right direction
+
+title DecomposeManageSystem
+
+actor "SystemAdministrator" as SystemAdministrator
+
+rectangle "ImportAssignmentSystem" {
+  usecase "ManageSystem" as ManageSystem
+  usecase "ManageUsersAndActorRoles" as ManageUsersAndActorRoles
+  usecase "ManageSharedMasterData" as ManageSharedMasterData
+  usecase "ViewCrossDepartmentOperationLogs" as ViewCrossDepartmentOperationLogs
+  usecase "BackupAndRestoreBusinessData" as BackupAndRestoreBusinessData
+}
+
+SystemAdministrator --> ManageSystem
+ManageSystem ..> ManageUsersAndActorRoles
+ManageSystem ..> ManageSharedMasterData
+ManageSystem ..> ViewCrossDepartmentOperationLogs
+ManageSystem ..> BackupAndRestoreBusinessData
+
+@enduml
+

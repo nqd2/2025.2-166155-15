@@ -1,0 +1,48 @@
+sequenceDiagram
+  actor Actor as InternationalOrderingDepartment
+  participant Boundary as InventoryCollectionUI
+  participant Control as InventoryCollectionController
+  participant Subsystem as StockQueryFacade
+  participant SiteRepo as ImportSiteRepository
+  participant RecordRepo as InventoryRecordRepository
+  actor SiteActor as OverseasImportSite
+
+  Actor->>Boundary: triggerCollection(requestList)
+  activate Boundary
+
+  Boundary->>Control: collectStockInfo(requestList)
+  activate Control
+
+  Control->>SiteRepo: findCandidateSites(requestList)
+  activate SiteRepo
+  SiteRepo-->>Control: candidateSitesList
+  deactivate SiteRepo
+
+  loop for each candidateSite in candidateSitesList
+    Control->>Control: filterList = filterMerchandiseForSite(candidateSite, requestList)
+
+    Control->>Subsystem: queryStock(candidateSite.siteCode, filterList)
+    activate Subsystem
+
+    Subsystem->>SiteActor: sendStockInquiry(siteCode, filterList)
+    activate SiteActor
+    SiteActor-->>Subsystem: apiResponse(stockData)
+    deactivate SiteActor
+
+    Subsystem-->>Control: queryResult(stockData)
+    deactivate Subsystem
+
+    loop for each item in stockData
+      Control->>RecordRepo: saveStockResponse(siteCode, item.merchandiseCode, item.inStockQuantity, item.unit)
+      activate RecordRepo
+      rect rgb(200, 220, 240)
+        note over RecordRepo: persistToDatabase()
+      end
+      RecordRepo-->>Control: saveSuccess
+      deactivate RecordRepo
+    end
+  end
+
+  Control-->>Boundary: collectionCompleted()
+  Boundary-->>Actor: showSuccessMessage()
+  deactivate Boundary

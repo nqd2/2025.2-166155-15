@@ -1,0 +1,5 @@
+flowchart TD
+  Actor([OverseasImportSite]) <-->|1: selectSiteProfile<br/>4: updateSiteData| Boundary[SiteInformationUI]
+  Boundary <-->|2: getSiteDetails<br/>5: updateProfile| Control[SiteInformationController]
+  Control <-->|3: findByCode<br/>6: saveProfile| Entity[ImportSite]
+  Control -->|7: notifyOrderingDepartmentOfSiteChanges| OrderingDept([InternationalOrderingDepartment])

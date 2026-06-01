@@ -1,0 +1,15 @@
+@startuml communication_analysis_place_overseas_orders
+title Communication Diagram (Analysis Level) - PlaceOverseasOrders
+
+object "InternationalOrderingDepartment" as Actor
+object "OverseasOrderingUI" as Boundary
+object "OverseasOrderingController" as Control
+object "OverseasOrder" as Entity
+object "OverseasImportSite" as SiteActor
+
+Actor -- Boundary : 1: triggerOrderGeneration(planId)
+Boundary -- Control : 2: generateOrders(planId)
+Control -- Entity : 3: composeOrdersFromPlan(planId) / 6: setOrderStatus(orderId, status, ackToken)
+Control -- SiteActor : 4: transmitOrder(siteCode, details) / 5: returnAcknowledgement(siteCode, details)
+Boundary -- Actor : showSuccessMessage()
+@enduml

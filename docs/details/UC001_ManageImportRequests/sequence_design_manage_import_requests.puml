@@ -1,0 +1,43 @@
+@startuml sequence_design_manage_import_requests
+title Design Sequence Diagram - ManageImportRequests
+
+actor SalesDepartment as Actor
+participant "ImportRequestUI" as Boundary
+participant "ImportRequestController" as Control
+participant "ValidationFacade" as Subsystem
+participant "ImportRequestRepository" as Repo
+entity "ImportRequest" as Entity
+
+Actor -> Boundary : submitRequestData(data)
+activate Boundary
+
+Boundary -> Control : validateAndProcessRequest(data)
+activate Control
+
+Control -> Subsystem : validateRequest(data)
+activate Subsystem
+Subsystem --> Control : validationResult(errors)
+deactivate Subsystem
+
+alt errors is empty
+  Control -> Entity : new ImportRequest(data)
+  activate Entity
+  Entity --> Control : requestInstance
+  deactivate Entity
+  
+  Control -> Repo : save(requestInstance)
+  activate Repo
+  Repo -> Repo : generateUniqueId()
+  Repo -> Repo : persistToDatabase(requestInstance)
+  Repo --> Control : savedRequestWithId
+  deactivate Repo
+  
+  Control --> Boundary : success(savedRequestWithId.requestId)
+  Boundary --> Actor : showSuccessMessage(requestId)
+else errors is not empty
+  Control --> Boundary : failure(errors)
+  deactivate Control
+  Boundary --> Actor : showErrorMessage(errors)
+  deactivate Boundary
+end
+@enduml

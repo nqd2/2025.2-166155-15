@@ -1,0 +1,16 @@
+flowchart TD
+  Start([Start]) --> Initiate[Ordering Department triggers allocation planning]
+  Initiate --> LoopStart[Loop through each requested merchandise]
+  LoopStart --> Fetch[Retrieve candidate sites and stock quantities]
+  Fetch --> Filter[Filter out sites that cannot meet delivery date]
+  Filter --> Rank[Rank remaining sites ship over air, larger stock, minimize sites]
+  Rank --> Check{Total feasible stock >= requested qty?}
+  Check -->|Yes| Split[Split quantity across ranked sites]
+  Split --> GenLine[Generate allocation plan lines]
+  GenLine --> Show[Display draft allocation plan]
+  Show --> Confirm[Confirm and save allocation plan]
+  Confirm --> End([End])
+  
+  Check -->|No| Error[Generate Insufficient Supply Error]
+  Error --> ShowError[Display error message to user]
+  ShowError --> End

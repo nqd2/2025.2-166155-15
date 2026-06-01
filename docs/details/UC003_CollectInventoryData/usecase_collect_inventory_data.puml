@@ -1,0 +1,28 @@
+@startuml usecase_collect_inventory_data
+left to right direction
+
+title DecomposeCollectInventoryData
+
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+actor "OverseasImportSite" as OverseasImportSite
+
+rectangle "ImportAssignmentSystem" {
+  usecase "CollectInventoryData" as CollectInventoryData
+  usecase "FindCandidateSitesForMerchandise" as FindCandidateSitesForMerchandise
+  usecase "FilterMerchandiseListPerSite" as FilterMerchandiseListPerSite
+  usecase "SendStockInquiryToSite" as SendStockInquiryToSite
+  usecase "ReceiveStockResponseFromSite" as ReceiveStockResponseFromSite
+  usecase "PersistInventoryInformationFile" as PersistInventoryInformationFile
+}
+
+InternationalOrderingDepartment --> CollectInventoryData
+OverseasImportSite --> ReceiveStockResponseFromSite
+
+CollectInventoryData ..> FindCandidateSitesForMerchandise : <<include>>
+FindCandidateSitesForMerchandise ..> FilterMerchandiseListPerSite : <<include>>
+FilterMerchandiseListPerSite ..> SendStockInquiryToSite : <<include>>
+SendStockInquiryToSite ..> ReceiveStockResponseFromSite : <<include>>
+CollectInventoryData ..> PersistInventoryInformationFile : <<include>>
+PersistInventoryInformationFile ..> ReceiveStockResponseFromSite : <<include>>
+
+@enduml

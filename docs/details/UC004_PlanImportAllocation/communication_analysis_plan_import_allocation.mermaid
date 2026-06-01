@@ -1,0 +1,6 @@
+flowchart TD
+  Actor([InternationalOrderingDepartment]) <-->|1: triggerAllocation| Boundary[ImportAllocationUI]
+  Boundary <-->|2: generateAllocationPlan| Control[ImportAllocationController]
+  Control <-->|3: getStockInfoForRequest| Record[InventoryRecord]
+  Control <-->|4: getSiteTransitTimes| Site[ImportSite]
+  Control <-->|5: createPlan| Entity[AllocationPlan]

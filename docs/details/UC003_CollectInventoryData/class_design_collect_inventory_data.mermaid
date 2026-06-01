@@ -1,0 +1,53 @@
+classDiagram
+  class InventoryCollectionUI {
+    +displayStatus() void
+    +showSuccessMessage() void
+  }
+
+  class InventoryCollectionController {
+    -stockQueryFacade: StockQueryFacade
+    -siteRepository: ImportSiteRepository
+    -recordRepository: InventoryRecordRepository
+    +collectStockInfo(requestList List) void
+    +filterMerchandiseForSite(site ImportSite, list List) List
+  }
+
+  class ImportSite {
+    -siteCode: String
+    -siteName: String
+    +getSiteCode() String
+    +getSiteName() String
+  }
+
+  class InventoryRecord {
+    -siteCode: String
+    -merchandiseCode: String
+    -inStockQuantity: int
+    -unit: String
+    +getSiteCode() String
+    +getMerchandiseCode() String
+    +getInStockQuantity() int
+    +getUnit() String
+  }
+
+  class ImportSiteRepository {
+    -dbConnection: Object
+    +findCandidateSites(list List) List
+  }
+
+  class InventoryRecordRepository {
+    -dbConnection: Object
+    +saveStockResponse(siteCode String, code String, qty int, unit String) boolean
+  }
+
+  class StockQueryFacade {
+    -queryService: StockQueryService
+    +queryStock(siteCode String, items List) Map
+  }
+
+  InventoryCollectionUI --> InventoryCollectionController
+  InventoryCollectionController --> StockQueryFacade
+  InventoryCollectionController --> ImportSiteRepository
+  InventoryCollectionController --> InventoryRecordRepository
+  ImportSiteRepository --> ImportSite
+  InventoryRecordRepository --> InventoryRecord

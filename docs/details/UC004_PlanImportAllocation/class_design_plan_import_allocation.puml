@@ -1,0 +1,96 @@
+@startuml class_design_plan_import_allocation
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - PlanImportAllocation
+
+class ImportAllocationUI {
+  +displayDraftPlan(plan: AllocationPlan): void
+  +displayInsufficientSupplyError(): void
+}
+
+class ImportAllocationController {
+  -allocationFacade: AllocationFacade
+  -recordRepo: InventoryRecordRepository
+  -siteRepo: ImportSiteRepository
+  -planRepo: AllocationPlanRepository
+  +generateAllocationPlan(requestId: String): void
+}
+
+class AllocationPlan {
+  -planId: String
+  -requestId: String
+  -status: String
+  -allocationLines: List<AllocationLine>
+  +AllocationPlan(requestId: String, splits: List<Map>)
+  +getPlanId(): String
+  +getRequestId(): String
+  +getStatus(): String
+  +getAllocationLines(): List<AllocationLine>
+}
+
+class AllocationLine {
+  -siteCode: String
+  -merchandiseCode: String
+  -allocatedQty: int
+  -deliveryMeans: String
+  +getSiteCode(): String
+  +getMerchandiseCode(): String
+  +getAllocatedQty(): int
+  +getDeliveryMeans(): String
+}
+
+class InventoryRecord {
+  -siteCode: String
+  -merchandiseCode: String
+  -inStockQuantity: int
+  -unit: String
+  +getInStockQuantity(): int
+}
+
+class ImportSite {
+  -siteCode: String
+  -deliveryDaysByShip: int
+  -deliveryDaysByAir: int
+  +getDeliveryDaysByShip(): int
+  +getDeliveryDaysByAir(): int
+}
+
+class InventoryRecordRepository {
+  -dbConnection: Object
+  +getStockInfoForRequest(requestId: String): List<InventoryRecord>
+}
+
+class ImportSiteRepository {
+  -dbConnection: Object
+  +getSiteTransitTimes(): List<ImportSite>
+}
+
+class AllocationPlanRepository {
+  -dbConnection: Object
+  +save(plan: AllocationPlan): AllocationPlan
+}
+
+class AllocationFacade {
+  -feasibilityChecker: Object
+  -siteRanker: Object
+  -splitCalculator: Object
+  +calculateAllocation(requestId: String, records: List, sites: List): List<Map>
+}
+
+ImportAllocationUI --> ImportAllocationController
+ImportAllocationController --> AllocationFacade
+ImportAllocationController --> InventoryRecordRepository
+ImportAllocationController --> ImportSiteRepository
+ImportAllocationController --> AllocationPlanRepository
+AllocationPlanRepository --> AllocationPlan
+AllocationPlan "1" *-- "*" AllocationLine
+InventoryRecordRepository --> InventoryRecord
+ImportSiteRepository --> ImportSite
+@enduml

@@ -1,0 +1,417 @@
+' ========================================== 
+' MERGED PLANTUML DIAGRAMS FOR USE CASE: UC001_ManageImportRequests
+' Total Diagrams: 11
+' ========================================== 
+
+' ------------------------------------------
+' Source File: activity_manage_import_requests.puml
+' ------------------------------------------
+@startuml activity_manage_import_requests
+title Activity Diagram - ManageImportRequests
+
+start
+:Sales Department initiates Import Request;
+:Input Merchandise Code, Quantity, Unit, and Desired Delivery Date;
+if (Data is valid?) then (yes)
+  :Confirm and Submit Request;
+  :System generates Request ID and saves state as Submitted;
+  stop
+else (no)
+  :Display Validation Error;
+  :Prompt to re-enter data;
+  stop
+endif
+@enduml
+
+' ------------------------------------------
+' Source File: class_analysis_manage_import_requests.puml
+' ------------------------------------------
+@startuml class_analysis_manage_import_requests
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - ManageImportRequests
+
+class ImportRequestUI <<boundary>> {
+  +displayForm()
+  +getInputData()
+  +showSuccessMessage(requestId)
+  +showErrorMessage(errors)
+}
+
+class ImportRequestController <<control>> {
+  +validateAndProcessRequest(data)
+  -checkValidationRules(data)
+}
+
+class ImportRequest <<entity>> {
+  -requestId: String
+  -status: String
+  -createdDate: Date
+  +create(data)
+  +updateStatus(status)
+}
+
+class Merchandise <<entity>> {
+  -merchandiseCode: String
+  -quantityOrdered: int
+  -unit: String
+  -desiredDeliveryDate: Date
+  +checkExistence(merchandiseCode)
+}
+
+ImportRequestUI --> ImportRequestController
+ImportRequestController --> ImportRequest
+ImportRequestController --> Merchandise
+ImportRequest "1" *-- "*" Merchandise
+@enduml
+
+' ------------------------------------------
+' Source File: class_design_manage_import_requests.puml
+' ------------------------------------------
+@startuml class_design_manage_import_requests
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - ManageImportRequests
+
+class ImportRequestUI {
+  +displayForm(): void
+  +getInputData(): Map<String, Object>
+  +showSuccessMessage(requestId: String): void
+  +showErrorMessage(errors: List<String>): void
+}
+
+class ImportRequestController {
+  -validationFacade: ValidationFacade
+  -repository: ImportRequestRepository
+  +validateAndProcessRequest(data: Map<String, Object>): void
+}
+
+class ImportRequest {
+  -requestId: String
+  -status: String
+  -createdDate: Date
+  -items: List<Merchandise>
+  +ImportRequest(data: Map<String, Object>)
+  +getRequestId(): String
+  +getStatus(): String
+  +getItems(): List<Merchandise>
+}
+
+class Merchandise {
+  -merchandiseCode: String
+  -quantityOrdered: int
+  -unit: String
+  -desiredDeliveryDate: Date
+  +getMerchandiseCode(): String
+  +getQuantityOrdered(): int
+  +getUnit(): String
+  +getDesiredDeliveryDate(): Date
+}
+
+class ImportRequestRepository {
+  -dbConnection: Object
+  +save(request: ImportRequest): ImportRequest
+  +findById(id: String): ImportRequest
+}
+
+class ValidationFacade {
+  +validateRequest(data: Map<String, Object>): List<String>
+}
+
+ImportRequestUI --> ImportRequestController
+ImportRequestController --> ValidationFacade
+ImportRequestController --> ImportRequestRepository
+ImportRequestRepository --> ImportRequest
+ImportRequest "1" *-- "*" Merchandise
+@enduml
+
+' ------------------------------------------
+' Source File: class_subsystem_manage_import_requests.puml
+' ------------------------------------------
+@startuml class_subsystem_manage_import_requests
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - ValidationSubsystem (ManageImportRequests)
+
+class ValidationFacade <<facade>> {
+  +validateRequest(data): ValidationResult
+}
+
+class CatalogValidator <<service>> {
+  +checkExistence(code: String): boolean
+}
+
+class QuantityValidator <<service>> {
+  +validatePositive(qty: int): boolean
+}
+
+class DateValidator <<service>> {
+  +validateFutureDate(date: Date): boolean
+}
+
+ValidationFacade --> CatalogValidator
+ValidationFacade --> QuantityValidator
+ValidationFacade --> DateValidator
+@enduml
+
+' ------------------------------------------
+' Source File: communication_analysis_manage_import_requests.puml
+' ------------------------------------------
+@startuml communication_analysis_manage_import_requests
+title Communication Diagram (Analysis Level) - ManageImportRequests
+
+object "SalesDepartment" as Actor
+object "ImportRequestUI" as Boundary
+object "ImportRequestController" as Control
+object "Merchandise" as Merchandise
+object "ImportRequest" as Entity
+
+Actor -- Boundary : 1: openCreateRequestForm() / 3: submitRequestData(data)
+Boundary -- Control : 4: validateAndProcessRequest(data)
+Control -- Merchandise : 5: checkExistence(merchandiseCode)
+Control -- Entity : 6: create(data) [if valid]
+Boundary -- Actor : 2: displayForm() / 7: showSuccessMessage(requestId) / showErrorMessage(errors)
+@enduml
+
+' ------------------------------------------
+' Source File: package_design_manage_import_requests.puml
+' ------------------------------------------
+@startuml package_design_manage_import_requests
+title Package Dependency Diagram - ManageImportRequests
+
+package "Presentation Layer" as Presentation {
+  class ImportRequestUI
+}
+
+package "Business Layer" as Business {
+  class ImportRequestController
+  class ValidationFacade
+}
+
+package "Domain Layer" as Domain {
+  class ImportRequest
+  class Merchandise
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class ImportRequestRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml
+
+' ------------------------------------------
+' Source File: screen_transition_manage_import_requests.puml
+' ------------------------------------------
+@startuml screen_transition_manage_import_requests
+left to right direction
+
+title ScreenTransitionManageImportRequests
+
+[ManageImportRequestsScreen] as SC001
+[CreateImportRequestScreen] as SC00101
+[ValidateImportRequestInputDialog] as SC00102
+[SubmitImportRequestConfirmation] as SC00103
+[TrackImportRequestStatusScreen] as SC00104
+[UpdateImportRequestScreen] as SC00105
+[CancelImportRequestDialog] as SC00106
+
+SC001 --> SC00101 : create request
+SC00101 --> SC00102 : validate input
+SC00102 --> SC00101 : invalid data
+SC00102 --> SC00103 : valid data
+SC00103 --> SC001 : done
+SC001 --> SC00104 : track status
+SC001 --> SC00105 : edit request
+SC00105 --> SC00102 : re-validate
+SC001 --> SC00106 : cancel request
+SC00106 --> SC001 : done
+
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_analysis_manage_import_requests.puml
+' ------------------------------------------
+@startuml sequence_analysis_manage_import_requests
+title Analysis Sequence Diagram - ManageImportRequests
+
+actor SalesDepartment as Actor
+participant "ImportRequestUI" as Boundary <<boundary>>
+participant "ImportRequestController" as Control <<control>>
+entity "Merchandise" as Merchandise <<entity>>
+entity "ImportRequest" as Entity <<entity>>
+
+Actor -> Boundary : openCreateRequestForm()
+activate Boundary
+Boundary --> Actor : displayForm()
+deactivate Boundary
+
+Actor -> Boundary : submitRequestData(data)
+activate Boundary
+Boundary -> Control : validateAndProcessRequest(data)
+activate Control
+
+Control -> Merchandise : checkExistence(merchandiseCode)
+activate Merchandise
+Merchandise --> Control : exists
+deactivate Merchandise
+
+alt Data is valid
+  Control -> Entity : create(data)
+  activate Entity
+  Entity --> Control : requestCreated(requestId)
+  deactivate Entity
+  Control --> Boundary : success(requestId)
+  Boundary --> Actor : showSuccessMessage(requestId)
+else Data is invalid
+  Control --> Boundary : failure(errors)
+  deactivate Control
+  Boundary --> Actor : showErrorMessage(errors)
+  deactivate Boundary
+end
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_design_manage_import_requests.puml
+' ------------------------------------------
+@startuml sequence_design_manage_import_requests
+title Design Sequence Diagram - ManageImportRequests
+
+actor SalesDepartment as Actor
+participant "ImportRequestUI" as Boundary
+participant "ImportRequestController" as Control
+participant "ValidationFacade" as Subsystem
+participant "ImportRequestRepository" as Repo
+entity "ImportRequest" as Entity
+
+Actor -> Boundary : submitRequestData(data)
+activate Boundary
+
+Boundary -> Control : validateAndProcessRequest(data)
+activate Control
+
+Control -> Subsystem : validateRequest(data)
+activate Subsystem
+Subsystem --> Control : validationResult(errors)
+deactivate Subsystem
+
+alt errors is empty
+  Control -> Entity : new ImportRequest(data)
+  activate Entity
+  Entity --> Control : requestInstance
+  deactivate Entity
+  
+  Control -> Repo : save(requestInstance)
+  activate Repo
+  Repo -> Repo : generateUniqueId()
+  Repo -> Repo : persistToDatabase(requestInstance)
+  Repo --> Control : savedRequestWithId
+  deactivate Repo
+  
+  Control --> Boundary : success(savedRequestWithId.requestId)
+  Boundary --> Actor : showSuccessMessage(requestId)
+else errors is not empty
+  Control --> Boundary : failure(errors)
+  deactivate Control
+  Boundary --> Actor : showErrorMessage(errors)
+  deactivate Boundary
+end
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_subsystem_manage_import_requests.puml
+' ------------------------------------------
+@startuml sequence_subsystem_manage_import_requests
+title Subsystem Sequence Diagram - ValidationSubsystem (ManageImportRequests)
+
+participant "ImportRequestController" as Client
+box "ValidationSubsystem" #LightBlue
+  participant "ValidationFacade" as Facade <<subsystem>>
+  participant "CatalogValidator" as Catalog <<service>>
+  participant "QuantityValidator" as Qty <<service>>
+  participant "DateValidator" as DateVal <<service>>
+end box
+
+Client -> Facade : validateRequest(data)
+activate Facade
+
+Facade -> Catalog : checkExistence(merchandiseCode)
+activate Catalog
+Catalog --> Facade : exists
+deactivate Catalog
+
+Facade -> Qty : validatePositive(quantityOrdered)
+activate Qty
+Qty --> Facade : isValidQty
+deactivate Qty
+
+Facade -> DateVal : validateFutureDate(desiredDeliveryDate)
+activate DateVal
+DateVal --> Facade : isValidDate
+deactivate DateVal
+
+Facade --> Client : validationResult(errors)
+deactivate Facade
+@enduml
+
+' ------------------------------------------
+' Source File: usecase_manage_import_requests.puml
+' ------------------------------------------
+@startuml usecase_manage_import_requests
+left to right direction
+
+title DecomposeManageImportRequests
+
+actor "SalesDepartment" as SalesDepartment
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+
+rectangle "ImportAssignmentSystem" {
+  usecase "ManageImportRequests" as ManageImportRequests
+  usecase "CreateImportRequest" as CreateImportRequest
+  usecase "ValidateImportRequestInput" as ValidateImportRequestInput
+  usecase "SubmitImportRequest" as SubmitImportRequest
+  usecase "TrackImportRequestStatus" as TrackImportRequestStatus
+  usecase "UpdateImportRequest" as UpdateImportRequest
+  usecase "CancelImportRequest" as CancelImportRequest
+}
+
+SalesDepartment --> ManageImportRequests
+InternationalOrderingDepartment --> TrackImportRequestStatus
+
+ManageImportRequests ..> CreateImportRequest : <<include>>
+ManageImportRequests ..> SubmitImportRequest : <<include>>
+ManageImportRequests ..> TrackImportRequestStatus : <<include>>
+CreateImportRequest ..> ValidateImportRequestInput : <<include>>
+SubmitImportRequest ..> ValidateImportRequestInput : <<include>>
+UpdateImportRequest ..> ManageImportRequests : <<extend>>
+CancelImportRequest ..> ManageImportRequests : <<extend>>
+
+SalesDepartment --> UpdateImportRequest
+SalesDepartment --> CancelImportRequest
+
+@enduml
+

@@ -1,0 +1,17 @@
+@startuml communication_analysis_manage_system
+title Communication Diagram (Analysis Level) - ManageSystem
+
+object "SystemAdministrator" as Actor
+object "SystemAdminUI" as Boundary
+object "SystemAdminController" as Control
+object "UserAccount" as User
+object "UserRole" as Role
+object "OperationLog" as Log
+
+Actor -- Boundary : 1: openAdminPanel() / 3: modifyUserRole(userId, newRole)
+Boundary -- Control : 2: displayCategories() / 4: updateUserRole(userId, newRole)
+Control -- User : 5: findById(userId) / 7: assignRole(roleInstance)
+Control -- Role : 6: findByName(newRole)
+Control -- Log : 8: logAction("RoleChanged", userId, newRole)
+Boundary -- Actor : showSuccessMessage() / showErrorMessage(errorCode)
+@enduml

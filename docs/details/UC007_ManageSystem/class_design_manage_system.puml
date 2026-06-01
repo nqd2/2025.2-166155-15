@@ -1,0 +1,97 @@
+@startuml class_design_manage_system
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - ManageSystem
+
+class SystemAdminUI {
+  +displayCategories(): void
+  +showSuccessMessage(): void
+  +showErrorMessage(errorCode: int): void
+}
+
+class SystemAdminController {
+  -securityFacade: SecurityFacade
+  -userRepo: UserAccountRepository
+  -roleRepo: UserRoleRepository
+  -logRepo: OperationLogRepository
+  +updateUserRole(userId: String, newRole: String): void
+  +backupDatabase(): void
+  +restoreDatabase(backupId: String): void
+}
+
+class UserAccount {
+  -userId: String
+  -username: String
+  -status: String
+  -roles: List<UserRole>
+  +UserAccount(userId: String, username: String, status: String)
+  +getUserId(): String
+  +getUsername(): String
+  +getStatus(): String
+  +getRoles(): List<UserRole>
+  +assignRole(role: UserRole): void
+}
+
+class UserRole {
+  -roleId: String
+  -roleName: String
+  -permissions: List<String>
+  +UserRole(roleId: String, roleName: String)
+  +getRoleId(): String
+  +getRoleName(): String
+  +getPermissions(): List<String>
+}
+
+class OperationLog {
+  -logId: String
+  -operatorId: String
+  -actionType: String
+  -timestamp: Date
+  -details: String
+  +OperationLog(action: String, userId: String, details: String)
+  +getLogId(): String
+  +getOperatorId(): String
+  +getActionType(): String
+  +getTimestamp(): Date
+  +getDetails(): String
+}
+
+class UserAccountRepository {
+  -dbConnection: Object
+  +findById(userId: String): UserAccount
+  +save(user: UserAccount): boolean
+}
+
+class UserRoleRepository {
+  -dbConnection: Object
+  +findByName(name: String): UserRole
+}
+
+class OperationLogRepository {
+  -dbConnection: Object
+  +save(log: OperationLog): boolean
+}
+
+class SecurityFacade {
+  -sessionManager: Object
+  -rbacService: Object
+  +checkPermission(operatorId: String, permission: String): boolean
+}
+
+SystemAdminUI --> SystemAdminController
+SystemAdminController --> SecurityFacade
+SystemAdminController --> UserAccountRepository
+SystemAdminController --> UserRoleRepository
+SystemAdminController --> OperationLogRepository
+UserAccountRepository --> UserAccount
+UserRoleRepository --> UserRole
+OperationLogRepository --> OperationLog
+UserAccount "1" *-- "*" UserRole
+@enduml

@@ -1,0 +1,18 @@
+classDiagram
+  class SecurityFacade {
+    <<facade>>
+    +checkPermission(operatorId String, requiredPermission String) boolean
+  }
+
+  class RBACAuthorizationService {
+    <<service>>
+    +verifyAccess(roleName String, permission String) boolean
+  }
+
+  class UserSessionManager {
+    <<service>>
+    +getActiveSession(userId String) Object
+  }
+
+  SecurityFacade --> RBACAuthorizationService
+  SecurityFacade --> UserSessionManager

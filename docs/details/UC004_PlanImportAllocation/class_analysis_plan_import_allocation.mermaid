@@ -1,0 +1,52 @@
+classDiagram
+  class ImportAllocationUI {
+    <<boundary>>
+    +displayDraftPlan(plan AllocationPlan)
+    +displayInsufficientSupplyError()
+  }
+
+  class ImportAllocationController {
+    <<control>>
+    +generateAllocationPlan(requestId String)
+    -filterAndRankSites(records List, sites List) List
+    -calculateSplits(requestId String, rankedSites List) List
+  }
+
+  class AllocationPlan {
+    <<entity>>
+    -planId: String
+    -requestId: String
+    -status: String
+    -allocationLines: List
+    +createPlan(requestId String, lines List)
+  }
+
+  class AllocationLine {
+    <<entity>>
+    -siteCode: String
+    -merchandiseCode: String
+    -allocatedQty: int
+    -deliveryMeans: String
+  }
+
+  class InventoryRecord {
+    <<entity>>
+    -siteCode: String
+    -merchandiseCode: String
+    -inStockQuantity: int
+    +getStockInfoForRequest(requestId String) List
+  }
+
+  class ImportSite {
+    <<entity>>
+    -siteCode: String
+    -deliveryDaysByShip: int
+    -deliveryDaysByAir: int
+    +getSiteTransitTimes() List
+  }
+
+  ImportAllocationUI --> ImportAllocationController
+  ImportAllocationController --> AllocationPlan
+  ImportAllocationController --> InventoryRecord
+  ImportAllocationController --> ImportSite
+  AllocationPlan "1" *-- "*" AllocationLine

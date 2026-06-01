@@ -1,0 +1,66 @@
+@startuml sequence_design_manage_system
+title Design Sequence Diagram - ManageSystem
+
+actor SystemAdministrator as Actor
+participant "SystemAdminUI" as Boundary
+participant "SystemAdminController" as Control
+participant "SecurityFacade" as Subsystem
+participant "UserAccountRepository" as UserRepo
+participant "UserRoleRepository" as RoleRepo
+participant "OperationLogRepository" as LogRepo
+entity "UserAccount" as User
+entity "OperationLog" as Log
+
+Actor -> Boundary : modifyUserRole(userId, newRole)
+activate Boundary
+
+Boundary -> Control : updateUserRole(userId, newRole)
+activate Control
+
+Control -> Subsystem : checkPermission(session.operatorId, "ManageRoles")
+activate Subsystem
+Subsystem --> Control : authorizationResult(true)
+deactivate Subsystem
+
+Control -> UserRepo : findById(userId)
+activate UserRepo
+UserRepo --> Control : userInstance
+deactivate UserRepo
+
+Control -> RoleRepo : findByName(newRole)
+activate RoleRepo
+RoleRepo --> Control : roleInstance
+deactivate RoleRepo
+
+alt validation success
+  Control -> User : userInstance.assignRole(roleInstance)
+  activate User
+  User --> Control : updatedUserInstance
+  deactivate User
+  
+  Control -> UserRepo : save(updatedUserInstance)
+  activate UserRepo
+  UserRepo -> UserRepo : persistToDatabase()
+  UserRepo --> Control : saveSuccess
+  deactivate UserRepo
+  
+  Control -> Log : new OperationLog("RoleChanged", userId, newRole)
+  activate Log
+  Log --> Control : logInstance
+  deactivate Log
+  
+  Control -> LogRepo : save(logInstance)
+  activate LogRepo
+  LogRepo -> LogRepo : persistToDatabase()
+  LogRepo --> Control : logSuccess
+  deactivate LogRepo
+  
+  Control --> Boundary : success()
+  Boundary --> Actor : showSuccessMessage()
+else validation failed
+  Control --> Boundary : failure(errorCode)
+  deactivate Control
+  Boundary --> Actor : showErrorMessage(errorCode)
+  deactivate Boundary
+end
+@enduml

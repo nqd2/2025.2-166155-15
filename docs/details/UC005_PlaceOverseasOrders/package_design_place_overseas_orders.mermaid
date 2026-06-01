@@ -1,0 +1,23 @@
+flowchart TD
+  subgraph Presentation ["Presentation Layer"]
+    UI[OverseasOrderingUI]
+  end
+
+  subgraph Business ["Business Layer"]
+    Controller[OverseasOrderingController]
+    Facade[OrderTransmissionFacade]
+  end
+
+  subgraph Domain ["Domain Layer"]
+    Order[OverseasOrder]
+    Line[OrderLine]
+  end
+
+  subgraph Infrastructure ["Infrastructure Layer"]
+    Repo[OverseasOrderRepository]
+  end
+
+  Presentation -.->|uses| Business
+  Business -.->|manipulates| Domain
+  Business -.->|uses| Infrastructure
+  Infrastructure -.->|persists| Domain

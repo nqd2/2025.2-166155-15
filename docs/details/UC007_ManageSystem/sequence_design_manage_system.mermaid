@@ -1,0 +1,67 @@
+sequenceDiagram
+  actor Actor as SystemAdministrator
+  participant Boundary as SystemAdminUI
+  participant Control as SystemAdminController
+  participant Subsystem as SecurityFacade
+  participant UserRepo as UserAccountRepository
+  participant RoleRepo as UserRoleRepository
+  participant LogRepo as OperationLogRepository
+  participant User as UserAccount
+  participant Log as OperationLog
+
+  Actor->>Boundary: modifyUserRole(userId, newRole)
+  activate Boundary
+
+  Boundary->>Control: updateUserRole(userId, newRole)
+  activate Control
+
+  Control->>Subsystem: checkPermission(session.operatorId, "ManageRoles")
+  activate Subsystem
+  Subsystem-->>Control: authorizationResult(true)
+  deactivate Subsystem
+
+  Control->>UserRepo: findById(userId)
+  activate UserRepo
+  UserRepo-->>Control: userInstance
+  deactivate UserRepo
+
+  Control->>RoleRepo: findByName(newRole)
+  activate RoleRepo
+  RoleRepo-->>Control: roleInstance
+  deactivate RoleRepo
+
+  alt validation success
+    Control->>User: userInstance.assignRole(roleInstance)
+    activate User
+    User-->>Control: updatedUserInstance
+    deactivate User
+
+    Control->>UserRepo: save(updatedUserInstance)
+    activate UserRepo
+    rect rgb(200, 220, 240)
+      note over UserRepo: persistToDatabase()
+    end
+    UserRepo-->>Control: saveSuccess
+    deactivate UserRepo
+
+    Control->>Log: new OperationLog("RoleChanged", userId, newRole)
+    activate Log
+    Log-->>Control: logInstance
+    deactivate Log
+
+    Control->>LogRepo: save(logInstance)
+    activate LogRepo
+    rect rgb(200, 220, 240)
+      note over LogRepo: persistToDatabase()
+    end
+    LogRepo-->>Control: logSuccess
+    deactivate LogRepo
+
+    Control-->>Boundary: success()
+    Boundary-->>Actor: showSuccessMessage()
+  else validation failed
+    Control-->>Boundary: failure(errorCode)
+    deactivate Control
+    Boundary-->>Actor: showErrorMessage(errorCode)
+    deactivate Boundary
+  end

@@ -1,0 +1,23 @@
+sequenceDiagram
+  participant Client as OverseasOrderingController
+  box OrderTransmissionSubsystem
+    participant Facade as OrderTransmissionFacade
+    participant XMLGen as XMLGeneratorService
+    participant SFTP as SFTPUploadService
+  end box
+
+  Client->>Facade: transmitOrder(siteCode, orderDetails)
+  activate Facade
+
+  Facade->>XMLGen: generateOrderXML(orderDetails)
+  activate XMLGen
+  XMLGen-->>Facade: xmlDocument
+  deactivate XMLGen
+
+  Facade->>SFTP: uploadToSiteServer(siteCode, xmlDocument)
+  activate SFTP
+  SFTP-->>Facade: sftpSuccess
+  deactivate SFTP
+
+  Facade-->>Client: transmissionResult(sftpSuccess)
+  deactivate Facade

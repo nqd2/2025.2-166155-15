@@ -1,0 +1,41 @@
+classDiagram
+  class OverseasOrderingUI {
+    <<boundary>>
+    +displayOrderStatus()
+    +showSuccessMessage()
+  }
+
+  class OverseasOrderingController {
+    <<control>>
+    +generateOrders(planId String)
+  }
+
+  class OverseasOrder {
+    <<entity>>
+    -orderId: String
+    -siteCode: String
+    -status: String
+    -acknowledgementToken: String
+    -orderLines: List
+    +composeOrdersFromPlan(planId String) List
+    +setOrderStatus(orderId String, status String, token String)
+  }
+
+  class OrderLine {
+    <<entity>>
+    -merchandiseCode: String
+    -quantityOrdered: int
+    -unit: String
+    -deliveryMeans: String
+  }
+
+  class ImportSite {
+    <<entity>>
+    -siteCode: String
+    -siteName: String
+  }
+
+  OverseasOrderingUI --> OverseasOrderingController
+  OverseasOrderingController --> OverseasOrder
+  OverseasOrderingController --> ImportSite
+  OverseasOrder "1" *-- "*" OrderLine

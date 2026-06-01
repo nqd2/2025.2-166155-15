@@ -1,0 +1,54 @@
+classDiagram
+  class OverseasOrderingUI {
+    +displayOrderStatus() void
+    +showSuccessMessage() void
+  }
+
+  class OverseasOrderingController {
+    -transmissionFacade: OrderTransmissionFacade
+    -repository: OverseasOrderRepository
+    +generateOrders(planId String) void
+  }
+
+  class OverseasOrder {
+    -orderId: String
+    -siteCode: String
+    -status: String
+    -acknowledgementToken: String
+    -orderLines: List
+    +OverseasOrder(siteCode String, lines List)
+    +getOrderId() String
+    +getSiteCode() String
+    +getStatus() String
+    +getOrderLines() List
+    +updateStatus(status String, token String) void
+  }
+
+  class OrderLine {
+    -merchandiseCode: String
+    -quantityOrdered: int
+    -unit: String
+    -deliveryMeans: String
+    +getMerchandiseCode() String
+    +getQuantityOrdered() int
+    +getUnit() String
+    +getDeliveryMeans() String
+  }
+
+  class OverseasOrderRepository {
+    -dbConnection: Object
+    +save(order OverseasOrder) OverseasOrder
+    +findById(orderId String) OverseasOrder
+  }
+
+  class OrderTransmissionFacade {
+    -xmlGen: Object
+    -sftp: Object
+    +transmitOrder(siteCode String, details List) boolean
+  }
+
+  OverseasOrderingUI --> OverseasOrderingController
+  OverseasOrderingController --> OrderTransmissionFacade
+  OverseasOrderingController --> OverseasOrderRepository
+  OverseasOrderRepository --> OverseasOrder
+  OverseasOrder "1" *-- "*" OrderLine

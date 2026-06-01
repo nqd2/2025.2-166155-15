@@ -1,0 +1,33 @@
+@startuml usecase_receive_and_reconcile_goods
+left to right direction
+
+title DecomposeReceiveAndReconcileGoods
+
+actor "WarehouseManagementDepartment" as WarehouseManagementDepartment
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+
+rectangle "ImportAssignmentSystem" {
+  usecase "ReceiveAndReconcileGoods" as ReceiveAndReconcileGoods
+  usecase "LoadExpectedOrderQuantities" as LoadExpectedOrderQuantities
+  usecase "RecordGoodsReceipt" as RecordGoodsReceipt
+  usecase "CompareReceivedVsOrdered" as CompareReceivedVsOrdered
+  usecase "RecordQuantityDiscrepancy" as RecordQuantityDiscrepancy
+  usecase "UpdateInternalWarehouseStock" as UpdateInternalWarehouseStock
+}
+
+WarehouseManagementDepartment --> ReceiveAndReconcileGoods
+InternationalOrderingDepartment --> LoadExpectedOrderQuantities
+
+ReceiveAndReconcileGoods ..> LoadExpectedOrderQuantities : <<include>>
+ReceiveAndReconcileGoods ..> RecordGoodsReceipt : <<include>>
+ReceiveAndReconcileGoods ..> CompareReceivedVsOrdered : <<include>>
+ReceiveAndReconcileGoods ..> UpdateInternalWarehouseStock : <<include>>
+CompareReceivedVsOrdered ..> LoadExpectedOrderQuantities : <<include>>
+UpdateInternalWarehouseStock ..> CompareReceivedVsOrdered : <<include>>
+RecordQuantityDiscrepancy ..> CompareReceivedVsOrdered : <<extend>>
+
+WarehouseManagementDepartment --> RecordGoodsReceipt
+WarehouseManagementDepartment --> RecordQuantityDiscrepancy
+WarehouseManagementDepartment --> UpdateInternalWarehouseStock
+
+@enduml

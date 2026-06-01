@@ -1,0 +1,20 @@
+@startuml screen_transition_collect_inventory_data
+left to right direction
+
+title ScreenTransitionCollectInventoryData
+
+[CollectInventoryDataScreen] as SC003
+[FindCandidateSitesForMerchandiseScreen] as SC00301
+[FilterMerchandiseListPerSiteScreen] as SC00302
+[SendStockInquiryToSiteScreen] as SC00303
+[ReceiveStockResponseFromSiteScreen] as SC00304
+[PersistInventoryInformationFileScreen] as SC00305
+
+SC003 --> SC00301 : start collection
+SC00301 --> SC00302 : shortlist sites
+SC00302 --> SC00303 : prepare inquiries
+SC00303 --> SC00304 : wait responses
+SC00304 --> SC00305 : consolidate data
+SC00305 --> SC003 : done
+
+@enduml

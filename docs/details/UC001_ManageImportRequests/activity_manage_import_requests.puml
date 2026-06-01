@@ -1,0 +1,16 @@
+@startuml activity_manage_import_requests
+title Activity Diagram - ManageImportRequests
+
+start
+:Sales Department initiates Import Request;
+:Input Merchandise Code, Quantity, Unit, and Desired Delivery Date;
+if (Data is valid?) then (yes)
+  :Confirm and Submit Request;
+  :System generates Request ID and saves state as Submitted;
+  stop
+else (no)
+  :Display Validation Error;
+  :Prompt to re-enter data;
+  stop
+endif
+@enduml

@@ -1,0 +1,19 @@
+graph LR
+  InternationalOrderingDepartment["InternationalOrderingDepartment"]
+
+  subgraph ImportAssignmentSystem ["ImportAssignmentSystem"]
+    PlanImportAllocation(["PlanImportAllocation"])
+    ProcessEachMerchandiseIndependently(["ProcessEachMerchandiseIndependently"])
+    CheckDesiredDeliveryFeasibility(["CheckDesiredDeliveryFeasibility"])
+    RankSitesShipFirstHigherStockFewerSites(["RankSitesShipFirstHigherStockFewerSites"])
+    SplitQuantityAcrossSelectedSites(["SplitQuantityAcrossSelectedSites"])
+    ReportInsufficientSupplyError(["ReportInsufficientSupplyError"])
+  end
+
+  InternationalOrderingDepartment --> PlanImportAllocation
+
+  PlanImportAllocation -.->|"<<include>>"| ProcessEachMerchandiseIndependently
+  ProcessEachMerchandiseIndependently -.->|"<<include>>"| CheckDesiredDeliveryFeasibility
+  CheckDesiredDeliveryFeasibility -.->|"<<include>>"| RankSitesShipFirstHigherStockFewerSites
+  RankSitesShipFirstHigherStockFewerSites -.->|"<<include>>"| SplitQuantityAcrossSelectedSites
+  ReportInsufficientSupplyError -.->|"<<extend>>"| PlanImportAllocation

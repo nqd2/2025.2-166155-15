@@ -1,0 +1,54 @@
+classDiagram
+  class SiteInformationUI {
+    +displaySiteDetails(siteDetails Object) void
+    +showProfileForm() void
+    +getUpdatedProfileData() Map
+    +showSuccessMessage() void
+    +showErrorMessage(errors List) void
+  }
+
+  class SiteInformationController {
+    -catalogFacade: SiteCatalogFacade
+    -repository: ImportSiteRepository
+    +getSiteDetails(siteCode String) void
+    +updateProfile(siteCode String, data Map) void
+  }
+
+  class ImportSite {
+    -siteCode: String
+    -siteName: String
+    -deliveryDaysByShip: int
+    -deliveryDaysByAir: int
+    -otherInformation: String
+    -merchandiseCatalog: List
+    +ImportSite(data Map)
+    +getSiteCode() String
+    +getSiteName() String
+    +getDeliveryDaysByShip() int
+    +getDeliveryDaysByAir() int
+    +getMerchandiseCatalog() List
+    +updateProfile(data Map) void
+  }
+
+  class Merchandise {
+    -merchandiseCode: String
+    +getMerchandiseCode() String
+  }
+
+  class ImportSiteRepository {
+    -dbConnection: Object
+    +save(site ImportSite) ImportSite
+    +findByCode(siteCode String) ImportSite
+  }
+
+  class SiteCatalogFacade {
+    -productService: ProductCatalogService
+    -notificationService: NotificationService
+    +updateCatalog(siteCode String, data List) boolean
+  }
+
+  SiteInformationUI --> SiteInformationController
+  SiteInformationController --> SiteCatalogFacade
+  SiteInformationController --> ImportSiteRepository
+  ImportSiteRepository --> ImportSite
+  ImportSite "1" *-- "*" Merchandise

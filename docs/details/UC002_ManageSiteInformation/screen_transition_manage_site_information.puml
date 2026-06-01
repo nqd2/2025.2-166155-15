@@ -1,0 +1,20 @@
+@startuml screen_transition_manage_site_information
+left to right direction
+
+title ScreenTransitionManageSiteInformation
+
+[ManageSiteInformationScreen] as SC002
+[UpdateSiteProfileScreen] as SC00201
+[UpdateDeliveryTimesByShipAndAirScreen] as SC00202
+[UpdateSiteMerchandiseCatalogScreen] as SC00203
+[NotifyOrderingDepartmentOfSiteChangesDialog] as SC00204
+
+SC002 --> SC00201 : update profile
+SC002 --> SC00202 : update delivery times
+SC002 --> SC00203 : update catalog
+SC00201 --> SC00204 : notify change
+SC00202 --> SC00204 : notify change
+SC00203 --> SC00204 : notify change
+SC00204 --> SC002 : done
+
+@enduml

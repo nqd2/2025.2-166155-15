@@ -1,0 +1,48 @@
+@startuml class_analysis_place_overseas_orders
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - PlaceOverseasOrders
+
+class OverseasOrderingUI <<boundary>> {
+  +displayOrderStatus()
+  +showSuccessMessage()
+}
+
+class OverseasOrderingController <<control>> {
+  +generateOrders(planId: String)
+}
+
+class OverseasOrder <<entity>> {
+  -orderId: String
+  -siteCode: String
+  -status: String
+  -acknowledgementToken: String
+  -orderLines: List<OrderLine>
+  +composeOrdersFromPlan(planId: String): List<OverseasOrder>
+  +setOrderStatus(orderId: String, status: String, token: String)
+}
+
+class OrderLine <<entity>> {
+  -merchandiseCode: String
+  -quantityOrdered: int
+  -unit: String
+  -deliveryMeans: String
+}
+
+class ImportSite <<entity>> {
+  -siteCode: String
+  -siteName: String
+}
+
+OverseasOrderingUI --> OverseasOrderingController
+OverseasOrderingController --> OverseasOrder
+OverseasOrderingController --> ImportSite
+OverseasOrder "1" *-- "*" OrderLine
+@enduml

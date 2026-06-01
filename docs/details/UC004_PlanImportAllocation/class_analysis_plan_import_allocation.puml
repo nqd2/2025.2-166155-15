@@ -1,0 +1,58 @@
+@startuml class_analysis_plan_import_allocation
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - PlanImportAllocation
+
+class ImportAllocationUI <<boundary>> {
+  +displayDraftPlan(plan: AllocationPlan)
+  +displayInsufficientSupplyError()
+}
+
+class ImportAllocationController <<control>> {
+  +generateAllocationPlan(requestId: String)
+  -filterAndRankSites(records: List, sites: List): List
+  -calculateSplits(requestId: String, rankedSites: List): List
+}
+
+class AllocationPlan <<entity>> {
+  -planId: String
+  -requestId: String
+  -status: String
+  -allocationLines: List<AllocationLine>
+  +createPlan(requestId: String, lines: List)
+}
+
+class AllocationLine <<entity>> {
+  -siteCode: String
+  -merchandiseCode: String
+  -allocatedQty: int
+  -deliveryMeans: String
+}
+
+class InventoryRecord <<entity>> {
+  -siteCode: String
+  -merchandiseCode: String
+  -inStockQuantity: int
+  +getStockInfoForRequest(requestId: String): List
+}
+
+class ImportSite <<entity>> {
+  -siteCode: String
+  -deliveryDaysByShip: int
+  -deliveryDaysByAir: int
+  +getSiteTransitTimes(): List
+}
+
+ImportAllocationUI --> ImportAllocationController
+ImportAllocationController --> AllocationPlan
+ImportAllocationController --> InventoryRecord
+ImportAllocationController --> ImportSite
+AllocationPlan "1" *-- "*" AllocationLine
+@enduml

@@ -1,0 +1,50 @@
+@startuml sequence_analysis_manage_system
+title Analysis Sequence Diagram - ManageSystem
+
+actor SystemAdministrator as Actor
+participant "SystemAdminUI" as Boundary <<boundary>>
+participant "SystemAdminController" as Control <<control>>
+entity "UserAccount" as User <<entity>>
+entity "UserRole" as Role <<entity>>
+entity "OperationLog" as Log <<entity>>
+
+Actor -> Boundary : openAdminPanel()
+activate Boundary
+Boundary --> Actor : displayCategories()
+deactivate Boundary
+
+Actor -> Boundary : modifyUserRole(userId, newRole)
+activate Boundary
+Boundary -> Control : updateUserRole(userId, newRole)
+activate Control
+
+Control -> User : findById(userId)
+activate User
+User --> Control : userInstance
+deactivate User
+
+Control -> Role : findByName(newRole)
+activate Role
+Role --> Control : roleInstance
+deactivate Role
+
+alt Access Authorized and Valid Role
+  Control -> User : assignRole(roleInstance)
+  activate User
+  User --> Control : roleAssigned
+  deactivate User
+  
+  Control -> Log : logAction("RoleChanged", userId, newRole)
+  activate Log
+  Log --> Control : logged
+  deactivate Log
+  
+  Control --> Boundary : success()
+  Boundary --> Actor : showSuccessMessage()
+else Invalid Request
+  Control --> Boundary : failure(errorCode)
+  deactivate Control
+  Boundary --> Actor : showErrorMessage(errorCode)
+  deactivate Boundary
+end
+@enduml

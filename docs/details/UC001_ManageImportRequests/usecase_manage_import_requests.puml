@@ -1,0 +1,33 @@
+@startuml usecase_manage_import_requests
+left to right direction
+
+title DecomposeManageImportRequests
+
+actor "SalesDepartment" as SalesDepartment
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+
+rectangle "ImportAssignmentSystem" {
+  usecase "ManageImportRequests" as ManageImportRequests
+  usecase "CreateImportRequest" as CreateImportRequest
+  usecase "ValidateImportRequestInput" as ValidateImportRequestInput
+  usecase "SubmitImportRequest" as SubmitImportRequest
+  usecase "TrackImportRequestStatus" as TrackImportRequestStatus
+  usecase "UpdateImportRequest" as UpdateImportRequest
+  usecase "CancelImportRequest" as CancelImportRequest
+}
+
+SalesDepartment --> ManageImportRequests
+InternationalOrderingDepartment --> TrackImportRequestStatus
+
+ManageImportRequests ..> CreateImportRequest : <<include>>
+ManageImportRequests ..> SubmitImportRequest : <<include>>
+ManageImportRequests ..> TrackImportRequestStatus : <<include>>
+CreateImportRequest ..> ValidateImportRequestInput : <<include>>
+SubmitImportRequest ..> ValidateImportRequestInput : <<include>>
+UpdateImportRequest ..> ManageImportRequests : <<extend>>
+CancelImportRequest ..> ManageImportRequests : <<extend>>
+
+SalesDepartment --> UpdateImportRequest
+SalesDepartment --> CancelImportRequest
+
+@enduml

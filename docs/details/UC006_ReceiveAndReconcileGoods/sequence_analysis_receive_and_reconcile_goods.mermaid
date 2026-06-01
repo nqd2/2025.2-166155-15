@@ -1,0 +1,42 @@
+sequenceDiagram
+  actor Actor as WarehouseManagementDepartment
+  participant Boundary as GoodsReceiptUI
+  participant Control as GoodsReceiptController
+  participant Order as OverseasOrder
+  participant Entity as GoodsReceipt
+  participant Stock as WarehouseStock
+
+  Actor->>Boundary: selectOrderToReceive(orderId)
+  activate Boundary
+  Boundary->>Control: getExpectedOrderDetails(orderId)
+  activate Control
+  Control->>Order: findById(orderId)
+  activate Order
+  Order-->>Control: orderDetails
+  deactivate Order
+  Control-->>Boundary: showReconciliationForm(orderDetails)
+  deactivate Control
+  Boundary-->>Actor: displayExpectedQuantities()
+  deactivate Boundary
+
+  Actor->>Boundary: submitReceiptDetails(receivedQuantities)
+  activate Boundary
+  Boundary->>Control: processReceipt(orderId, receivedQuantities)
+  activate Control
+
+  Control->>Control: compareAndDetectDiscrepancies(orderDetails, receivedQuantities)
+
+  Control->>Entity: createReceipt(orderId, receivedQuantities, discrepancies)
+  activate Entity
+  Entity-->>Control: receiptInstance
+  deactivate Entity
+
+  Control->>Stock: updateStockLevels(receivedQuantities)
+  activate Stock
+  Stock-->>Control: stockUpdated
+  deactivate Stock
+
+  Control-->>Boundary: receiptSuccessfullyProcessed(receiptInstance)
+  deactivate Control
+  Boundary-->>Actor: showReceiptSummary(receiptInstance)
+  deactivate Boundary

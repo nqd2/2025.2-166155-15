@@ -1,0 +1,15 @@
+graph LR
+  SC006["ReceiveAndReconcileGoodsScreen (SC006)"]
+  SC00601["LoadExpectedOrderQuantitiesScreen (SC00601)"]
+  SC00602["RecordGoodsReceiptScreen (SC00602)"]
+  SC00603["CompareReceivedVsOrderedScreen (SC00603)"]
+  SC00604["RecordQuantityDiscrepancyDialog (SC00604)"]
+  SC00605["UpdateInternalWarehouseStockScreen (SC00605)"]
+
+  SC006 -->|load expected| SC00601
+  SC00601 -->|receive goods| SC00602
+  SC00602 -->|compare| SC00603
+  SC00603 -->|has discrepancy| SC00604
+  SC00603 -->|no discrepancy| SC00605
+  SC00604 -->|finalize| SC00605
+  SC00605 -->|done| SC006

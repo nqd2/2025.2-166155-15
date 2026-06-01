@@ -1,0 +1,49 @@
+@startuml sequence_design_collect_inventory_data
+title Design Sequence Diagram - CollectInventoryData
+
+actor InternationalOrderingDepartment as Actor
+participant "InventoryCollectionUI" as Boundary
+participant "InventoryCollectionController" as Control
+participant "StockQueryFacade" as Subsystem
+participant "ImportSiteRepository" as SiteRepo
+participant "InventoryRecordRepository" as RecordRepo
+actor OverseasImportSite as SiteActor
+
+Actor -> Boundary : triggerCollection(requestList)
+activate Boundary
+
+Boundary -> Control : collectStockInfo(requestList)
+activate Control
+
+Control -> SiteRepo : findCandidateSites(requestList)
+activate SiteRepo
+SiteRepo --> Control : candidateSitesList
+deactivate SiteRepo
+
+loop for each candidateSite in candidateSitesList
+  Control -> Control : filterList = filterMerchandiseForSite(candidateSite, requestList)
+  
+  Control -> Subsystem : queryStock(candidateSite.siteCode, filterList)
+  activate Subsystem
+  
+  Subsystem -> SiteActor : sendStockInquiry(siteCode, filterList)
+  activate SiteActor
+  SiteActor --> Subsystem : apiResponse(stockData)
+  deactivate SiteActor
+  
+  Subsystem --> Control : queryResult(stockData)
+  deactivate Subsystem
+  
+  loop for each item in stockData
+    Control -> RecordRepo : saveStockResponse(siteCode, item.merchandiseCode, item.inStockQuantity, item.unit)
+    activate RecordRepo
+    RecordRepo -> RecordRepo : persistToDatabase()
+    RecordRepo --> Control : saveSuccess
+    deactivate RecordRepo
+  end
+end
+
+Control --> Boundary : collectionCompleted()
+Boundary --> Actor : showSuccessMessage()
+deactivate Boundary
+@enduml

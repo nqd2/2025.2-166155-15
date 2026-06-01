@@ -1,0 +1,20 @@
+graph LR
+  InternationalOrderingDepartment["InternationalOrderingDepartment"]
+  OverseasImportSite["OverseasImportSite"]
+
+  subgraph ImportAssignmentSystem ["ImportAssignmentSystem"]
+    PlaceOverseasOrders(["PlaceOverseasOrders"])
+    ComposeOrderLines(["ComposeOrderLines"])
+    SetDeliveryMeansShipOrAir(["SetDeliveryMeansShipOrAir"])
+    TransmitOrdersToSelectedSites(["TransmitOrdersToSelectedSites"])
+    AcknowledgeOrderAtSite(["AcknowledgeOrderAtSite"])
+  end
+
+  InternationalOrderingDepartment --> PlaceOverseasOrders
+  OverseasImportSite --> AcknowledgeOrderAtSite
+
+  PlaceOverseasOrders -.->|"<<include>>"| ComposeOrderLines
+  PlaceOverseasOrders -.->|"<<include>>"| TransmitOrdersToSelectedSites
+  ComposeOrderLines -.->|"<<include>>"| SetDeliveryMeansShipOrAir
+  TransmitOrdersToSelectedSites -.->|"<<include>>"| SetDeliveryMeansShipOrAir
+  TransmitOrdersToSelectedSites -.->|"<<include>>"| AcknowledgeOrderAtSite

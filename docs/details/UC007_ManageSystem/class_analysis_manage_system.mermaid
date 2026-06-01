@@ -1,0 +1,56 @@
+classDiagram
+  class SystemAdminUI {
+    <<boundary>>
+    +displayCategories()
+    +showSuccessMessage()
+    +showErrorMessage(errors List)
+  }
+
+  class SystemAdminController {
+    <<control>>
+    +updateUserRole(userId String, newRole String)
+    +backupDatabase()
+    +restoreDatabase(backupId String)
+    +viewLogs(filters Object)
+  }
+
+  class UserAccount {
+    <<entity>>
+    -userId: String
+    -username: String
+    -status: String
+    -roles: List
+    +findById(userId String) UserAccount
+    +assignRole(role UserRole)
+  }
+
+  class UserRole {
+    <<entity>>
+    -roleId: String
+    -roleName: String
+    -permissions: List
+    +findByName(name String) UserRole
+  }
+
+  class OperationLog {
+    <<entity>>
+    -logId: String
+    -operatorId: String
+    -actionType: String
+    -timestamp: Date
+    -details: String
+    +logAction(action String, userId String, details String)
+  }
+
+  class SystemConfig {
+    <<entity>>
+    -configKey: String
+    -configValue: String
+  }
+
+  SystemAdminUI --> SystemAdminController
+  SystemAdminController --> UserAccount
+  SystemAdminController --> UserRole
+  SystemAdminController --> OperationLog
+  SystemAdminController --> SystemConfig
+  UserAccount "1" *-- "*" UserRole

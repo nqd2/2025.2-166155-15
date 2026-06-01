@@ -1,0 +1,27 @@
+flowchart TD
+  subgraph Presentation ["Presentation Layer"]
+    UI[ImportAllocationUI]
+  end
+
+  subgraph Business ["Business Layer"]
+    Controller[ImportAllocationController]
+    Facade[AllocationFacade]
+  end
+
+  subgraph Domain ["Domain Layer"]
+    Plan[AllocationPlan]
+    Line[AllocationLine]
+    Record[InventoryRecord]
+    Site[ImportSite]
+  end
+
+  subgraph Infrastructure ["Infrastructure Layer"]
+    RecordRepo[InventoryRecordRepository]
+    SiteRepo[ImportSiteRepository]
+    PlanRepo[AllocationPlanRepository]
+  end
+
+  Presentation -.->|uses| Business
+  Business -.->|manipulates| Domain
+  Business -.->|uses| Infrastructure
+  Infrastructure -.->|persists| Domain

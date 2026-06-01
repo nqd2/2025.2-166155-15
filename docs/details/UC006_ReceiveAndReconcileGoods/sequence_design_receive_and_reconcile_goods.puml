@@ -1,0 +1,62 @@
+@startuml sequence_design_receive_and_reconcile_goods
+title Design Sequence Diagram - ReceiveAndReconcileGoods
+
+actor WarehouseManagementDepartment as Actor
+participant "GoodsReceiptUI" as Boundary
+participant "GoodsReceiptController" as Control
+participant "ReconciliationFacade" as Subsystem
+participant "OverseasOrderRepository" as OrderRepo
+participant "GoodsReceiptRepository" as ReceiptRepo
+participant "WarehouseStockRepository" as StockRepo
+entity "GoodsReceipt" as Entity
+entity "WarehouseStock" as Stock
+
+Actor -> Boundary : submitReceiptDetails(receivedQuantities)
+activate Boundary
+
+Boundary -> Control : processReceipt(orderId, receivedQuantities)
+activate Control
+
+Control -> OrderRepo : findById(orderId)
+activate OrderRepo
+OrderRepo --> Control : expectedOrderInstance
+deactivate OrderRepo
+
+Control -> Subsystem : reconcile(expectedOrderInstance.orderLines, receivedQuantities)
+activate Subsystem
+Subsystem --> Control : reconciliationResult
+deactivate Subsystem
+
+Control -> Entity : new GoodsReceipt(orderId, receivedQuantities, reconciliationResult.discrepancies)
+activate Entity
+Entity --> Control : receiptInstance
+deactivate Entity
+
+Control -> ReceiptRepo : save(receiptInstance)
+activate ReceiptRepo
+ReceiptRepo -> ReceiptRepo : persistToDatabase()
+ReceiptRepo --> Control : savedReceipt
+deactivate ReceiptRepo
+
+loop for each item in receivedQuantities
+  Control -> StockRepo : findByCode(item.merchandiseCode)
+  activate StockRepo
+  StockRepo --> Control : stockInstance
+  deactivate StockRepo
+  
+  Control -> Stock : stockInstance.addQuantity(item.receivedQty)
+  activate Stock
+  Stock --> Control : updatedStockInstance
+  deactivate Stock
+  
+  Control -> StockRepo : save(updatedStockInstance)
+  activate StockRepo
+  StockRepo -> StockRepo : persistToDatabase()
+  StockRepo --> Control : saveSuccess
+  deactivate StockRepo
+end
+
+Control --> Boundary : receiptSuccessfullyProcessed(savedReceipt)
+Boundary --> Actor : showReceiptSummary(savedReceipt)
+deactivate Boundary
+@enduml

@@ -1,0 +1,23 @@
+sequenceDiagram
+  participant Client as GoodsReceiptController
+  box ReconciliationSubsystem
+    participant Facade as ReconciliationFacade
+    participant Calculator as DiscrepancyCalculator
+    participant Reporter as ReconciliationReportService
+  end box
+
+  Client->>Facade: reconcile(expectedItems, receivedItems)
+  activate Facade
+
+  Facade->>Calculator: compareQuantities(expectedItems, receivedItems)
+  activate Calculator
+  Calculator-->>Facade: discrepancyDetails
+  deactivate Calculator
+
+  Facade->>Reporter: generateReport(discrepancyDetails)
+  activate Reporter
+  Reporter-->>Facade: reportDocument
+  deactivate Reporter
+
+  Facade-->>Client: reconciliationResult(discrepancyDetails, reportDocument)
+  deactivate Facade

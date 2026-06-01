@@ -1,0 +1,15 @@
+@startuml communication_analysis_manage_import_requests
+title Communication Diagram (Analysis Level) - ManageImportRequests
+
+object "SalesDepartment" as Actor
+object "ImportRequestUI" as Boundary
+object "ImportRequestController" as Control
+object "Merchandise" as Merchandise
+object "ImportRequest" as Entity
+
+Actor -- Boundary : 1: openCreateRequestForm() / 3: submitRequestData(data)
+Boundary -- Control : 4: validateAndProcessRequest(data)
+Control -- Merchandise : 5: checkExistence(merchandiseCode)
+Control -- Entity : 6: create(data) [if valid]
+Boundary -- Actor : 2: displayForm() / 7: showSuccessMessage(requestId) / showErrorMessage(errors)
+@enduml

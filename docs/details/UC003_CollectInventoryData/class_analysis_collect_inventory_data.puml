@@ -1,0 +1,41 @@
+@startuml class_analysis_collect_inventory_data
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - CollectInventoryData
+
+class InventoryCollectionUI <<boundary>> {
+  +displayStatus()
+  +showSuccessMessage()
+}
+
+class InventoryCollectionController <<control>> {
+  +collectStockInfo(requestList: Object)
+  +filterMerchandiseForSite(site: ImportSite, list: Object): Object
+}
+
+class ImportSite <<entity>> {
+  -siteCode: String
+  -siteName: String
+  +findCandidateSites(list: Object): List<ImportSite>
+}
+
+class InventoryRecord <<entity>> {
+  -siteCode: String
+  -merchandiseCode: String
+  -inStockQuantity: int
+  -unit: String
+  +persistResponse(siteCode: String, itemCode: String, qty: int, unit: String)
+}
+
+InventoryCollectionUI --> InventoryCollectionController
+InventoryCollectionController --> ImportSite
+InventoryCollectionController --> InventoryRecord
+ImportSite "1" -- "*" InventoryRecord
+@enduml

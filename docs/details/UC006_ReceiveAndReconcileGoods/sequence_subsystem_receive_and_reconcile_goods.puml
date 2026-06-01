@@ -1,0 +1,26 @@
+@startuml sequence_subsystem_receive_and_reconcile_goods
+title Subsystem Sequence Diagram - ReconciliationSubsystem (ReceiveAndReconcileGoods)
+
+participant "GoodsReceiptController" as Client
+box "ReconciliationSubsystem" #LightBlue
+  participant "ReconciliationFacade" as Facade <<subsystem>>
+  participant "DiscrepancyCalculator" as Calculator <<service>>
+  participant "ReconciliationReportService" as Reporter <<service>>
+end box
+
+Client -> Facade : reconcile(expectedItems, receivedItems)
+activate Facade
+
+Facade -> Calculator : compareQuantities(expectedItems, receivedItems)
+activate Calculator
+Calculator --> Facade : discrepancyDetails
+deactivate Calculator
+
+Facade -> Reporter : generateReport(discrepancyDetails)
+activate Reporter
+Reporter --> Facade : reportDocument
+deactivate Reporter
+
+Facade --> Client : reconciliationResult(discrepancyDetails, reportDocument)
+deactivate Facade
+@enduml

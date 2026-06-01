@@ -1,0 +1,26 @@
+@startuml package_design_manage_import_requests
+title Package Dependency Diagram - ManageImportRequests
+
+package "Presentation Layer" as Presentation {
+  class ImportRequestUI
+}
+
+package "Business Layer" as Business {
+  class ImportRequestController
+  class ValidationFacade
+}
+
+package "Domain Layer" as Domain {
+  class ImportRequest
+  class Merchandise
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class ImportRequestRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml

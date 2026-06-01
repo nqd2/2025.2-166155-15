@@ -1,0 +1,26 @@
+@startuml sequence_subsystem_manage_system
+title Subsystem Sequence Diagram - SecuritySubsystem (ManageSystem)
+
+participant "SystemAdminController" as Client
+box "SecuritySubsystem" #LightBlue
+  participant "SecurityFacade" as Facade <<subsystem>>
+  participant "RBACAuthorizationService" as RBAC <<service>>
+  participant "UserSessionManager" as Session <<service>>
+end box
+
+Client -> Facade : checkPermission(operatorId, requiredPermission)
+activate Facade
+
+Facade -> Session : getActiveSession(operatorId)
+activate Session
+Session --> Facade : sessionDetails
+deactivate Session
+
+Facade -> RBAC : verifyAccess(sessionDetails.role, requiredPermission)
+activate RBAC
+RBAC --> Facade : accessGranted
+deactivate RBAC
+
+Facade --> Client : authorizationResult(accessGranted)
+deactivate Facade
+@enduml

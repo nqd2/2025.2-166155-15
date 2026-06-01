@@ -1,0 +1,17 @@
+@startuml communication_analysis_receive_and_reconcile_goods
+title Communication Diagram (Analysis Level) - ReceiveAndReconcileGoods
+
+object "WarehouseManagementDepartment" as Actor
+object "GoodsReceiptUI" as Boundary
+object "GoodsReceiptController" as Control
+object "OverseasOrder" as Order
+object "GoodsReceipt" as Entity
+object "WarehouseStock" as Stock
+
+Actor -- Boundary : 1: selectOrderToReceive(orderId) / 4: submitReceiptDetails(receivedQuantities)
+Boundary -- Control : 2: getExpectedOrderDetails(orderId) / 5: processReceipt(orderId, receivedQuantities)
+Control -- Order : 3: findById(orderId)
+Control -- Entity : 6: createReceipt(orderId, receivedQuantities, discrepancies)
+Control -- Stock : 7: updateStockLevels(receivedQuantities)
+Boundary -- Actor : showReconciliationForm() / showReceiptSummary(receiptInstance)
+@enduml

@@ -1,0 +1,11 @@
+flowchart TD
+  Start([Start]) --> Initiate[Ordering Department triggers order generation]
+  Initiate --> FetchPlan[Retrieve active Allocation Plan]
+  FetchPlan --> Group[Group allocation lines by Import Site]
+  Group --> Compose[Compose Overseas Order for each Site]
+  Compose --> SetMeans[Specify delivery means ship/air]
+  SetMeans --> Transmit[Transmit official orders to selected Sites]
+  Transmit --> Process[Sites receive and process orders]
+  Process --> Ack[Sites send Acknowledgements back]
+  Ack --> Update[System updates Order status to Transmitted]
+  Update --> End([End])

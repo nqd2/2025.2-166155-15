@@ -1,0 +1,37 @@
+classDiagram
+  class ImportRequestUI {
+    <<boundary>>
+    +displayForm()
+    +getInputData()
+    +showSuccessMessage(requestId)
+    +showErrorMessage(errors)
+  }
+
+  class ImportRequestController {
+    <<control>>
+    +validateAndProcessRequest(data)
+    -checkValidationRules(data)
+  }
+
+  class ImportRequest {
+    <<entity>>
+    -requestId: String
+    -status: String
+    -createdDate: Date
+    +create(data)
+    +updateStatus(status)
+  }
+
+  class Merchandise {
+    <<entity>>
+    -merchandiseCode: String
+    -quantityOrdered: int
+    -unit: String
+    -desiredDeliveryDate: Date
+    +checkExistence(merchandiseCode)
+  }
+
+  ImportRequestUI --> ImportRequestController
+  ImportRequestController --> ImportRequest
+  ImportRequestController --> Merchandise
+  ImportRequest "1" *-- "*" Merchandise

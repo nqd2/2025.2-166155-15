@@ -1,0 +1,15 @@
+graph LR
+  SC007["ManageSystemScreen (SC007)"]
+  SC00701["ManageUsersAndActorRolesScreen (SC00701)"]
+  SC00702["ManageSharedMasterDataScreen (SC00702)"]
+  SC00703["ViewCrossDepartmentOperationLogsScreen (SC00703)"]
+  SC00704["BackupAndRestoreBusinessDataScreen (SC00704)"]
+
+  SC007 -->|users and roles| SC00701
+  SC007 -->|master data| SC00702
+  SC007 -->|operation logs| SC00703
+  SC007 -->|backup/restore| SC00704
+  SC00701 -->|done| SC007
+  SC00702 -->|done| SC007
+  SC00703 -->|done| SC007
+  SC00704 -->|done| SC007

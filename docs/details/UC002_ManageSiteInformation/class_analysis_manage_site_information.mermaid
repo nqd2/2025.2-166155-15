@@ -1,0 +1,37 @@
+classDiagram
+  class SiteInformationUI {
+    <<boundary>>
+    +displaySiteDetails(siteDetails Object)
+    +showProfileForm()
+    +getUpdatedProfileData() Object
+    +showSuccessMessage()
+    +showErrorMessage(errors List)
+  }
+
+  class SiteInformationController {
+    <<control>>
+    +getSiteDetails(siteCode String)
+    +updateProfile(siteCode String, data Object)
+    -validateSiteData(data Object) boolean
+  }
+
+  class ImportSite {
+    <<entity>>
+    -siteCode: String
+    -siteName: String
+    -deliveryDaysByShip: int
+    -deliveryDaysByAir: int
+    -otherInformation: String
+    -merchandiseCatalog: List
+    +findByCode(siteCode String) ImportSite
+    +saveProfile(data Object)
+  }
+
+  class Merchandise {
+    <<entity>>
+    -merchandiseCode: String
+  }
+
+  SiteInformationUI --> SiteInformationController
+  SiteInformationController --> ImportSite
+  ImportSite "1" *-- "*" Merchandise

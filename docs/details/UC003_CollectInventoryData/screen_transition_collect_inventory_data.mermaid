@@ -1,0 +1,14 @@
+graph LR
+  SC003["CollectInventoryDataScreen (SC003)"]
+  SC00301["FindCandidateSitesForMerchandiseScreen (SC00301)"]
+  SC00302["FilterMerchandiseListPerSiteScreen (SC00302)"]
+  SC00303["SendStockInquiryToSiteScreen (SC00303)"]
+  SC00304["ReceiveStockResponseFromSiteScreen (SC00304)"]
+  SC00305["PersistInventoryInformationFileScreen (SC00305)"]
+
+  SC003 -->|start collection| SC00301
+  SC00301 -->|shortlist sites| SC00302
+  SC00302 -->|prepare inquiries| SC00303
+  SC00303 -->|wait responses| SC00304
+  SC00304 -->|consolidate data| SC00305
+  SC00305 -->|done| SC003

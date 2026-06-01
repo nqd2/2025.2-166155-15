@@ -1,0 +1,23 @@
+flowchart TD
+  subgraph Presentation ["Presentation Layer"]
+    UI[ImportRequestUI]
+  end
+
+  subgraph Business ["Business Layer"]
+    Controller[ImportRequestController]
+    Facade[ValidationFacade]
+  end
+
+  subgraph Domain ["Domain Layer"]
+    Request[ImportRequest]
+    Item[Merchandise]
+  end
+
+  subgraph Infrastructure ["Infrastructure Layer"]
+    Repo[ImportRequestRepository]
+  end
+
+  Presentation -.->|uses| Business
+  Business -.->|manipulates| Domain
+  Business -.->|uses| Infrastructure
+  Infrastructure -.->|persists| Domain

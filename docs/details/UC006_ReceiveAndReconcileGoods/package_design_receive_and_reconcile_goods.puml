@@ -1,0 +1,30 @@
+@startuml package_design_receive_and_reconcile_goods
+title Package Dependency Diagram - ReceiveAndReconcileGoods
+
+package "Presentation Layer" as Presentation {
+  class GoodsReceiptUI
+}
+
+package "Business Layer" as Business {
+  class GoodsReceiptController
+  class ReconciliationFacade
+}
+
+package "Domain Layer" as Domain {
+  class GoodsReceipt
+  class ReceiptLine
+  class WarehouseStock
+  class OverseasOrder
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class OverseasOrderRepository
+  class GoodsReceiptRepository
+  class WarehouseStockRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml

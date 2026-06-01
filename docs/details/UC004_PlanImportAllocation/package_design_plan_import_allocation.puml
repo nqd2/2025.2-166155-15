@@ -1,0 +1,30 @@
+@startuml package_design_plan_import_allocation
+title Package Dependency Diagram - PlanImportAllocation
+
+package "Presentation Layer" as Presentation {
+  class ImportAllocationUI
+}
+
+package "Business Layer" as Business {
+  class ImportAllocationController
+  class AllocationFacade
+}
+
+package "Domain Layer" as Domain {
+  class AllocationPlan
+  class AllocationLine
+  class InventoryRecord
+  class ImportSite
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class InventoryRecordRepository
+  class ImportSiteRepository
+  class AllocationPlanRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml

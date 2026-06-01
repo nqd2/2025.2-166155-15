@@ -1,0 +1,23 @@
+flowchart TD
+  subgraph Presentation ["Presentation Layer"]
+    UI[SiteInformationUI]
+  end
+
+  subgraph Business ["Business Layer"]
+    Controller[SiteInformationController]
+    Facade[SiteCatalogFacade]
+  end
+
+  subgraph Domain ["Domain Layer"]
+    Site[ImportSite]
+    Item[Merchandise]
+  end
+
+  subgraph Infrastructure ["Infrastructure Layer"]
+    Repo[ImportSiteRepository]
+  end
+
+  Presentation -.->|uses| Business
+  Business -.->|manipulates| Domain
+  Business -.->|uses| Infrastructure
+  Infrastructure -.->|persists| Domain

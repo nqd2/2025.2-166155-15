@@ -1,0 +1,24 @@
+@startuml activity_manage_site_information
+title Activity Diagram - ManageSiteInformation
+
+start
+:Overseas Import Site opens profile management;
+:Select site profile to update;
+fork
+  :Update Site profile name/info;
+fork again
+  :Update delivery times (ship and air);
+fork again
+  :Update merchandise catalog;
+end fork
+:Submit changes;
+if (Delivery times are positive integers?) then (yes)
+  :System saves changes in Site Information;
+  :System notifies International Ordering Department of changes;
+  stop
+else (no)
+  :Display Validation Error (invalid times);
+  :Prompt to re-enter delivery times;
+  stop
+endif
+@enduml

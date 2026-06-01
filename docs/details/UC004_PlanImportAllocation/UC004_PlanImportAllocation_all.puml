@@ -1,0 +1,480 @@
+' ========================================== 
+' MERGED PLANTUML DIAGRAMS FOR USE CASE: UC004_PlanImportAllocation
+' Total Diagrams: 11
+' ========================================== 
+
+' ------------------------------------------
+' Source File: activity_plan_import_allocation.puml
+' ------------------------------------------
+@startuml activity_plan_import_allocation
+title Activity Diagram - PlanImportAllocation
+
+start
+:International Ordering Department triggers allocation planning;
+:System loops through each requested merchandise independently;
+:Retrieve candidate sites and their in-stock quantities;
+:Filter out sites that cannot meet desired delivery date;
+:Rank remaining sites:
+1. Ship transport over Air
+2. Larger in-stock quantity
+3. Minimize number of selected sites;
+if (Total stock from feasible sites >= requested quantity?) then (yes)
+  :Split requested quantity across ranked sites;
+  :Generate allocation plan lines;
+  :Display draft allocation plan;
+  :Confirm and save allocation plan;
+  stop
+else (no)
+  :Generate Insufficient Supply Error;
+  :Display error message to user;
+  stop
+endif
+@enduml
+
+' ------------------------------------------
+' Source File: class_analysis_plan_import_allocation.puml
+' ------------------------------------------
+@startuml class_analysis_plan_import_allocation
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - PlanImportAllocation
+
+class ImportAllocationUI <<boundary>> {
+  +displayDraftPlan(plan: AllocationPlan)
+  +displayInsufficientSupplyError()
+}
+
+class ImportAllocationController <<control>> {
+  +generateAllocationPlan(requestId: String)
+  -filterAndRankSites(records: List, sites: List): List
+  -calculateSplits(requestId: String, rankedSites: List): List
+}
+
+class AllocationPlan <<entity>> {
+  -planId: String
+  -requestId: String
+  -status: String
+  -allocationLines: List<AllocationLine>
+  +createPlan(requestId: String, lines: List)
+}
+
+class AllocationLine <<entity>> {
+  -siteCode: String
+  -merchandiseCode: String
+  -allocatedQty: int
+  -deliveryMeans: String
+}
+
+class InventoryRecord <<entity>> {
+  -siteCode: String
+  -merchandiseCode: String
+  -inStockQuantity: int
+  +getStockInfoForRequest(requestId: String): List
+}
+
+class ImportSite <<entity>> {
+  -siteCode: String
+  -deliveryDaysByShip: int
+  -deliveryDaysByAir: int
+  +getSiteTransitTimes(): List
+}
+
+ImportAllocationUI --> ImportAllocationController
+ImportAllocationController --> AllocationPlan
+ImportAllocationController --> InventoryRecord
+ImportAllocationController --> ImportSite
+AllocationPlan "1" *-- "*" AllocationLine
+@enduml
+
+' ------------------------------------------
+' Source File: class_design_plan_import_allocation.puml
+' ------------------------------------------
+@startuml class_design_plan_import_allocation
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - PlanImportAllocation
+
+class ImportAllocationUI {
+  +displayDraftPlan(plan: AllocationPlan): void
+  +displayInsufficientSupplyError(): void
+}
+
+class ImportAllocationController {
+  -allocationFacade: AllocationFacade
+  -recordRepo: InventoryRecordRepository
+  -siteRepo: ImportSiteRepository
+  -planRepo: AllocationPlanRepository
+  +generateAllocationPlan(requestId: String): void
+}
+
+class AllocationPlan {
+  -planId: String
+  -requestId: String
+  -status: String
+  -allocationLines: List<AllocationLine>
+  +AllocationPlan(requestId: String, splits: List<Map>)
+  +getPlanId(): String
+  +getRequestId(): String
+  +getStatus(): String
+  +getAllocationLines(): List<AllocationLine>
+}
+
+class AllocationLine {
+  -siteCode: String
+  -merchandiseCode: String
+  -allocatedQty: int
+  -deliveryMeans: String
+  +getSiteCode(): String
+  +getMerchandiseCode(): String
+  +getAllocatedQty(): int
+  +getDeliveryMeans(): String
+}
+
+class InventoryRecord {
+  -siteCode: String
+  -merchandiseCode: String
+  -inStockQuantity: int
+  -unit: String
+  +getInStockQuantity(): int
+}
+
+class ImportSite {
+  -siteCode: String
+  -deliveryDaysByShip: int
+  -deliveryDaysByAir: int
+  +getDeliveryDaysByShip(): int
+  +getDeliveryDaysByAir(): int
+}
+
+class InventoryRecordRepository {
+  -dbConnection: Object
+  +getStockInfoForRequest(requestId: String): List<InventoryRecord>
+}
+
+class ImportSiteRepository {
+  -dbConnection: Object
+  +getSiteTransitTimes(): List<ImportSite>
+}
+
+class AllocationPlanRepository {
+  -dbConnection: Object
+  +save(plan: AllocationPlan): AllocationPlan
+}
+
+class AllocationFacade {
+  -feasibilityChecker: Object
+  -siteRanker: Object
+  -splitCalculator: Object
+  +calculateAllocation(requestId: String, records: List, sites: List): List<Map>
+}
+
+ImportAllocationUI --> ImportAllocationController
+ImportAllocationController --> AllocationFacade
+ImportAllocationController --> InventoryRecordRepository
+ImportAllocationController --> ImportSiteRepository
+ImportAllocationController --> AllocationPlanRepository
+AllocationPlanRepository --> AllocationPlan
+AllocationPlan "1" *-- "*" AllocationLine
+InventoryRecordRepository --> InventoryRecord
+ImportSiteRepository --> ImportSite
+@enduml
+
+' ------------------------------------------
+' Source File: class_subsystem_plan_import_allocation.puml
+' ------------------------------------------
+@startuml class_subsystem_plan_import_allocation
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - AllocationEngineSubsystem (PlanImportAllocation)
+
+class AllocationFacade <<facade>> {
+  +calculateAllocation(requestId: String, records: List, sites: List): List
+}
+
+class FeasibilityChecker <<service>> {
+  +checkDeliveryFeasibility(records: List, sites: List): List
+}
+
+class SiteRanker <<service>> {
+  +rankSites(sites: List): List
+}
+
+class SplitCalculator <<service>> {
+  +splitQuantity(requestId: String, rankedSites: List): List
+}
+
+AllocationFacade --> FeasibilityChecker
+AllocationFacade --> SiteRanker
+AllocationFacade --> SplitCalculator
+@enduml
+
+' ------------------------------------------
+' Source File: communication_analysis_plan_import_allocation.puml
+' ------------------------------------------
+@startuml communication_analysis_plan_import_allocation
+title Communication Diagram (Analysis Level) - PlanImportAllocation
+
+object "InternationalOrderingDepartment" as Actor
+object "ImportAllocationUI" as Boundary
+object "ImportAllocationController" as Control
+object "InventoryRecord" as Record
+object "ImportSite" as Site
+object "AllocationPlan" as Entity
+
+Actor -- Boundary : 1: triggerAllocation(requestId)
+Boundary -- Control : 2: generateAllocationPlan(requestId)
+Control -- Record : 3: getStockInfoForRequest(requestId)
+Control -- Site : 4: getSiteTransitTimes()
+Control -- Entity : 5: createPlan(requestId, splits) [if success]
+Boundary -- Actor : showDraftPlan() / displayInsufficientSupplyError()
+@enduml
+
+' ------------------------------------------
+' Source File: package_design_plan_import_allocation.puml
+' ------------------------------------------
+@startuml package_design_plan_import_allocation
+title Package Dependency Diagram - PlanImportAllocation
+
+package "Presentation Layer" as Presentation {
+  class ImportAllocationUI
+}
+
+package "Business Layer" as Business {
+  class ImportAllocationController
+  class AllocationFacade
+}
+
+package "Domain Layer" as Domain {
+  class AllocationPlan
+  class AllocationLine
+  class InventoryRecord
+  class ImportSite
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class InventoryRecordRepository
+  class ImportSiteRepository
+  class AllocationPlanRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml
+
+' ------------------------------------------
+' Source File: screen_transition_plan_import_allocation.puml
+' ------------------------------------------
+@startuml screen_transition_plan_import_allocation
+left to right direction
+
+title ScreenTransitionPlanImportAllocation
+
+[PlanImportAllocationScreen] as SC004
+[ProcessEachMerchandiseIndependentlyPanel] as SC00401
+[CheckDesiredDeliveryFeasibilityPanel] as SC00402
+[RankSitesPanel] as SC00403
+[SplitQuantityAcrossSelectedSitesPanel] as SC00404
+[InsufficientSupplyErrorDialog] as SC00405
+
+SC004 --> SC00401 : run allocation
+SC00401 --> SC00402 : per item
+SC00402 --> SC00403 : feasible
+SC00402 --> SC00405 : infeasible
+SC00403 --> SC00404 : ranked
+SC00404 --> SC004 : save plan
+SC00405 --> SC004 : acknowledge
+
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_analysis_plan_import_allocation.puml
+' ------------------------------------------
+@startuml sequence_analysis_plan_import_allocation
+title Analysis Sequence Diagram - PlanImportAllocation
+
+actor InternationalOrderingDepartment as Actor
+participant "ImportAllocationUI" as Boundary <<boundary>>
+participant "ImportAllocationController" as Control <<control>>
+entity "InventoryRecord" as Record <<entity>>
+entity "ImportSite" as Site <<entity>>
+entity "AllocationPlan" as Entity <<entity>>
+
+Actor -> Boundary : triggerAllocation(requestId)
+activate Boundary
+Boundary -> Control : generateAllocationPlan(requestId)
+activate Control
+
+Control -> Record : getStockInfoForRequest(requestId)
+activate Record
+Record --> Control : stockInfoList
+deactivate Record
+
+Control -> Site : getSiteTransitTimes()
+activate Site
+Site --> Control : siteTransitTimesList
+deactivate Site
+
+Control -> Control : filterAndRankSites(stockInfoList, siteTransitTimesList)
+Control -> Control : calculateSplits()
+
+alt Allocation Successful
+  Control -> Entity : createPlan(requestId, splits)
+  activate Entity
+  Entity --> Control : allocationPlanInstance
+  deactivate Entity
+  Control --> Boundary : showDraftPlan(allocationPlanInstance)
+  Boundary --> Actor : displayDraftPlan()
+else Allocation Failed (Insufficient Supply)
+  Control --> Boundary : showError(errorCode)
+  deactivate Control
+  Boundary --> Actor : displayInsufficientSupplyError()
+  deactivate Boundary
+end
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_design_plan_import_allocation.puml
+' ------------------------------------------
+@startuml sequence_design_plan_import_allocation
+title Design Sequence Diagram - PlanImportAllocation
+
+actor InternationalOrderingDepartment as Actor
+participant "ImportAllocationUI" as Boundary
+participant "ImportAllocationController" as Control
+participant "AllocationFacade" as Subsystem
+participant "InventoryRecordRepository" as RecordRepo
+participant "ImportSiteRepository" as SiteRepo
+participant "AllocationPlanRepository" as PlanRepo
+entity "AllocationPlan" as Entity
+
+Actor -> Boundary : triggerAllocation(requestId)
+activate Boundary
+
+Boundary -> Control : generateAllocationPlan(requestId)
+activate Control
+
+Control -> RecordRepo : getStockInfoForRequest(requestId)
+activate RecordRepo
+RecordRepo --> Control : stockInfoList
+deactivate RecordRepo
+
+Control -> SiteRepo : getSiteTransitTimes()
+activate SiteRepo
+SiteRepo --> Control : siteTransitTimesList
+deactivate SiteRepo
+
+Control -> Subsystem : calculateAllocation(requestId, stockInfoList, siteTransitTimesList)
+activate Subsystem
+Subsystem --> Control : allocationSplits
+deactivate Subsystem
+
+alt splits is not empty (Allocation Successful)
+  Control -> Entity : new AllocationPlan(requestId, allocationSplits)
+  activate Entity
+  Entity --> Control : allocationPlanInstance
+  deactivate Entity
+  
+  Control -> PlanRepo : save(allocationPlanInstance)
+  activate PlanRepo
+  PlanRepo -> PlanRepo : persistToDatabase()
+  PlanRepo --> Control : savedPlan
+  deactivate PlanRepo
+  
+  Control --> Boundary : showDraftPlan(savedPlan)
+  Boundary --> Actor : displayDraftPlan()
+else splits is empty (Allocation Failed)
+  Control --> Boundary : showError(104) (Insufficient Supply)
+  deactivate Control
+  Boundary --> Actor : displayInsufficientSupplyError()
+  deactivate Boundary
+end
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_subsystem_plan_import_allocation.puml
+' ------------------------------------------
+@startuml sequence_subsystem_plan_import_allocation
+title Subsystem Sequence Diagram - AllocationEngineSubsystem (PlanImportAllocation)
+
+participant "ImportAllocationController" as Client
+box "AllocationEngineSubsystem" #LightBlue
+  participant "AllocationFacade" as Facade <<subsystem>>
+  participant "FeasibilityChecker" as Checker <<service>>
+  participant "SiteRanker" as Ranker <<service>>
+  participant "SplitCalculator" as Splitter <<service>>
+end box
+
+Client -> Facade : calculateAllocation(requestId, stockRecords, sites)
+activate Facade
+
+Facade -> Checker : checkDeliveryFeasibility(stockRecords, sites)
+activate Checker
+Checker --> Facade : feasibleSites
+deactivate Checker
+
+Facade -> Ranker : rankSites(feasibleSites)
+activate Ranker
+Ranker --> Facade : rankedSitesList
+deactivate Ranker
+
+Facade -> Splitter : splitQuantity(requestId, rankedSitesList)
+activate Splitter
+Splitter --> Facade : allocationSplits
+deactivate Splitter
+
+Facade --> Client : allocationResult(allocationSplits)
+deactivate Facade
+@enduml
+
+' ------------------------------------------
+' Source File: usecase_plan_import_allocation.puml
+' ------------------------------------------
+@startuml usecase_plan_import_allocation
+left to right direction
+
+title DecomposePlanImportAllocation
+
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+
+rectangle "ImportAssignmentSystem" {
+  usecase "PlanImportAllocation" as PlanImportAllocation
+  usecase "ProcessEachMerchandiseIndependently" as ProcessEachMerchandiseIndependently
+  usecase "CheckDesiredDeliveryFeasibility" as CheckDesiredDeliveryFeasibility
+  usecase "RankSitesShipFirstHigherStockFewerSites" as RankSitesShipFirstHigherStockFewerSites
+  usecase "SplitQuantityAcrossSelectedSites" as SplitQuantityAcrossSelectedSites
+  usecase "ReportInsufficientSupplyError" as ReportInsufficientSupplyError
+}
+
+InternationalOrderingDepartment --> PlanImportAllocation
+
+PlanImportAllocation ..> ProcessEachMerchandiseIndependently : <<include>>
+ProcessEachMerchandiseIndependently ..> CheckDesiredDeliveryFeasibility : <<include>>
+CheckDesiredDeliveryFeasibility ..> RankSitesShipFirstHigherStockFewerSites : <<include>>
+RankSitesShipFirstHigherStockFewerSites ..> SplitQuantityAcrossSelectedSites : <<include>>
+ReportInsufficientSupplyError ..> PlanImportAllocation : <<extend>>
+
+@enduml
+

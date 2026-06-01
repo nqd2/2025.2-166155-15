@@ -1,0 +1,406 @@
+' ========================================== 
+' MERGED PLANTUML DIAGRAMS FOR USE CASE: UC003_CollectInventoryData
+' Total Diagrams: 11
+' ========================================== 
+
+' ------------------------------------------
+' Source File: activity_collect_inventory_data.puml
+' ------------------------------------------
+@startuml activity_collect_inventory_data
+title Activity Diagram - CollectInventoryData
+
+start
+:International Ordering Department initiates stock check;
+:System filters candidate sites trading at least one item;
+:For each candidate site, generate filtered item list;
+:Send stock inquiry requests to candidate sites;
+:Sites query their local database for quantities;
+:Sites reply with in-stock quantities (0 if out of stock);
+:System consolidates all site responses;
+:System persists data in Inventory Information File;
+stop
+@enduml
+
+' ------------------------------------------
+' Source File: class_analysis_collect_inventory_data.puml
+' ------------------------------------------
+@startuml class_analysis_collect_inventory_data
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - CollectInventoryData
+
+class InventoryCollectionUI <<boundary>> {
+  +displayStatus()
+  +showSuccessMessage()
+}
+
+class InventoryCollectionController <<control>> {
+  +collectStockInfo(requestList: Object)
+  +filterMerchandiseForSite(site: ImportSite, list: Object): Object
+}
+
+class ImportSite <<entity>> {
+  -siteCode: String
+  -siteName: String
+  +findCandidateSites(list: Object): List<ImportSite>
+}
+
+class InventoryRecord <<entity>> {
+  -siteCode: String
+  -merchandiseCode: String
+  -inStockQuantity: int
+  -unit: String
+  +persistResponse(siteCode: String, itemCode: String, qty: int, unit: String)
+}
+
+InventoryCollectionUI --> InventoryCollectionController
+InventoryCollectionController --> ImportSite
+InventoryCollectionController --> InventoryRecord
+ImportSite "1" -- "*" InventoryRecord
+@enduml
+
+' ------------------------------------------
+' Source File: class_design_collect_inventory_data.puml
+' ------------------------------------------
+@startuml class_design_collect_inventory_data
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - CollectInventoryData
+
+class InventoryCollectionUI {
+  +displayStatus(): void
+  +showSuccessMessage(): void
+}
+
+class InventoryCollectionController {
+  -stockQueryFacade: StockQueryFacade
+  -siteRepository: ImportSiteRepository
+  -recordRepository: InventoryRecordRepository
+  +collectStockInfo(requestList: List<Map>): void
+  +filterMerchandiseForSite(site: ImportSite, list: List<Map>): List<String>
+}
+
+class ImportSite {
+  -siteCode: String
+  -siteName: String
+  +getSiteCode(): String
+  +getSiteName(): String
+}
+
+class InventoryRecord {
+  -siteCode: String
+  -merchandiseCode: String
+  -inStockQuantity: int
+  -unit: String
+  +getSiteCode(): String
+  +getMerchandiseCode(): String
+  +getInStockQuantity(): int
+  +getUnit(): String
+}
+
+class ImportSiteRepository {
+  -dbConnection: Object
+  +findCandidateSites(list: List<Map>): List<ImportSite>
+}
+
+class InventoryRecordRepository {
+  -dbConnection: Object
+  +saveStockResponse(siteCode: String, code: String, qty: int, unit: String): boolean
+}
+
+class StockQueryFacade {
+  -queryService: StockQueryService
+  +queryStock(siteCode: String, items: List<String>): Map<String, Object>
+}
+
+InventoryCollectionUI --> InventoryCollectionController
+InventoryCollectionController --> StockQueryFacade
+InventoryCollectionController --> ImportSiteRepository
+InventoryCollectionController --> InventoryRecordRepository
+ImportSiteRepository --> ImportSite
+InventoryRecordRepository --> InventoryRecord
+@enduml
+
+' ------------------------------------------
+' Source File: class_subsystem_collect_inventory_data.puml
+' ------------------------------------------
+@startuml class_subsystem_collect_inventory_data
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - StockQuerySubsystem (CollectInventoryData)
+
+class StockQueryFacade <<facade>> {
+  +queryStock(siteCode: String, items: List): Map
+}
+
+class StockQueryService <<service>> {
+  +dispatchStockQuery(siteCode: String, items: List): Map
+  -sendRequestViaAPI(connection: Object, items: List): Map
+}
+
+class APIConnectionPool <<service>> {
+  +getConnection(siteCode: String): Object
+}
+
+StockQueryFacade --> StockQueryService
+StockQueryService --> APIConnectionPool
+@enduml
+
+' ------------------------------------------
+' Source File: communication_analysis_collect_inventory_data.puml
+' ------------------------------------------
+@startuml communication_analysis_collect_inventory_data
+title Communication Diagram (Analysis Level) - CollectInventoryData
+
+object "InternationalOrderingDepartment" as Actor
+object "InventoryCollectionUI" as Boundary
+object "InventoryCollectionController" as Control
+object "ImportSite" as Site
+object "InventoryRecord" as Record
+object "OverseasImportSite" as SiteActor
+
+Actor -- Boundary : 1: triggerCollection(requestList)
+Boundary -- Control : 2: collectStockInfo(requestList)
+Control -- Site : 3: findCandidateSites(requestList)
+Control -- SiteActor : 4: sendStockInquiry(siteCode, filteredList) / 5: returnStockResponse(siteCode, stockData)
+Control -- Record : 6: persistResponse(siteCode, merchandiseCode, inStockQty, unit)
+Boundary -- Actor : showSuccessMessage()
+@enduml
+
+' ------------------------------------------
+' Source File: package_design_collect_inventory_data.puml
+' ------------------------------------------
+@startuml package_design_collect_inventory_data
+title Package Dependency Diagram - CollectInventoryData
+
+package "Presentation Layer" as Presentation {
+  class InventoryCollectionUI
+}
+
+package "Business Layer" as Business {
+  class InventoryCollectionController
+  class StockQueryFacade
+}
+
+package "Domain Layer" as Domain {
+  class ImportSite
+  class InventoryRecord
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  class ImportSiteRepository
+  class InventoryRecordRepository
+}
+
+Presentation ..> Business : uses
+Business ..> Domain : manipulates
+Business ..> Infrastructure : uses
+Infrastructure ..> Domain : persists
+@enduml
+
+' ------------------------------------------
+' Source File: screen_transition_collect_inventory_data.puml
+' ------------------------------------------
+@startuml screen_transition_collect_inventory_data
+left to right direction
+
+title ScreenTransitionCollectInventoryData
+
+[CollectInventoryDataScreen] as SC003
+[FindCandidateSitesForMerchandiseScreen] as SC00301
+[FilterMerchandiseListPerSiteScreen] as SC00302
+[SendStockInquiryToSiteScreen] as SC00303
+[ReceiveStockResponseFromSiteScreen] as SC00304
+[PersistInventoryInformationFileScreen] as SC00305
+
+SC003 --> SC00301 : start collection
+SC00301 --> SC00302 : shortlist sites
+SC00302 --> SC00303 : prepare inquiries
+SC00303 --> SC00304 : wait responses
+SC00304 --> SC00305 : consolidate data
+SC00305 --> SC003 : done
+
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_analysis_collect_inventory_data.puml
+' ------------------------------------------
+@startuml sequence_analysis_collect_inventory_data
+title Analysis Sequence Diagram - CollectInventoryData
+
+actor InternationalOrderingDepartment as Actor
+participant "InventoryCollectionUI" as Boundary <<boundary>>
+participant "InventoryCollectionController" as Control <<control>>
+entity "ImportSite" as Site <<entity>>
+entity "InventoryRecord" as Record <<entity>>
+actor OverseasImportSite as SiteActor
+
+Actor -> Boundary : triggerCollection(requestList)
+activate Boundary
+Boundary -> Control : collectStockInfo(requestList)
+activate Control
+
+Control -> Site : findCandidateSites(requestList)
+activate Site
+Site --> Control : candidateSitesList
+deactivate Site
+
+loop for each candidateSite
+  Control -> Control : filterMerchandiseForSite(candidateSite, requestList)
+  Control -> SiteActor : sendStockInquiry(siteCode, filteredList)
+  activate SiteActor
+  SiteActor --> Control : returnStockResponse(siteCode, stockData)
+  deactivate SiteActor
+  
+  loop for each item in stockData
+    Control -> Record : persistResponse(siteCode, merchandiseCode, inStockQty, unit)
+    activate Record
+    Record --> Control : saved
+    deactivate Record
+  end
+end
+
+Control --> Boundary : collectionCompleted()
+deactivate Control
+Boundary --> Actor : showSuccessMessage()
+deactivate Boundary
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_design_collect_inventory_data.puml
+' ------------------------------------------
+@startuml sequence_design_collect_inventory_data
+title Design Sequence Diagram - CollectInventoryData
+
+actor InternationalOrderingDepartment as Actor
+participant "InventoryCollectionUI" as Boundary
+participant "InventoryCollectionController" as Control
+participant "StockQueryFacade" as Subsystem
+participant "ImportSiteRepository" as SiteRepo
+participant "InventoryRecordRepository" as RecordRepo
+actor OverseasImportSite as SiteActor
+
+Actor -> Boundary : triggerCollection(requestList)
+activate Boundary
+
+Boundary -> Control : collectStockInfo(requestList)
+activate Control
+
+Control -> SiteRepo : findCandidateSites(requestList)
+activate SiteRepo
+SiteRepo --> Control : candidateSitesList
+deactivate SiteRepo
+
+loop for each candidateSite in candidateSitesList
+  Control -> Control : filterList = filterMerchandiseForSite(candidateSite, requestList)
+  
+  Control -> Subsystem : queryStock(candidateSite.siteCode, filterList)
+  activate Subsystem
+  
+  Subsystem -> SiteActor : sendStockInquiry(siteCode, filterList)
+  activate SiteActor
+  SiteActor --> Subsystem : apiResponse(stockData)
+  deactivate SiteActor
+  
+  Subsystem --> Control : queryResult(stockData)
+  deactivate Subsystem
+  
+  loop for each item in stockData
+    Control -> RecordRepo : saveStockResponse(siteCode, item.merchandiseCode, item.inStockQuantity, item.unit)
+    activate RecordRepo
+    RecordRepo -> RecordRepo : persistToDatabase()
+    RecordRepo --> Control : saveSuccess
+    deactivate RecordRepo
+  end
+end
+
+Control --> Boundary : collectionCompleted()
+Boundary --> Actor : showSuccessMessage()
+deactivate Boundary
+@enduml
+
+' ------------------------------------------
+' Source File: sequence_subsystem_collect_inventory_data.puml
+' ------------------------------------------
+@startuml sequence_subsystem_collect_inventory_data
+title Subsystem Sequence Diagram - StockQuerySubsystem (CollectInventoryData)
+
+participant "InventoryCollectionController" as Client
+box "StockQuerySubsystem" #LightBlue
+  participant "StockQueryFacade" as Facade <<subsystem>>
+  participant "StockQueryService" as Service <<service>>
+  participant "APIConnectionPool" as Connection <<service>>
+end box
+
+Client -> Facade : queryStock(siteCode, items)
+activate Facade
+
+Facade -> Service : dispatchStockQuery(siteCode, items)
+activate Service
+
+Service -> Connection : getConnection(siteCode)
+activate Connection
+Connection --> Service : connectionInstance
+deactivate Connection
+
+Service -> Service : sendRequestViaAPI(connectionInstance, items)
+Service --> Facade : apiResponse(stockData)
+deactivate Service
+
+Facade --> Client : queryResult(stockData)
+deactivate Facade
+@enduml
+
+' ------------------------------------------
+' Source File: usecase_collect_inventory_data.puml
+' ------------------------------------------
+@startuml usecase_collect_inventory_data
+left to right direction
+
+title DecomposeCollectInventoryData
+
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+actor "OverseasImportSite" as OverseasImportSite
+
+rectangle "ImportAssignmentSystem" {
+  usecase "CollectInventoryData" as CollectInventoryData
+  usecase "FindCandidateSitesForMerchandise" as FindCandidateSitesForMerchandise
+  usecase "FilterMerchandiseListPerSite" as FilterMerchandiseListPerSite
+  usecase "SendStockInquiryToSite" as SendStockInquiryToSite
+  usecase "ReceiveStockResponseFromSite" as ReceiveStockResponseFromSite
+  usecase "PersistInventoryInformationFile" as PersistInventoryInformationFile
+}
+
+InternationalOrderingDepartment --> CollectInventoryData
+OverseasImportSite --> ReceiveStockResponseFromSite
+
+CollectInventoryData ..> FindCandidateSitesForMerchandise : <<include>>
+FindCandidateSitesForMerchandise ..> FilterMerchandiseListPerSite : <<include>>
+FilterMerchandiseListPerSite ..> SendStockInquiryToSite : <<include>>
+SendStockInquiryToSite ..> ReceiveStockResponseFromSite : <<include>>
+CollectInventoryData ..> PersistInventoryInformationFile : <<include>>
+PersistInventoryInformationFile ..> ReceiveStockResponseFromSite : <<include>>
+
+@enduml
+

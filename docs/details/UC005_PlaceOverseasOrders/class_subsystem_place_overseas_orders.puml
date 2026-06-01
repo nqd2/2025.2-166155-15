@@ -1,0 +1,27 @@
+@startuml class_subsystem_place_overseas_orders
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - OrderTransmissionSubsystem (PlaceOverseasOrders)
+
+class OrderTransmissionFacade <<facade>> {
+  +transmitOrder(siteCode: String, orderDetails: Map): boolean
+}
+
+class XMLGeneratorService <<service>> {
+  +generateOrderXML(orderDetails: Map): Object
+}
+
+class SFTPUploadService <<service>> {
+  +uploadToSiteServer(siteCode: String, file: Object): boolean
+}
+
+OrderTransmissionFacade --> XMLGeneratorService
+OrderTransmissionFacade --> SFTPUploadService
+@enduml

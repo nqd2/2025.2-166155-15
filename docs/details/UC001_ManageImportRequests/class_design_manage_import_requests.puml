@@ -1,0 +1,63 @@
+@startuml class_design_manage_import_requests
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Design Level) - ManageImportRequests
+
+class ImportRequestUI {
+  +displayForm(): void
+  +getInputData(): Map<String, Object>
+  +showSuccessMessage(requestId: String): void
+  +showErrorMessage(errors: List<String>): void
+}
+
+class ImportRequestController {
+  -validationFacade: ValidationFacade
+  -repository: ImportRequestRepository
+  +validateAndProcessRequest(data: Map<String, Object>): void
+}
+
+class ImportRequest {
+  -requestId: String
+  -status: String
+  -createdDate: Date
+  -items: List<Merchandise>
+  +ImportRequest(data: Map<String, Object>)
+  +getRequestId(): String
+  +getStatus(): String
+  +getItems(): List<Merchandise>
+}
+
+class Merchandise {
+  -merchandiseCode: String
+  -quantityOrdered: int
+  -unit: String
+  -desiredDeliveryDate: Date
+  +getMerchandiseCode(): String
+  +getQuantityOrdered(): int
+  +getUnit(): String
+  +getDesiredDeliveryDate(): Date
+}
+
+class ImportRequestRepository {
+  -dbConnection: Object
+  +save(request: ImportRequest): ImportRequest
+  +findById(id: String): ImportRequest
+}
+
+class ValidationFacade {
+  +validateRequest(data: Map<String, Object>): List<String>
+}
+
+ImportRequestUI --> ImportRequestController
+ImportRequestController --> ValidationFacade
+ImportRequestController --> ImportRequestRepository
+ImportRequestRepository --> ImportRequest
+ImportRequest "1" *-- "*" Merchandise
+@enduml

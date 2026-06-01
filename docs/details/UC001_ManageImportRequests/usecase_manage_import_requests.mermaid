@@ -1,0 +1,27 @@
+graph LR
+  SalesDepartment["SalesDepartment"]
+  InternationalOrderingDepartment["InternationalOrderingDepartment"]
+
+  subgraph ImportAssignmentSystem ["ImportAssignmentSystem"]
+    ManageImportRequests(["ManageImportRequests"])
+    CreateImportRequest(["CreateImportRequest"])
+    ValidateImportRequestInput(["ValidateImportRequestInput"])
+    SubmitImportRequest(["SubmitImportRequest"])
+    TrackImportRequestStatus(["TrackImportRequestStatus"])
+    UpdateImportRequest(["UpdateImportRequest"])
+    CancelImportRequest(["CancelImportRequest"])
+  end
+
+  SalesDepartment --> ManageImportRequests
+  InternationalOrderingDepartment --> TrackImportRequestStatus
+
+  ManageImportRequests -.->|"<<include>>"| CreateImportRequest
+  ManageImportRequests -.->|"<<include>>"| SubmitImportRequest
+  ManageImportRequests -.->|"<<include>>"| TrackImportRequestStatus
+  CreateImportRequest -.->|"<<include>>"| ValidateImportRequestInput
+  SubmitImportRequest -.->|"<<include>>"| ValidateImportRequestInput
+  UpdateImportRequest -.->|"<<extend>>"| ManageImportRequests
+  CancelImportRequest -.->|"<<extend>>"| ManageImportRequests
+
+  SalesDepartment --> UpdateImportRequest
+  SalesDepartment --> CancelImportRequest

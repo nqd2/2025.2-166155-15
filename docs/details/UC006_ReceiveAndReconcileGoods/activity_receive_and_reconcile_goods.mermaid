@@ -1,0 +1,12 @@
+flowchart TD
+  Start([Start]) --> Receive[Warehouse Department receives physical delivery]
+  Receive --> Load[System loads expected order quantities]
+  Load --> Count[Unpack and count received merchandise]
+  Count --> Compare{Compare received vs expected ordered}
+  Compare -->|Discrepancy| Record[Record discrepancy surplus/deficit/damaged]
+  Compare -->|No Discrepancy| Match[Mark as fully matched]
+  
+  Record --> Save[Save Goods Receipt details]
+  Match --> Save
+  Save --> Update[Update internal warehouse stock levels]
+  Update --> End([End])

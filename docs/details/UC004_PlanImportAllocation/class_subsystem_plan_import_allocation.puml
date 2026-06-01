@@ -1,0 +1,32 @@
+@startuml class_subsystem_plan_import_allocation
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - AllocationEngineSubsystem (PlanImportAllocation)
+
+class AllocationFacade <<facade>> {
+  +calculateAllocation(requestId: String, records: List, sites: List): List
+}
+
+class FeasibilityChecker <<service>> {
+  +checkDeliveryFeasibility(records: List, sites: List): List
+}
+
+class SiteRanker <<service>> {
+  +rankSites(sites: List): List
+}
+
+class SplitCalculator <<service>> {
+  +splitQuantity(requestId: String, rankedSites: List): List
+}
+
+AllocationFacade --> FeasibilityChecker
+AllocationFacade --> SiteRanker
+AllocationFacade --> SplitCalculator
+@enduml

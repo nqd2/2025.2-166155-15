@@ -1,0 +1,28 @@
+@startuml class_subsystem_collect_inventory_data
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - StockQuerySubsystem (CollectInventoryData)
+
+class StockQueryFacade <<facade>> {
+  +queryStock(siteCode: String, items: List): Map
+}
+
+class StockQueryService <<service>> {
+  +dispatchStockQuery(siteCode: String, items: List): Map
+  -sendRequestViaAPI(connection: Object, items: List): Map
+}
+
+class APIConnectionPool <<service>> {
+  +getConnection(siteCode: String): Object
+}
+
+StockQueryFacade --> StockQueryService
+StockQueryService --> APIConnectionPool
+@enduml

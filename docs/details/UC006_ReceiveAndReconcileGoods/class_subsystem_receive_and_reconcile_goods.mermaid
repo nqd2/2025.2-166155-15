@@ -1,0 +1,18 @@
+classDiagram
+  class ReconciliationFacade {
+    <<facade>>
+    +reconcile(expected List, received List) ReconciliationResult
+  }
+
+  class DiscrepancyCalculator {
+    <<service>>
+    +compareQuantities(expected List, received List) List
+  }
+
+  class ReconciliationReportService {
+    <<service>>
+    +generateReport(discrepancies List) Object
+  }
+
+  ReconciliationFacade --> DiscrepancyCalculator
+  ReconciliationFacade --> ReconciliationReportService

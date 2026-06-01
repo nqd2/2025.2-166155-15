@@ -1,0 +1,15 @@
+@startuml activity_place_overseas_orders
+title Activity Diagram - PlaceOverseasOrders
+
+start
+:International Ordering Department triggers order generation;
+:System retrieves active Allocation Plan;
+:Group allocation lines by Import Site;
+:For each Site, compose an Overseas Order;
+:Specify delivery means (ship delivery / air delivery);
+:Transmit official orders to selected Sites;
+:Overseas Import Sites receive and process orders;
+:Sites send Acknowledgements back to the system;
+:System updates Order status to Transmitted;
+stop
+@enduml

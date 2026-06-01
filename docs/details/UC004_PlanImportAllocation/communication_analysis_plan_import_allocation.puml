@@ -1,0 +1,17 @@
+@startuml communication_analysis_plan_import_allocation
+title Communication Diagram (Analysis Level) - PlanImportAllocation
+
+object "InternationalOrderingDepartment" as Actor
+object "ImportAllocationUI" as Boundary
+object "ImportAllocationController" as Control
+object "InventoryRecord" as Record
+object "ImportSite" as Site
+object "AllocationPlan" as Entity
+
+Actor -- Boundary : 1: triggerAllocation(requestId)
+Boundary -- Control : 2: generateAllocationPlan(requestId)
+Control -- Record : 3: getStockInfoForRequest(requestId)
+Control -- Site : 4: getSiteTransitTimes()
+Control -- Entity : 5: createPlan(requestId, splits) [if success]
+Boundary -- Actor : showDraftPlan() / displayInsufficientSupplyError()
+@enduml

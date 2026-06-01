@@ -1,0 +1,35 @@
+sequenceDiagram
+  actor Actor as SalesDepartment
+  participant Boundary as ImportRequestUI
+  participant Control as ImportRequestController
+  participant Merchandise as Merchandise
+  participant Entity as ImportRequest
+
+  Actor->>Boundary: openCreateRequestForm()
+  activate Boundary
+  Boundary-->>Actor: displayForm()
+  deactivate Boundary
+
+  Actor->>Boundary: submitRequestData(data)
+  activate Boundary
+  Boundary->>Control: validateAndProcessRequest(data)
+  activate Control
+
+  Control->>Merchandise: checkExistence(merchandiseCode)
+  activate Merchandise
+  Merchandise-->>Control: exists
+  deactivate Merchandise
+
+  alt Data is valid
+    Control->>Entity: create(data)
+    activate Entity
+    Entity-->>Control: requestCreated(requestId)
+    deactivate Entity
+    Control-->>Boundary: success(requestId)
+    Boundary-->>Actor: showSuccessMessage(requestId)
+  else Data is invalid
+    Control-->>Boundary: failure(errors)
+    deactivate Control
+    Boundary-->>Actor: showErrorMessage(errors)
+    deactivate Boundary
+  end

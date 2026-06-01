@@ -1,0 +1,5 @@
+flowchart TD
+  Actor([InternationalOrderingDepartment]) <-->|1: triggerOrderGeneration| Boundary[OverseasOrderingUI]
+  Boundary <-->|2: generateOrders| Control[OverseasOrderingController]
+  Control <-->|3: composeOrdersFromPlan<br/>6: setOrderStatus| Entity[OverseasOrder]
+  Control <-->|4: transmitOrder<br/>5: returnAcknowledgement| SiteActor([OverseasImportSite])

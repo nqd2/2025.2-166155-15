@@ -1,0 +1,10 @@
+flowchart TD
+  Start([Start]) --> Initiate[Ordering Department initiates stock check]
+  Initiate --> Find[System filters candidate sites trading items]
+  Find --> Filter[Generate filtered item list per candidate site]
+  Filter --> Send[Send stock inquiry requests to candidate sites]
+  Send --> Query[Sites query local database for quantities]
+  Query --> Reply[Sites reply with in-stock quantities]
+  Reply --> Consolidate[System consolidates site responses]
+  Consolidate --> Persist[System persists in Inventory Info File]
+  Persist --> End([End])

@@ -1,0 +1,17 @@
+@startuml activity_receive_and_reconcile_goods
+title Activity Diagram - ReceiveAndReconcileGoods
+
+start
+:Warehouse Department receives physical delivery of goods;
+:System loads expected order quantities from Overseas Order;
+:Unpack and count received merchandise;
+:Compare actual received quantity with expected ordered quantity;
+if (Is there a discrepancy?) then (yes)
+  :Record discrepancy (surplus/deficit/damaged);
+else (no)
+  :Mark as fully matched;
+endif
+:Save Goods Receipt details;
+:Update internal warehouse stock levels;
+stop
+@enduml

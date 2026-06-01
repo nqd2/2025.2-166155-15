@@ -1,0 +1,87 @@
+classDiagram
+  class GoodsReceiptUI {
+    +displayExpectedQuantities() void
+    +showReconciliationForm(order Object) void
+    +showReceiptSummary(receipt GoodsReceipt) void
+  }
+
+  class GoodsReceiptController {
+    -reconciliationFacade: ReconciliationFacade
+    -orderRepo: OverseasOrderRepository
+    -receiptRepo: GoodsReceiptRepository
+    -stockRepo: WarehouseStockRepository
+    +getExpectedOrderDetails(orderId String) void
+    +processReceipt(orderId String, received List) void
+  }
+
+  class OverseasOrder {
+    -orderId: String
+    -siteCode: String
+    -status: String
+    -orderLines: List
+    +getOrderId() String
+    +getOrderLines() List
+  }
+
+  class GoodsReceipt {
+    -receiptId: String
+    -orderId: String
+    -receivedDate: Date
+    -receiptLines: List
+    +GoodsReceipt(orderId String, lines List)
+    +getReceiptId() String
+    +getOrderId() String
+    +getReceiptLines() List
+  }
+
+  class ReceiptLine {
+    -merchandiseCode: String
+    -receivedQty: int
+    -discrepancyQty: int
+    -discrepancyType: String
+    +getMerchandiseCode() String
+    +getReceivedQty() int
+    +getDiscrepancyQty() int
+    +getDiscrepancyType() String
+  }
+
+  class WarehouseStock {
+    -merchandiseCode: String
+    -quantityInStock: int
+    +WarehouseStock(merchandiseCode String, quantityInStock int)
+    +getMerchandiseCode() String
+    +getQuantityInStock() int
+    +addQuantity(qty int) void
+  }
+
+  class OverseasOrderRepository {
+    -dbConnection: Object
+    +findById(orderId String) OverseasOrder
+  }
+
+  class GoodsReceiptRepository {
+    -dbConnection: Object
+    +save(receipt GoodsReceipt) GoodsReceipt
+  }
+
+  class WarehouseStockRepository {
+    -dbConnection: Object
+    +findByCode(code String) WarehouseStock
+    +save(stock WarehouseStock) boolean
+  }
+
+  class ReconciliationFacade {
+    -calculator: Object
+    -reporter: Object
+    +reconcile(expected List, received List) ReconciliationResult
+  }
+
+  GoodsReceiptUI --> GoodsReceiptController
+  GoodsReceiptController --> ReconciliationFacade
+  GoodsReceiptController --> OverseasOrderRepository
+  GoodsReceiptController --> GoodsReceiptRepository
+  GoodsReceiptController --> WarehouseStockRepository
+  OverseasOrderRepository --> OverseasOrder
+  GoodsReceiptRepository --> GoodsReceipt
+  GoodsReceipt "1" *-- "*" ReceiptLine
+  WarehouseStockRepository --> WarehouseStock

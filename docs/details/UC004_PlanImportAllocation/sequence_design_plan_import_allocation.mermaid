@@ -1,0 +1,53 @@
+sequenceDiagram
+  actor Actor as InternationalOrderingDepartment
+  participant Boundary as ImportAllocationUI
+  participant Control as ImportAllocationController
+  participant Subsystem as AllocationFacade
+  participant RecordRepo as InventoryRecordRepository
+  participant SiteRepo as ImportSiteRepository
+  participant PlanRepo as AllocationPlanRepository
+  participant Entity as AllocationPlan
+
+  Actor->>Boundary: triggerAllocation(requestId)
+  activate Boundary
+
+  Boundary->>Control: generateAllocationPlan(requestId)
+  activate Control
+
+  Control->>RecordRepo: getStockInfoForRequest(requestId)
+  activate RecordRepo
+  RecordRepo-->>Control: stockInfoList
+  deactivate RecordRepo
+
+  Control->>SiteRepo: getSiteTransitTimes()
+  activate SiteRepo
+  SiteRepo-->>Control: siteTransitTimesList
+  deactivate SiteRepo
+
+  Control->>Subsystem: calculateAllocation(requestId, stockInfoList, siteTransitTimesList)
+  activate Subsystem
+  Subsystem-->>Control: allocationSplits
+  deactivate Subsystem
+
+  alt splits is not empty (Allocation Successful)
+    Control->>Entity: new AllocationPlan(requestId, allocationSplits)
+    activate Entity
+    Entity-->>Control: allocationPlanInstance
+    deactivate Entity
+
+    Control->>PlanRepo: save(allocationPlanInstance)
+    activate PlanRepo
+    rect rgb(200, 220, 240)
+      note over PlanRepo: persistToDatabase()
+    end
+    PlanRepo-->>Control: savedPlan
+    deactivate PlanRepo
+
+    Control-->>Boundary: showDraftPlan(savedPlan)
+    Boundary-->>Actor: displayDraftPlan()
+  else splits is empty (Allocation Failed)
+    Control-->>Boundary: showError(104)
+    deactivate Control
+    Boundary-->>Actor: displayInsufficientSupplyError()
+    deactivate Boundary
+  end

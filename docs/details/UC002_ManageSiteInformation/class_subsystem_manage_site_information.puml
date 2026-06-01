@@ -1,0 +1,27 @@
+@startuml class_subsystem_manage_site_information
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - SiteCatalogSubsystem (ManageSiteInformation)
+
+class SiteCatalogFacade <<facade>> {
+  +updateCatalog(siteCode: String, data: List): boolean
+}
+
+class ProductCatalogService <<service>> {
+  +validateProducts(data: List): boolean
+}
+
+class NotificationService <<service>> {
+  +triggerSiteChangeNotification(siteCode: String): boolean
+}
+
+SiteCatalogFacade --> ProductCatalogService
+SiteCatalogFacade --> NotificationService
+@enduml

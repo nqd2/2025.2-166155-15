@@ -1,0 +1,24 @@
+@startuml activity_plan_import_allocation
+title Activity Diagram - PlanImportAllocation
+
+start
+:International Ordering Department triggers allocation planning;
+:System loops through each requested merchandise independently;
+:Retrieve candidate sites and their in-stock quantities;
+:Filter out sites that cannot meet desired delivery date;
+:Rank remaining sites:
+1. Ship transport over Air
+2. Larger in-stock quantity
+3. Minimize number of selected sites;
+if (Total stock from feasible sites >= requested quantity?) then (yes)
+  :Split requested quantity across ranked sites;
+  :Generate allocation plan lines;
+  :Display draft allocation plan;
+  :Confirm and save allocation plan;
+  stop
+else (no)
+  :Generate Insufficient Supply Error;
+  :Display error message to user;
+  stop
+endif
+@enduml

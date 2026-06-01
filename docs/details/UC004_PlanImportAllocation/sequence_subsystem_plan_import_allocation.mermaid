@@ -1,0 +1,29 @@
+sequenceDiagram
+  participant Client as ImportAllocationController
+  box AllocationEngineSubsystem
+    participant Facade as AllocationFacade
+    participant Checker as FeasibilityChecker
+    participant Ranker as SiteRanker
+    participant Splitter as SplitCalculator
+  end box
+
+  Client->>Facade: calculateAllocation(requestId, stockRecords, sites)
+  activate Facade
+
+  Facade->>Checker: checkDeliveryFeasibility(stockRecords, sites)
+  activate Checker
+  Checker-->>Facade: feasibleSites
+  deactivate Checker
+
+  Facade->>Ranker: rankSites(feasibleSites)
+  activate Ranker
+  Ranker-->>Facade: rankedSitesList
+  deactivate Ranker
+
+  Facade->>Splitter: splitQuantity(requestId, rankedSitesList)
+  activate Splitter
+  Splitter-->>Facade: allocationSplits
+  deactivate Splitter
+
+  Facade-->>Client: allocationResult(allocationSplits)
+  deactivate Facade

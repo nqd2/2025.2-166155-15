@@ -1,0 +1,6 @@
+flowchart TD
+  Actor([SystemAdministrator]) <-->|1: openAdminPanel<br/>3: modifyUserRole| Boundary[SystemAdminUI]
+  Boundary <-->|2: displayCategories<br/>4: updateUserRole| Control[SystemAdminController]
+  Control <-->|5: findById<br/>7: assignRole| User[UserAccount]
+  Control <-->|6: findByName| Role[UserRole]
+  Control <-->|8: logAction| Log[OperationLog]

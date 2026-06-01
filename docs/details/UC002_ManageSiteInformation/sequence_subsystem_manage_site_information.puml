@@ -1,0 +1,26 @@
+@startuml sequence_subsystem_manage_site_information
+title Subsystem Sequence Diagram - SiteCatalogSubsystem (ManageSiteInformation)
+
+participant "SiteInformationController" as Client
+box "SiteCatalogSubsystem" #LightBlue
+  participant "SiteCatalogFacade" as Facade <<subsystem>>
+  participant "ProductCatalogService" as Catalog <<service>>
+  participant "NotificationService" as Notify <<service>>
+end box
+
+Client -> Facade : updateCatalog(siteCode, catalogData)
+activate Facade
+
+Facade -> Catalog : validateProducts(catalogData)
+activate Catalog
+Catalog --> Facade : validationResult
+deactivate Catalog
+
+Facade -> Notify : triggerSiteChangeNotification(siteCode)
+activate Notify
+Notify --> Facade : notificationSent
+deactivate Notify
+
+Facade --> Client : updateResult(success)
+deactivate Facade
+@enduml

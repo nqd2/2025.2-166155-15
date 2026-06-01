@@ -1,0 +1,27 @@
+graph LR
+  WarehouseManagementDepartment["WarehouseManagementDepartment"]
+  InternationalOrderingDepartment["InternationalOrderingDepartment"]
+
+  subgraph ImportAssignmentSystem ["ImportAssignmentSystem"]
+    ReceiveAndReconcileGoods(["ReceiveAndReconcileGoods"])
+    LoadExpectedOrderQuantities(["LoadExpectedOrderQuantities"])
+    RecordGoodsReceipt(["RecordGoodsReceipt"])
+    CompareReceivedVsOrdered(["CompareReceivedVsOrdered"])
+    RecordQuantityDiscrepancy(["RecordQuantityDiscrepancy"])
+    UpdateInternalWarehouseStock(["UpdateInternalWarehouseStock"])
+  end
+
+  WarehouseManagementDepartment --> ReceiveAndReconcileGoods
+  InternationalOrderingDepartment --> LoadExpectedOrderQuantities
+
+  ReceiveAndReconcileGoods -.->|"<<include>>"| LoadExpectedOrderQuantities
+  ReceiveAndReconcileGoods -.->|"<<include>>"| RecordGoodsReceipt
+  ReceiveAndReconcileGoods -.->|"<<include>>"| CompareReceivedVsOrdered
+  ReceiveAndReconcileGoods -.->|"<<include>>"| UpdateInternalWarehouseStock
+  CompareReceivedVsOrdered -.->|"<<include>>"| LoadExpectedOrderQuantities
+  UpdateInternalWarehouseStock -.->|"<<include>>"| CompareReceivedVsOrdered
+  RecordQuantityDiscrepancy -.->|"<<extend>>"| CompareReceivedVsOrdered
+
+  WarehouseManagementDepartment --> RecordGoodsReceipt
+  WarehouseManagementDepartment --> RecordQuantityDiscrepancy
+  WarehouseManagementDepartment --> UpdateInternalWarehouseStock

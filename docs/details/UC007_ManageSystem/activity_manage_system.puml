@@ -1,0 +1,26 @@
+@startuml activity_manage_system
+title Activity Diagram - ManageSystem
+
+start
+:System Administrator logs in and opens Admin Panel;
+:Select administrative category;
+if (Category?) then (Users & Roles)
+  :Manage user accounts & roles (RBAC);
+elseif (Master Data) then (Shared Lists)
+  :Manage shared catalogs (merchandise, units);
+elseif (Operation Logs) then (View Logs)
+  :Query cross-department operations;
+else (Backup & Restore)
+  :Trigger backup or restore process;
+endif
+:Submit request;
+if (Data is valid & Authorized?) then (yes)
+  :System executes operation and persists changes;
+  :Log administrative action;
+  :Show success confirmation;
+  stop
+else (no)
+  :Display Validation/Authorization Error;
+  stop
+endif
+@enduml

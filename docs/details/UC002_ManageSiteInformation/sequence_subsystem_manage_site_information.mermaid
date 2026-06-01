@@ -1,0 +1,23 @@
+sequenceDiagram
+  participant Client as SiteInformationController
+  box SiteCatalogSubsystem
+    participant Facade as SiteCatalogFacade
+    participant Catalog as ProductCatalogService
+    participant Notify as NotificationService
+  end box
+
+  Client->>Facade: updateCatalog(siteCode, catalogData)
+  activate Facade
+
+  Facade->>Catalog: validateProducts(catalogData)
+  activate Catalog
+  Catalog-->>Facade: validationResult
+  deactivate Catalog
+
+  Facade->>Notify: triggerSiteChangeNotification(siteCode)
+  activate Notify
+  Notify-->>Facade: notificationSent
+  deactivate Notify
+
+  Facade-->>Client: updateResult(success)
+  deactivate Facade

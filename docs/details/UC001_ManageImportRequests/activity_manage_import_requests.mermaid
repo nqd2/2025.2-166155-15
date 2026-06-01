@@ -1,0 +1,9 @@
+flowchart TD
+  Start([Start]) --> Initiate[Sales Department initiates Import Request]
+  Initiate --> Input[Input Merchandise Code, Quantity, Unit, and Desired Delivery Date]
+  Input --> Validate{Data is valid?}
+  Validate -->|No| Error[Display Validation Error]
+  Error --> Input
+  Validate -->|Yes| Confirm[Confirm and Submit Request]
+  Confirm --> Save[System generates Request ID and saves state as Submitted]
+  Save --> End([End])

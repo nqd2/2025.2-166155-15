@@ -1,0 +1,52 @@
+classDiagram
+  class GoodsReceiptUI {
+    <<boundary>>
+    +displayExpectedQuantities()
+    +showReconciliationForm(order Object)
+    +showReceiptSummary(receipt Object)
+  }
+
+  class GoodsReceiptController {
+    <<control>>
+    +getExpectedOrderDetails(orderId String)
+    +processReceipt(orderId String, received Object)
+    -compareAndDetectDiscrepancies(order Object, received Object) Object
+  }
+
+  class OverseasOrder {
+    <<entity>>
+    -orderId: String
+    -siteCode: String
+    -status: String
+    +findById(orderId String) OverseasOrder
+  }
+
+  class GoodsReceipt {
+    <<entity>>
+    -receiptId: String
+    -orderId: String
+    -receivedDate: Date
+    -receiptLines: List
+    +createReceipt(orderId String, received Object, discrepancies Object)
+  }
+
+  class ReceiptLine {
+    <<entity>>
+    -merchandiseCode: String
+    -receivedQty: int
+    -discrepancyQty: int
+    -discrepancyType: String
+  }
+
+  class WarehouseStock {
+    <<entity>>
+    -merchandiseCode: String
+    -quantityInStock: int
+    +updateStockLevels(received Object)
+  }
+
+  GoodsReceiptUI --> GoodsReceiptController
+  GoodsReceiptController --> OverseasOrder
+  GoodsReceiptController --> GoodsReceipt
+  GoodsReceiptController --> WarehouseStock
+  GoodsReceipt "1" *-- "*" ReceiptLine

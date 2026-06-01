@@ -1,0 +1,25 @@
+@startuml usecase_plan_import_allocation
+left to right direction
+
+title DecomposePlanImportAllocation
+
+actor "InternationalOrderingDepartment" as InternationalOrderingDepartment
+
+rectangle "ImportAssignmentSystem" {
+  usecase "PlanImportAllocation" as PlanImportAllocation
+  usecase "ProcessEachMerchandiseIndependently" as ProcessEachMerchandiseIndependently
+  usecase "CheckDesiredDeliveryFeasibility" as CheckDesiredDeliveryFeasibility
+  usecase "RankSitesShipFirstHigherStockFewerSites" as RankSitesShipFirstHigherStockFewerSites
+  usecase "SplitQuantityAcrossSelectedSites" as SplitQuantityAcrossSelectedSites
+  usecase "ReportInsufficientSupplyError" as ReportInsufficientSupplyError
+}
+
+InternationalOrderingDepartment --> PlanImportAllocation
+
+PlanImportAllocation ..> ProcessEachMerchandiseIndependently : <<include>>
+ProcessEachMerchandiseIndependently ..> CheckDesiredDeliveryFeasibility : <<include>>
+CheckDesiredDeliveryFeasibility ..> RankSitesShipFirstHigherStockFewerSites : <<include>>
+RankSitesShipFirstHigherStockFewerSites ..> SplitQuantityAcrossSelectedSites : <<include>>
+ReportInsufficientSupplyError ..> PlanImportAllocation : <<extend>>
+
+@enduml

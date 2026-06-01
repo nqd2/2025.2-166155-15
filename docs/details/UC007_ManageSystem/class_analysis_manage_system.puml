@@ -1,0 +1,62 @@
+@startuml class_analysis_manage_system
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Class Diagram (Analysis Level) - ManageSystem
+
+class SystemAdminUI <<boundary>> {
+  +displayCategories()
+  +showSuccessMessage()
+  +showErrorMessage(errors: List)
+}
+
+class SystemAdminController <<control>> {
+  +updateUserRole(userId: String, newRole: String)
+  +backupDatabase()
+  +restoreDatabase(backupId: String)
+  +viewLogs(filters: Object)
+}
+
+class UserAccount <<entity>> {
+  -userId: String
+  -username: String
+  -status: String
+  -roles: List<UserRole>
+  +findById(userId: String): UserAccount
+  +assignRole(role: UserRole)
+}
+
+class UserRole <<entity>> {
+  -roleId: String
+  -roleName: String
+  -permissions: List<String>
+  +findByName(name: String): UserRole
+}
+
+class OperationLog <<entity>> {
+  -logId: String
+  -operatorId: String
+  -actionType: String
+  -timestamp: Date
+  -details: String
+  +logAction(action: String, userId: String, details: String)
+}
+
+class SystemConfig <<entity>> {
+  -configKey: String
+  -configValue: String
+}
+
+SystemAdminUI --> SystemAdminController
+SystemAdminController --> UserAccount
+SystemAdminController --> UserRole
+SystemAdminController --> OperationLog
+SystemAdminController --> SystemConfig
+UserAccount "1" *-- "*" UserRole
+@enduml

@@ -1,0 +1,32 @@
+@startuml class_subsystem_manage_import_requests
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title Subsystem Class Diagram - ValidationSubsystem (ManageImportRequests)
+
+class ValidationFacade <<facade>> {
+  +validateRequest(data): ValidationResult
+}
+
+class CatalogValidator <<service>> {
+  +checkExistence(code: String): boolean
+}
+
+class QuantityValidator <<service>> {
+  +validatePositive(qty: int): boolean
+}
+
+class DateValidator <<service>> {
+  +validateFutureDate(date: Date): boolean
+}
+
+ValidationFacade --> CatalogValidator
+ValidationFacade --> QuantityValidator
+ValidationFacade --> DateValidator
+@enduml

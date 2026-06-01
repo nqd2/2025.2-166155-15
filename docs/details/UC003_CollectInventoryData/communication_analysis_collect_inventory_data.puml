@@ -1,0 +1,17 @@
+@startuml communication_analysis_collect_inventory_data
+title Communication Diagram (Analysis Level) - CollectInventoryData
+
+object "InternationalOrderingDepartment" as Actor
+object "InventoryCollectionUI" as Boundary
+object "InventoryCollectionController" as Control
+object "ImportSite" as Site
+object "InventoryRecord" as Record
+object "OverseasImportSite" as SiteActor
+
+Actor -- Boundary : 1: triggerCollection(requestList)
+Boundary -- Control : 2: collectStockInfo(requestList)
+Control -- Site : 3: findCandidateSites(requestList)
+Control -- SiteActor : 4: sendStockInquiry(siteCode, filteredList) / 5: returnStockResponse(siteCode, stockData)
+Control -- Record : 6: persistResponse(siteCode, merchandiseCode, inStockQty, unit)
+Boundary -- Actor : showSuccessMessage()
+@enduml

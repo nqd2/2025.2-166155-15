@@ -1,0 +1,63 @@
+sequenceDiagram
+  actor Actor as WarehouseManagementDepartment
+  participant Boundary as GoodsReceiptUI
+  participant Control as GoodsReceiptController
+  participant Subsystem as ReconciliationFacade
+  participant OrderRepo as OverseasOrderRepository
+  participant ReceiptRepo as GoodsReceiptRepository
+  participant StockRepo as WarehouseStockRepository
+  participant Entity as GoodsReceipt
+  participant Stock as WarehouseStock
+
+  Actor->>Boundary: submitReceiptDetails(receivedQuantities)
+  activate Boundary
+
+  Boundary->>Control: processReceipt(orderId, receivedQuantities)
+  activate Control
+
+  Control->>OrderRepo: findById(orderId)
+  activate OrderRepo
+  OrderRepo-->>Control: expectedOrderInstance
+  deactivate OrderRepo
+
+  Control->>Subsystem: reconcile(expectedOrderInstance.orderLines, receivedQuantities)
+  activate Subsystem
+  Subsystem-->>Control: reconciliationResult
+  deactivate Subsystem
+
+  Control->>Entity: new GoodsReceipt(orderId, receivedQuantities, reconciliationResult.discrepancies)
+  activate Entity
+  Entity-->>Control: receiptInstance
+  deactivate Entity
+
+  Control->>ReceiptRepo: save(receiptInstance)
+  activate ReceiptRepo
+  rect rgb(200, 220, 240)
+    note over ReceiptRepo: persistToDatabase()
+  end
+  ReceiptRepo-->>Control: savedReceipt
+  deactivate ReceiptRepo
+
+  loop for each item in receivedQuantities
+    Control->>StockRepo: findByCode(item.merchandiseCode)
+    activate StockRepo
+    StockRepo-->>Control: stockInstance
+    deactivate StockRepo
+
+    Control->>Stock: stockInstance.addQuantity(item.receivedQty)
+    activate Stock
+    Stock-->>Control: updatedStockInstance
+    deactivate Stock
+
+    Control->>StockRepo: save(updatedStockInstance)
+    activate StockRepo
+    rect rgb(200, 220, 240)
+      note over StockRepo: persistToDatabase()
+    end
+    StockRepo-->>Control: saveSuccess
+    deactivate StockRepo
+  end
+
+  Control-->>Boundary: receiptSuccessfullyProcessed(savedReceipt)
+  Boundary-->>Actor: showReceiptSummary(savedReceipt)
+  deactivate Boundary

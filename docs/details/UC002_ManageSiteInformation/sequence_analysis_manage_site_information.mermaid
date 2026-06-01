@@ -1,0 +1,39 @@
+sequenceDiagram
+  actor Actor as OverseasImportSite
+  participant Boundary as SiteInformationUI
+  participant Control as SiteInformationController
+  participant Entity as ImportSite
+  actor OrderingDept as InternationalOrderingDepartment
+
+  Actor->>Boundary: selectSiteProfile(siteCode)
+  activate Boundary
+  Boundary->>Control: getSiteDetails(siteCode)
+  activate Control
+  Control->>Entity: findByCode(siteCode)
+  activate Entity
+  Entity-->>Control: siteDetails
+  deactivate Entity
+  Control-->>Boundary: displaySiteDetails(siteDetails)
+  deactivate Control
+  Boundary-->>Actor: showProfileForm()
+  deactivate Boundary
+
+  Actor->>Boundary: updateSiteData(profileData)
+  activate Boundary
+  Boundary->>Control: updateProfile(siteCode, profileData)
+  activate Control
+
+  alt Validation Success
+    Control->>Entity: saveProfile(profileData)
+    activate Entity
+    Entity-->>Control: saveSuccess
+    deactivate Entity
+    Control->>OrderingDept: notifyOrderingDepartmentOfSiteChanges(siteCode)
+    Control-->>Boundary: success()
+    Boundary-->>Actor: showSuccessMessage()
+  else Validation Failure
+    Control-->>Boundary: failure(errors)
+    deactivate Control
+    Boundary-->>Actor: showErrorMessage(errors)
+    deactivate Boundary
+  end

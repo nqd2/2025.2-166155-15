@@ -1,0 +1,29 @@
+sequenceDiagram
+  participant Client as ImportRequestController
+  box ValidationSubsystem
+    participant Facade as ValidationFacade
+    participant Catalog as CatalogValidator
+    participant Qty as QuantityValidator
+    participant DateVal as DateValidator
+  end box
+
+  Client->>Facade: validateRequest(data)
+  activate Facade
+
+  Facade->>Catalog: checkExistence(merchandiseCode)
+  activate Catalog
+  Catalog-->>Facade: exists
+  deactivate Catalog
+
+  Facade->>Qty: validatePositive(quantityOrdered)
+  activate Qty
+  Qty-->>Facade: isValidQty
+  deactivate Qty
+
+  Facade->>DateVal: validateFutureDate(desiredDeliveryDate)
+  activate DateVal
+  DateVal-->>Facade: isValidDate
+  deactivate DateVal
+
+  Facade-->>Client: validationResult(errors)
+  deactivate Facade

@@ -1,0 +1,33 @@
+classDiagram
+  class InventoryCollectionUI {
+    <<boundary>>
+    +displayStatus()
+    +showSuccessMessage()
+  }
+
+  class InventoryCollectionController {
+    <<control>>
+    +collectStockInfo(requestList Object)
+    +filterMerchandiseForSite(site ImportSite, list Object) Object
+  }
+
+  class ImportSite {
+    <<entity>>
+    -siteCode: String
+    -siteName: String
+    +findCandidateSites(list Object) List
+  }
+
+  class InventoryRecord {
+    <<entity>>
+    -siteCode: String
+    -merchandiseCode: String
+    -inStockQuantity: int
+    -unit: String
+    +persistResponse(siteCode String, itemCode String, qty int, unit String)
+  }
+
+  InventoryCollectionUI --> InventoryCollectionController
+  InventoryCollectionController --> ImportSite
+  InventoryCollectionController --> InventoryRecord
+  ImportSite "1" -- "*" InventoryRecord

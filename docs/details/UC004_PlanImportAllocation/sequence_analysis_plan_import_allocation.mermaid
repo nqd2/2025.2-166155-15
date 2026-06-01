@@ -1,0 +1,39 @@
+sequenceDiagram
+  actor Actor as InternationalOrderingDepartment
+  participant Boundary as ImportAllocationUI
+  participant Control as ImportAllocationController
+  participant Record as InventoryRecord
+  participant Site as ImportSite
+  participant Entity as AllocationPlan
+
+  Actor->>Boundary: triggerAllocation(requestId)
+  activate Boundary
+  Boundary->>Control: generateAllocationPlan(requestId)
+  activate Control
+
+  Control->>Record: getStockInfoForRequest(requestId)
+  activate Record
+  Record-->>Control: stockInfoList
+  deactivate Record
+
+  Control->>Site: getSiteTransitTimes()
+  activate Site
+  Site-->>Control: siteTransitTimesList
+  deactivate Site
+
+  Control->>Control: filterAndRankSites(stockInfoList, siteTransitTimesList)
+  Control->>Control: calculateSplits()
+
+  alt Allocation Successful
+    Control->>Entity: createPlan(requestId, splits)
+    activate Entity
+    Entity-->>Control: allocationPlanInstance
+    deactivate Entity
+    Control-->>Boundary: showDraftPlan(allocationPlanInstance)
+    Boundary-->>Actor: displayDraftPlan()
+  else Allocation Failed (Insufficient Supply)
+    Control-->>Boundary: showError(errorCode)
+    deactivate Control
+    Boundary-->>Actor: displayInsufficientSupplyError()
+    deactivate Boundary
+  end
