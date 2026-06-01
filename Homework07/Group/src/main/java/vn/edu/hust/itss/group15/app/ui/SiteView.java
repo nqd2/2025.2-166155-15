@@ -27,12 +27,13 @@ public class SiteView extends BorderPane implements DashboardView.Refreshable {
   public SiteView(AppSession session) {
     this.session = session;
     getStyleClass().add("view");
-    table.getColumns().addAll(
+    table.getColumns().addAll(java.util.List.of(
         UiSupport.column("Site", ImportSite::siteCode, 130),
         UiSupport.column("Name", ImportSite::siteName, 220),
         UiSupport.column("Ship days", site -> String.valueOf(site.deliveryDaysByShip()), 100),
         UiSupport.column("Air days", site -> String.valueOf(site.deliveryDaysByAir()), 100),
-        UiSupport.column("Catalog", site -> String.join(", ", site.merchandiseCatalog()), 360));
+        UiSupport.column("Catalog", site -> String.join(", ", site.merchandiseCatalog()), 360)
+    ));
     table.getStyleClass().add("data-table");
     table.getSelectionModel().selectedItemProperty().addListener((obs, old, site) -> fill(site));
 

@@ -21,10 +21,11 @@ public class AllocationView extends BorderPane implements DashboardView.Refresha
     getStyleClass().add("view");
     preview.setEditable(false);
     preview.setPrefRowCount(5);
-    table.getColumns().addAll(
+    table.getColumns().addAll(java.util.List.of(
         UiSupport.column("Plan", AllocationPlan::planId, 120),
         UiSupport.column("Request", AllocationPlan::requestId, 120),
-        UiSupport.column("Lines", plan -> plan.lines().toString(), 680));
+        UiSupport.column("Lines", plan -> plan.lines().toString(), 680)
+    ));
     table.getStyleClass().add("data-table");
 
     var previewButton = UiSupport.secondary("Preview");

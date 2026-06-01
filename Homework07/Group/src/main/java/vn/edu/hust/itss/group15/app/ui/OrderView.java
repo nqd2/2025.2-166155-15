@@ -17,12 +17,13 @@ public class OrderView extends BorderPane implements DashboardView.Refreshable {
   public OrderView(AppSession session) {
     this.session = session;
     getStyleClass().add("view");
-    table.getColumns().addAll(
+    table.getColumns().addAll(java.util.List.of(
         UiSupport.column("Order", OverseasOrder::orderId, 120),
         UiSupport.column("Site", OverseasOrder::siteCode, 140),
         UiSupport.column("Status", order -> order.status().name(), 130),
         UiSupport.column("Ack", OverseasOrder::acknowledgementToken, 160),
-        UiSupport.column("Lines", order -> order.orderLines().toString(), 560));
+        UiSupport.column("Lines", order -> order.orderLines().toString(), 560)
+    ));
     table.getStyleClass().add("data-table");
 
     var generate = UiSupport.primary("Generate orders");

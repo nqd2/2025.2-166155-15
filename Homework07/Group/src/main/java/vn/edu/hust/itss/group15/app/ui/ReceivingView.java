@@ -28,11 +28,12 @@ public class ReceivingView extends BorderPane implements DashboardView.Refreshab
     this.session = session;
     getStyleClass().add("view");
     note.setPrefRowCount(3);
-    receiptTable.getColumns().addAll(
+    receiptTable.getColumns().addAll(java.util.List.of(
         UiSupport.column("Receipt", GoodsReceipt::receiptId, 120),
         UiSupport.column("Order", GoodsReceipt::orderReference, 120),
         UiSupport.column("Discrepancy", receipt -> receipt.hasDiscrepancy() ? "YES" : "NO", 120),
-        UiSupport.column("Lines", receipt -> receipt.lines().toString(), 620));
+        UiSupport.column("Lines", receipt -> receipt.lines().toString(), 620)
+    ));
     receiptTable.getStyleClass().add("data-table");
 
     order.setOnAction(event -> fillFirstLine());

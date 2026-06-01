@@ -34,18 +34,20 @@ public class AdminView extends BorderPane implements DashboardView.Refreshable {
     password.setPromptText("At least 8 characters");
     session.facade().admin().validRoles().forEach(role -> roleChecks.getChildren().add(new CheckBox(role)));
 
-    users.getColumns().addAll(
+    users.getColumns().addAll(java.util.List.of(
         UiSupport.column("User", UserAccount::userId, 100),
         UiSupport.column("Username", UserAccount::username, 160),
         UiSupport.column("Email", UserAccount::email, 240),
-        UiSupport.column("Roles", user -> String.join(", ", user.actorRoles()), 420));
+        UiSupport.column("Roles", user -> String.join(", ", user.actorRoles()), 420)
+    ));
     users.getStyleClass().add("data-table");
 
-    logs.getColumns().addAll(
+    logs.getColumns().addAll(java.util.List.of(
         UiSupport.column("Time", log -> log.timestamp().toString(), 180),
         UiSupport.column("Operator", OperationLog::operatorId, 120),
         UiSupport.column("Action", OperationLog::actionType, 180),
-        UiSupport.column("Details", OperationLog::details, 360));
+        UiSupport.column("Details", OperationLog::details, 360)
+    ));
     logs.getStyleClass().add("data-table");
 
     var create = UiSupport.primary("Create user");

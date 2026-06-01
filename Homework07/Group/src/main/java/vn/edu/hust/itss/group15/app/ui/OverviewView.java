@@ -40,10 +40,11 @@ public class OverviewView extends VBox implements DashboardView.Refreshable {
     GridPane.setHgrow(orders, Priority.ALWAYS);
     GridPane.setHgrow(discrepancies, Priority.ALWAYS);
 
-    logTable.getColumns().addAll(
+    logTable.getColumns().addAll(java.util.List.of(
         UiSupport.column("Time", log -> log.timestamp().toString(), 180),
         UiSupport.column("Action", OperationLog::actionType, 190),
-        UiSupport.column("Details", OperationLog::details, 360));
+        UiSupport.column("Details", OperationLog::details, 360)
+    ));
     logTable.getStyleClass().add("data-table");
 
     getChildren().addAll(UiSupport.title("Operations dashboard"), UiSupport.subtitle("Live workflow state from Supabase REST."), grid,

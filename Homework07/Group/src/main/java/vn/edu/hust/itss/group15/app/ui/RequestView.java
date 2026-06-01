@@ -29,11 +29,12 @@ public class RequestView extends BorderPane implements DashboardView.Refreshable
     merchandise = FormFieldFactory.combo(session.facade().store().merchandiseCatalog());
     unit = FormFieldFactory.combo(session.facade().store().units());
     getStyleClass().add("view");
-    table.getColumns().addAll(
+    table.getColumns().addAll(java.util.List.of(
         UiSupport.column("Request", ImportRequest::requestId, 120),
         UiSupport.column("Status", request -> request.status().name(), 120),
         UiSupport.column("Items", request -> request.items().toString(), 520),
-        UiSupport.column("Created", request -> request.createdAt().toString(), 190));
+        UiSupport.column("Created", request -> request.createdAt().toString(), 190)
+    ));
     table.getStyleClass().add("data-table");
 
     var create = UiSupport.primary("Create request");

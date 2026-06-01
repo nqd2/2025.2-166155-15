@@ -24,11 +24,12 @@ public class InventoryView extends BorderPane implements DashboardView.Refreshab
     merchandise = FormFieldFactory.combo(session.facade().store().merchandiseCatalog());
     unit = FormFieldFactory.combo(session.facade().store().units());
     getStyleClass().add("view");
-    table.getColumns().addAll(
+    table.getColumns().addAll(java.util.List.of(
         UiSupport.column("Site", InventoryRecord::siteCode, 140),
         UiSupport.column("Merchandise", InventoryRecord::merchandiseCode, 140),
         UiSupport.column("Stock", record -> String.valueOf(record.inStockQuantity()), 110),
-        UiSupport.column("Unit", InventoryRecord::unit, 100));
+        UiSupport.column("Unit", InventoryRecord::unit, 100)
+    ));
     table.getStyleClass().add("data-table");
 
     var record = UiSupport.primary("Record stock");
