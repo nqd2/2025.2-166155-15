@@ -316,11 +316,11 @@ SC00405 --> SC004 : acknowledge
 title Analysis Sequence Diagram - PlanImportAllocation
 
 actor InternationalOrderingDepartment as Actor
-participant "ImportAllocationUI" as Boundary <<boundary>>
-participant "ImportAllocationController" as Control <<control>>
-entity "InventoryRecord" as Record <<entity>>
-entity "ImportSite" as Site <<entity>>
-entity "AllocationPlan" as Entity <<entity>>
+boundary "Boundary:ImportAllocationUI" as Boundary
+control "Control:ImportAllocationController" as Control
+entity "Record:InventoryRecord" as Record
+entity "Site:ImportSite" as Site
+entity "Entity:AllocationPlan" as Entity
 
 Actor -> Boundary : triggerAllocation(requestId)
 activate Boundary
@@ -421,10 +421,10 @@ title Subsystem Sequence Diagram - AllocationEngineSubsystem (PlanImportAllocati
 
 participant "ImportAllocationController" as Client
 box "AllocationEngineSubsystem" #LightBlue
-  participant "AllocationFacade" as Facade <<subsystem>>
-  participant "FeasibilityChecker" as Checker <<service>>
-  participant "SiteRanker" as Ranker <<service>>
-  participant "SplitCalculator" as Splitter <<service>>
+  participant "Facade:AllocationFacade" as Facade
+  participant "Checker:FeasibilityChecker" as Checker
+  participant "Ranker:SiteRanker" as Ranker
+  participant "Splitter:SplitCalculator" as Splitter
 end box
 
 Client -> Facade : calculateAllocation(requestId, stockRecords, sites)

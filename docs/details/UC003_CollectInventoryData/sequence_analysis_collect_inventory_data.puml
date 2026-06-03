@@ -2,10 +2,10 @@
 title Analysis Sequence Diagram - CollectInventoryData
 
 actor InternationalOrderingDepartment as Actor
-participant "InventoryCollectionUI" as Boundary <<boundary>>
-participant "InventoryCollectionController" as Control <<control>>
-entity "ImportSite" as Site <<entity>>
-entity "InventoryRecord" as Record <<entity>>
+boundary "Boundary:InventoryCollectionUI" as Boundary
+control "Control:InventoryCollectionController" as Control
+entity "Site:ImportSite" as Site
+entity "Record:InventoryRecord" as Record
 actor OverseasImportSite as SiteActor
 
 Actor -> Boundary : triggerCollection(requestList)

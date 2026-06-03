@@ -2,11 +2,11 @@
 title Analysis Sequence Diagram - ManageSystem
 
 actor SystemAdministrator as Actor
-participant "SystemAdminUI" as Boundary <<boundary>>
-participant "SystemAdminController" as Control <<control>>
-entity "UserAccount" as User <<entity>>
-entity "UserRole" as Role <<entity>>
-entity "OperationLog" as Log <<entity>>
+boundary "Boundary:SystemAdminUI" as Boundary
+control "Control:SystemAdminController" as Control
+entity "User:UserAccount" as User
+entity "Role:UserRole" as Role
+entity "Log:OperationLog" as Log
 
 Actor -> Boundary : openAdminPanel()
 activate Boundary

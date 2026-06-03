@@ -261,9 +261,9 @@ SC00204 --> SC002 : done
 title Analysis Sequence Diagram - ManageSiteInformation
 
 actor OverseasImportSite as Actor
-participant "SiteInformationUI" as Boundary <<boundary>>
-participant "SiteInformationController" as Control <<control>>
-entity "ImportSite" as Entity <<entity>>
+boundary "Boundary:SiteInformationUI" as Boundary
+control "Control:SiteInformationController" as Control
+entity "Entity:ImportSite" as Entity
 actor InternationalOrderingDepartment as OrderingDept
 
 Actor -> Boundary : selectSiteProfile(siteCode)
@@ -359,9 +359,9 @@ title Subsystem Sequence Diagram - SiteCatalogSubsystem (ManageSiteInformation)
 
 participant "SiteInformationController" as Client
 box "SiteCatalogSubsystem" #LightBlue
-  participant "SiteCatalogFacade" as Facade <<subsystem>>
-  participant "ProductCatalogService" as Catalog <<service>>
-  participant "NotificationService" as Notify <<service>>
+  participant "Facade:SiteCatalogFacade" as Facade
+  participant "Catalog:ProductCatalogService" as Catalog
+  participant "Notify:NotificationService" as Notify
 end box
 
 Client -> Facade : updateCatalog(siteCode, catalogData)

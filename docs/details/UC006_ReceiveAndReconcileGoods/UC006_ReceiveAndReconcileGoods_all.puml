@@ -307,11 +307,11 @@ SC00605 --> SC006 : done
 title Analysis Sequence Diagram - ReceiveAndReconcileGoods
 
 actor WarehouseManagementDepartment as Actor
-participant "GoodsReceiptUI" as Boundary <<boundary>>
-participant "GoodsReceiptController" as Control <<control>>
-entity "OverseasOrder" as Order <<entity>>
-entity "GoodsReceipt" as Entity <<entity>>
-entity "WarehouseStock" as Stock <<entity>>
+boundary "Boundary:GoodsReceiptUI" as Boundary
+control "Control:GoodsReceiptController" as Control
+entity "Order:OverseasOrder" as Order
+entity "Entity:GoodsReceipt" as Entity
+entity "Stock:WarehouseStock" as Stock
 
 Actor -> Boundary : selectOrderToReceive(orderId)
 activate Boundary
@@ -423,9 +423,9 @@ title Subsystem Sequence Diagram - ReconciliationSubsystem (ReceiveAndReconcileG
 
 participant "GoodsReceiptController" as Client
 box "ReconciliationSubsystem" #LightBlue
-  participant "ReconciliationFacade" as Facade <<subsystem>>
-  participant "DiscrepancyCalculator" as Calculator <<service>>
-  participant "ReconciliationReportService" as Reporter <<service>>
+  participant "Facade:ReconciliationFacade" as Facade
+  participant "Calculator:DiscrepancyCalculator" as Calculator
+  participant "Reporter:ReconciliationReportService" as Reporter
 end box
 
 Client -> Facade : reconcile(expectedItems, receivedItems)

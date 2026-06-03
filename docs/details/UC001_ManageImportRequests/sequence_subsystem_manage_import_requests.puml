@@ -3,10 +3,10 @@ title Subsystem Sequence Diagram - ValidationSubsystem (ManageImportRequests)
 
 participant "ImportRequestController" as Client
 box "ValidationSubsystem" #LightBlue
-  participant "ValidationFacade" as Facade <<subsystem>>
-  participant "CatalogValidator" as Catalog <<service>>
-  participant "QuantityValidator" as Qty <<service>>
-  participant "DateValidator" as DateVal <<service>>
+  participant "Facade:ValidationFacade" as Facade
+  participant "Catalog:CatalogValidator" as Catalog
+  participant "Qty:QuantityValidator" as Qty
+  participant "DateVal:DateValidator" as DateVal
 end box
 
 Client -> Facade : validateRequest(data)

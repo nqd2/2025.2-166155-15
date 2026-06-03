@@ -1,0 +1,39 @@
+\chapter{Mở đầu}
+
+\section{Bối cảnh và vấn đề cần giải quyết}
+
+Các bộ phận bán hàng, đặt hàng quốc tế, Site nhập khẩu và kho nội bộ cùng tham gia vào quá trình đặt hàng nhập khẩu. Khi dữ liệu yêu cầu nhập, tồn kho Site, thời gian vận chuyển, đơn đặt hàng và hàng thực nhận được xử lý rời rạc, nhóm vận hành dễ gặp sai lệch số lượng, trễ ngày nhận và khó truy vết trách nhiệm.
+
+Hệ thống đặt hàng nhập khẩu hỗ trợ luồng nghiệp vụ từ lúc SalesDepartment tạo yêu cầu nhập đến lúc WarehouseManagementDepartment nhận hàng và đối chiếu. Hệ thống cũng quản lý hồ sơ Site, tồn kho phản hồi từ Site, phương án phân bổ, đơn đặt hàng quốc tế, tài khoản người dùng, vai trò và nhật ký vận hành.
+
+\section{Mục tiêu đề tài}
+
+Đề tài xây dựng ứng dụng desktop JavaFX cho nhóm nghiệp vụ nhập hàng. Ứng dụng cần chạy bằng Maven trên JDK 22, có tầng domain rõ ràng, có service theo use case, có lưu trữ đồng bộ Cơ sở Dữ liệu và có bộ kiểm thử cho các rule quan trọng.
+
+Các mục tiêu chính gồm:
+\begin{itemize}
+  \item Quản lý yêu cầu nhập hàng với trạng thái \ucname{Submitted}, \ucname{Updated}, \ucname{Cancelled}.
+  \item Quản lý thông tin Site, thời gian vận chuyển bằng tàu hoặc hàng không và danh mục mặt hàng Site kinh doanh.
+  \item Thu thập tồn kho Site theo từng mã hàng.
+  \item Lập phương án phân bổ nhập hàng theo số lượng, ngày nhận mong muốn, phương thức vận chuyển và năng lực Site.
+  \item Lập đơn đặt hàng quốc tế, gửi đơn và ghi nhận xác nhận hoặc từ chối.
+  \item Nhận hàng tại kho, đối chiếu số lượng thực nhận với số lượng đặt và cập nhật tồn kho nội bộ.
+  \item Quản trị người dùng, vai trò, dữ liệu dùng chung, nhật ký và sao lưu.
+\end{itemize}
+
+\section{Phân công nhiệm vụ}
+
+\begin{longtblr}{
+  colspec = {Q[0.22\textwidth, l] Q[0.32\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{Thành viên} & \textbf{Email} & \textbf{Use case phụ trách} \\
+Nguyễn Hữu Nhân & \nolinkurl{nguyenhuunhanht2005@gmail.com} & UC006 -- \ucname{ReceiveAndReconcileGoods}. \\
+Vũ Đức Hoàng Anh & \nolinkurl{incuksuk123@gmail.com} & UC001 -- \ucname{ManageImportRequests}; UC007 -- \ucname{ManageSystem}. \\
+Trần Đăng Sinh & \nolinkurl{ctan4991@gmail.com} & UC003 -- \ucname{CollectInventoryData}. \\
+Phan Khánh Vũ & \nolinkurl{hi3sirin@gmail.com} & UC004 -- \ucname{PlanImportAllocation}. \\
+Lương Quốc Khánh & \nolinkurl{khanhlq.hust.work@gmail.com} & UC005 -- \ucname{PlaceOverseasOrders}. \\
+Nguyễn Quý Đức & \nolinkurl{nguyenquyduc_hsgs20@hus.edu.vn} & UC002 -- \ucname{ManageSiteInformation}; tích hợp nhóm. \\
+\end{longtblr}

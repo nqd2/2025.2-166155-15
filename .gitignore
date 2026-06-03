@@ -44,3 +44,8 @@ replay_pid*
 # Local environment config
 .env
 .gitnexus
+
+*.fdb_latexmk
+*.files
+*.out
+*.toc

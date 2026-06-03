@@ -2,11 +2,11 @@
 title Analysis Sequence Diagram - ReceiveAndReconcileGoods
 
 actor WarehouseManagementDepartment as Actor
-participant "GoodsReceiptUI" as Boundary <<boundary>>
-participant "GoodsReceiptController" as Control <<control>>
-entity "OverseasOrder" as Order <<entity>>
-entity "GoodsReceipt" as Entity <<entity>>
-entity "WarehouseStock" as Stock <<entity>>
+boundary "Boundary:GoodsReceiptUI" as Boundary
+control "Control:GoodsReceiptController" as Control
+entity "Order:OverseasOrder" as Order
+entity "Entity:GoodsReceipt" as Entity
+entity "Stock:WarehouseStock" as Stock
 
 Actor -> Boundary : selectOrderToReceive(orderId)
 activate Boundary

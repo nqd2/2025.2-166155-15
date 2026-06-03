@@ -1,0 +1,98 @@
+\usepackage{tikz}
+\usepackage{float}
+\usetikzlibrary{shapes.geometric, arrows}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{tabularray}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{seqsplit}
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage[a4paper, left=3cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}
+  {Chương \thechapter}
+  {20pt}
+  {\fontsize{70}{60}}
+\titlespacing*{\chapter}
+  {0pt}  % left
+  {0pt}  % before-sep (khoảng trống trên)
+  {40pt} % after-sep (khoảng trống dưới)
+  
+\usepackage{fancybox,graphicx,longfbox,scrextend}
+\usepackage{mathrsfs}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{vietnam}
+  \usepackage{textcomp}
+\else
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\IfFileExists{microtype.sty}{\usepackage[]{microtype}}{}
+\IfFileExists{letterspace.sty}{\usepackage{letterspace}}{}
+\usepackage{xcolor} % Added for defining custom colors if needed, also used by literate replacement
+\definecolor{ucgreen}{HTML}{C3F0E0}
+\definecolor{ucorange}{HTML}{FFC896}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{float}
+\hypersetup{hidelinks, pdfcreator={LaTeX via pandoc}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setcounter{secnumdepth}{2}
+\usepackage{array}
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+\renewcommand{\arraystretch}{1.2}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\ucname}[1]{\texttt{#1}}
+\DeclareRobustCommand{\breakucname}[1]{\texttt{\seqsplit{#1}}}
+\DeclareRobustCommand{\fieldname}[1]{\texttt{\seqsplit{#1}}}
+\DeclareRobustCommand{\actorname}[1]{\seqsplit{#1}}
+\newcommand{\diagramfigure}[3]{%
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth,height=0.68\textheight,keepaspectratio]{#1}
+  \caption{#2}
+  \label{#3}
+\end{figure}
+}
+\newcommand{\smallcaption}[1]{\caption{\small #1}}
+\setlist[itemize]{leftmargin=1.2cm,itemsep=2pt,topsep=2pt}
+\setlist[enumerate]{leftmargin=1.2cm,itemsep=2pt,topsep=2pt}
+% Define custom colors and commands for block characters in listings
+\definecolor{lightgray}{rgb}{0.85,0.85,0.85} % A light gray for the shade block
+\newcommand{\MyFullBlockGFX}{\rule{0.6ex}{1.2ex}} % A solid black rectangle for █
+\newcommand{\MyLightShadeGFX}{{\color{lightgray}\rule{0.6ex}{1.2ex}}} % A light gray rectangle for ░
+
+% Cấu hình code styling
+\lstset{
+    inputencoding=utf8,     % Tell listings to expect UTF-8 input
+    extendedchars=true,     % Allow extended characters (UTF-8 characters)
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    showstringspaces=false,
+    tabsize=2,
+    literate={█}{{\MyFullBlockGFX}}1 % Map █ to our custom command
+             {░}{{\MyLightShadeGFX}}1 % Map ░ to our custom command
+             % Vietnamese characters like 'ấ' and 'ì' in "Cấu hình"
+             % should now be handled by 'inputencoding=utf8' in conjunction with
+             % the vietnam package. If issues persist for specific Vietnamese characters
+             % within listings, further 'literate' entries might be needed, e.g.:
+             % {ấ}{{{\'a}\kern-0.1em\^{}\kern-0.1em}}1 % Example complex definition
+             % {ì}{{\`i}}1
+             % However, it's best to rely on inputencoding=utf8 first.
+}

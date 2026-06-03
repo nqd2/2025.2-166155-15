@@ -15,7 +15,7 @@ def merge_puml_files():
 
     for uc_dir in uc_dirs:
         dir_path = os.path.join(base_dir, uc_dir)
-        
+
         # Find all .puml files in this directory
         puml_files = [f for f in os.listdir(dir_path) if f.endswith(".puml")]
         

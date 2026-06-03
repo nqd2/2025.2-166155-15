@@ -1,0 +1,44 @@
+\chapter{Thiết kế Subsystems}
+
+\section{Mục tiêu phân rã subsystem}
+
+Hệ thống chia subsystem theo ranh giới nghiệp vụ của từng use case. Mỗi subsystem gom phần xử lý có tính lặp lại hoặc có khả năng thay đổi độc lập, còn tầng giao diện chỉ điều phối thao tác người dùng. Cách chia này giữ dependency đi một chiều: giao diện gọi dịch vụ ứng dụng, dịch vụ ứng dụng thao tác domain, hạ tầng lưu trữ triển khai cổng dữ liệu.
+
+\section{Danh sách subsystem}
+
+\begin{longtblr}{
+  colspec = {Q[0.24\textwidth, l] Q[0.25\textwidth, l] X[l] Q[0.28\textwidth, l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+  row{2-Z} = {font=\scriptsize},
+}
+\textbf{Use case} & \textbf{Subsystem} & \textbf{Trách nhiệm} & \textbf{Thành phần chính} \\
+\ucname{ManageImportRequests} & \ucname{ValidationSubsystem} & Kiểm tra mã hàng, số lượng, đơn vị, ngày nhận mong muốn trước khi tạo hoặc cập nhật yêu cầu nhập. & \ucname{ValidationFacade}, \ucname{CatalogValidator}, \ucname{QuantityValidator}, \ucname{DateValidator}. \\
+\ucname{ManageSiteInformation} & \ucname{SiteCatalogSubsystem} & Cập nhật hồ sơ Site, thời gian vận chuyển, danh mục mặt hàng và gửi thông báo thay đổi. & \ucname{SiteCatalogFacade}, \ucname{ProductCatalogService}, \ucname{NotificationService}. \\
+\ucname{CollectInventoryData} & \ucname{StockQuerySubsystem} & Lọc Site theo mặt hàng, gửi yêu cầu kiểm tra tồn kho, nhận phản hồi và ghi nhận tồn kho. & \ucname{StockQueryFacade}, \ucname{StockQueryService}, \ucname{APIConnectionPool}. \\
+\ucname{PlanImportAllocation} & \ucname{AllocationEngineSubsystem} & Kiểm tra khả năng đáp ứng ngày nhận, xếp hạng Site, tính phương án chia số lượng. & \ucname{AllocationFacade}, \ucname{FeasibilityChecker}, \ucname{SiteRanker}, \ucname{SplitCalculator}. \\
+\ucname{PlaceOverseasOrders} & \ucname{OrderTransmissionSubsystem} & Gom dòng đơn theo Site, sinh nội dung đơn và gửi đơn cho Site. & \ucname{OrderTransmissionFacade}, \ucname{XMLGeneratorService}, \ucname{SFTPUploadService}. \\
+\ucname{ReceiveAndReconcileGoods} & \ucname{ReconciliationSubsystem} & Nạp số lượng kỳ vọng, đối chiếu thực nhận, ghi sai lệch và cập nhật tồn kho nội bộ. & \ucname{ReconciliationFacade}, \ucname{DiscrepancyCalculator}, \ucname{ReconciliationReportService}. \\
+\ucname{ManageSystem} & \ucname{SecuritySubsystem} & Quản lý quyền, phiên làm việc, nhật ký thao tác và dữ liệu quản trị. & \ucname{SecurityFacade}, \ucname{RBACAuthorizationService}, \ucname{UserSessionManager}. \\
+\end{longtblr}
+
+\section{Sơ đồ subsystem}
+
+\diagramfigure{diagram/UC001_ManageImportRequests_all/ClassDiagram_3_000.png}{Subsystem kiểm tra dữ liệu cho \ucname{ManageImportRequests}.}{fig:subsystem-uc001}
+
+\diagramfigure{diagram/UC002_ManageSiteInformation_all/ClassDiagram_3_000.png}{Subsystem quản lý danh mục Site cho \ucname{ManageSiteInformation}.}{fig:subsystem-uc002}
+
+\diagramfigure{diagram/UC003_CollectInventoryData_all/ClassDiagram_3_000.png}{Subsystem truy vấn tồn kho cho \ucname{CollectInventoryData}.}{fig:subsystem-uc003}
+
+\diagramfigure{diagram/UC004_PlanImportAllocation_all/ClassDiagram_3_000.png}{Subsystem tính phân bổ cho \ucname{PlanImportAllocation}.}{fig:subsystem-uc004}
+
+\diagramfigure{diagram/UC005_PlaceOverseasOrders_all/ClassDiagram_3_000.png}{Subsystem truyền đơn đặt hàng cho \ucname{PlaceOverseasOrders}.}{fig:subsystem-uc005}
+
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods_all/ClassDiagram_3_000.png}{Subsystem đối chiếu hàng nhập kho cho \ucname{ReceiveAndReconcileGoods}.}{fig:subsystem-uc006}
+
+\diagramfigure{diagram/UC007_ManageSystem_all/ClassDiagram_3_000.png}{Subsystem phân quyền cho \ucname{ManageSystem}.}{fig:subsystem-uc007}
+
+\section{Luồng tương tác giữa subsystem}
+
+Luồng nghiệp vụ chính bắt đầu ở yêu cầu nhập, chuyển sang thu thập tồn kho, lập phương án phân bổ, phát hành đơn và kết thúc ở đối chiếu hàng nhập kho. \ucname{ManageSiteInformation} cung cấp dữ liệu Site cho các bước lọc tồn kho và phân bổ. \ucname{ManageSystem} cung cấp quyền truy cập, dữ liệu master, nhật ký vận hành và cấu hình sao lưu cho toàn hệ thống.

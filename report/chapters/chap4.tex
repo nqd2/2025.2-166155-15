@@ -1,0 +1,41 @@
+\chapter{Thiết kế giao diện}
+
+\section{Sơ đồ chuyển đổi màn hình}
+
+Ứng dụng JavaFX bắt đầu ở màn hình đăng nhập. Sau khi đăng nhập, người dùng làm việc trong dashboard gồm các màn hình nghiệp vụ. Mỗi màn hình tương ứng một nhóm thao tác rõ ràng để người dùng không phải chuyển qua nhiều nơi khi hoàn thành một use case.
+
+\diagramfigure{diagram/overview/ClassDiagram_1_000.png}{Sơ đồ chuyển đổi màn hình tổng quan.}{fig:screen-transition-overview}
+
+\subsection{Sơ đồ chuyển màn hình theo use case}
+
+\diagramfigure{diagram/UC001_ManageImportRequests_all/ClassDiagram_6_000.png}{Sơ đồ màn hình \ucname{ManageImportRequests}.}{fig:screen-uc001}
+\diagramfigure{diagram/UC002_ManageSiteInformation_all/ClassDiagram_6_000.png}{Sơ đồ màn hình \ucname{ManageSiteInformation}.}{fig:screen-uc002}
+\diagramfigure{diagram/UC003_CollectInventoryData_all/ClassDiagram_6_000.png}{Sơ đồ màn hình \ucname{CollectInventoryData}.}{fig:screen-uc003}
+\diagramfigure{diagram/UC004_PlanImportAllocation_all/ClassDiagram_6_000.png}{Sơ đồ màn hình \ucname{PlanImportAllocation}.}{fig:screen-uc004}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders_all/ClassDiagram_6_000.png}{Sơ đồ màn hình \ucname{PlaceOverseasOrders}.}{fig:screen-uc005}
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods_all/ClassDiagram_6_000.png}{Sơ đồ màn hình \ucname{ReceiveAndReconcileGoods}.}{fig:screen-uc006}
+\diagramfigure{diagram/UC007_ManageSystem_all/ClassDiagram_6_000.png}{Sơ đồ màn hình \ucname{ManageSystem}.}{fig:screen-uc007}
+
+\section{Đặc tả màn hình}
+
+\begin{longtblr}{
+  colspec = {Q[0.20\textwidth, l] Q[0.15\textwidth, l] X[l] Q[0.25\textwidth, l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{Màn hình} & \textbf{Use case} & \textbf{Dữ liệu chính} & \textbf{Thao tác} \\
+\ucname{LoginView} & Xác thực & \fieldname{username}, \fieldname{password} & Đăng nhập, tạo quản trị viên đầu tiên. \\
+\ucname{OverviewView} & Tổng quan vận hành & Số yêu cầu, Site, tồn kho, phân bổ, đơn, phiếu nhận & Xem trạng thái nhanh của toàn luồng. \\
+\ucname{RequestView} & UC001 & \fieldname{requestId}, \fieldname{merchandiseCode}, \fieldname{quantity}, \fieldname{unit}, \fieldname{desiredDeliveryDate}, \fieldname{status} & Tạo yêu cầu, cập nhật, hủy, làm mới danh sách. \\
+\ucname{SiteView} & UC002 & \fieldname{siteCode}, \fieldname{siteName}, \fieldname{shipDays}, \fieldname{airDays}, \fieldname{merchandiseCatalog} & Cập nhật Site, xem danh sách Site. \\
+\ucname{InventoryView} & UC003 & \fieldname{siteCode}, \fieldname{merchandiseCode}, \fieldname{inStockQuantity}, \fieldname{unit} & Ghi nhận tồn kho Site, lọc bản ghi theo mã hàng. \\
+\ucname{AllocationView} & UC004 & \fieldname{planId}, \fieldname{requestId}, \fieldname{siteCode}, \fieldname{deliveryMeans}, \fieldname{quantity} & Preview và xác nhận phương án phân bổ. \\
+\ucname{OrderView} & UC005 & \fieldname{orderReference}, \fieldname{siteCode}, \fieldname{status}, \fieldname{ackToken} & Tạo đơn từ phương án, xác nhận, từ chối. \\
+\ucname{ReceivingView} & UC006 & \fieldname{orderReference}, \fieldname{quantityReceived}, \fieldname{discrepancyNote} & Nhập số lượng thực nhận, ghi phiếu, xem sai lệch. \\
+\ucname{AdminView} & UC007 & \fieldname{username}, \fieldname{email}, \fieldname{actorRoles}, \fieldname{operationLog} & Tạo user, gán vai trò, xem log, cập nhật lịch sao lưu. \\
+\end{longtblr}
+
+\section{Quy tắc tương tác}
+
+Các màn hình nhập liệu dùng cùng kiểu phản hồi: dữ liệu hợp lệ được lưu và danh sách được làm mới; dữ liệu sai hiển thị thông báo lỗi ngay trong phiên làm việc. Trạng thái nghiệp vụ được trình bày bằng badge để người dùng nhận ra yêu cầu đã gửi, đơn đã xác nhận, đơn bị từ chối hoặc phiếu nhận có sai lệch.
