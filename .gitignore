@@ -49,3 +49,5 @@ replay_pid*
 *.files
 *.out
 *.toc
+*.fls
+*.synctex.gz
