@@ -4,7 +4,7 @@
 
 Kiểm thử tập trung vào rule nghiệp vụ theo từng use case và luồng tích hợp end-to-end. Các test tự động dùng JUnit Jupiter và \ucname{InMemoryStore}; nhờ vậy test không phụ thuộc Supabase thật, không cần mạng và chạy ổn định trong quá trình phát triển.
 
-Trước khi bổ sung ma trận kiểm thử, lệnh \texttt{mvn test} chạy thành công với 22 test hiện có. Sau khi bổ sung \ucname{FeatureTestMatrixTest}, bộ kiểm thử có thêm 16 test theo từng tính năng, nâng tổng số test tự động lên 38.
+Dự án ban đầu có 22 test. Sau khi hoàn thiện từng use case, nhóm tiến hành viết các class unit test riêng biệt tương ứng với từng chức năng (như \ucname{Uc001ImportRequestTest}, \ucname{Uc002SiteProfileTest}, v.v.). Tổng số test hiện tại là 38 và tất cả đều đã pass khi chạy \texttt{mvn test}.
 
 \section{Ma trận kiểm thử chức năng}
 
@@ -38,7 +38,7 @@ TC-UC007-02 & UC007 & Chặn dữ liệu quản trị sai và cập nhật lịc
 
 \section{Cách chạy kiểm thử}
 
-Các lệnh kiểm thử được chạy tại thư mục \texttt{Homework07/Group}:
+Các lệnh kiểm thử được chạy tại thư mục gốc của project:
 
 \begin{lstlisting}[language=bash]
 mvn -version

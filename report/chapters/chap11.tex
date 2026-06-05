@@ -2,7 +2,7 @@
 
 \section{Kết luận}
 
-Nhóm đã xây dựng được chương trình minh họa cho hệ thống đặt hàng nhập khẩu theo phạm vi Homework07. Ứng dụng bao phủ luồng nghiệp vụ chính từ tạo yêu cầu nhập, quản lý Site, thu thập tồn kho, lập phân bổ, phát hành đơn đặt hàng đến nhận hàng và đối chiếu sai lệch. Use case \ucname{ManageSystem} cung cấp phần quản trị tài khoản, role, log và lịch sao lưu.
+Nhóm đã hoàn thành việc phát triển ứng dụng phần mềm cốt lõi cho Hệ thống Đặt hàng Nhập khẩu. Phiên bản hiện tại đã đáp ứng trọn vẹn chuỗi nghiệp vụ xuyên suốt: từ lúc khởi tạo yêu cầu nhập hàng, quản lý hồ sơ đối tác (Site), thu thập số liệu tồn kho, thực thi thuật toán phân bổ mua hàng, cho đến việc phát hành đơn đặt hàng quốc tế và đối soát hàng về kho. Đồng thời, phân hệ Quản trị cũng cung cấp đầy đủ công cụ để quản lý tài khoản, phân quyền truy cập, theo dõi log hệ thống và thiết lập lịch sao lưu dữ liệu.
 
 Về kỹ thuật, dự án sử dụng Maven, JDK 22 và JavaFX. Code được chia theo các tầng \ucname{app}, \ucname{application}, \ucname{domain}, \ucname{application.port} và \ucname{infrastructure.persistence}. Cách tách này giúp rule nghiệp vụ quan trọng nằm trong service/domain, còn giao diện chỉ điều phối thao tác. Adapter Supabase phục vụ lưu trữ thật, trong khi adapter bộ nhớ giúp test tự động chạy nhanh và ổn định.
 

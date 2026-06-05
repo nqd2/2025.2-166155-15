@@ -2,7 +2,7 @@
 
 \section{Chuẩn bị môi trường}
 
-Máy chạy chương trình cần cài JDK 22 và Maven. Dự án được cấu hình trong \pathtext{Homework07/Group/pom.xml}; thuộc tính \pathtext{maven.compiler.release} đặt là \texttt{22}. Nếu chạy với Supabase thật, cần tạo Supabase project và chạy file \pathtext{src/main/resources/db/schema.sql} trong Supabase SQL Editor trước lần khởi động đầu tiên.
+Máy chạy chương trình cần cài JDK 22 và Maven. Nếu sử dụng Supabase làm backend thật, người dùng cần tạo một Supabase project (sử dụng cơ sở dữ liệu PostgreSQL cloud) và thực thi script \pathtext{src/main/resources/db/schema.sql} trong Supabase SQL Editor trước lần khởi động đầu tiên.
 
 \begin{longtblr}{
   width = \textwidth,
@@ -21,7 +21,7 @@ Biến môi trường & \texttt{IMPORT\_SUPABASE\_URL}, \texttt{IMPORT\_SUPABASE
 
 \section{Build và chạy chương trình}
 
-Từ thư mục \texttt{Homework07/Group}, chạy các lệnh sau:
+Tại thư mục gốc của source code, chạy các lệnh sau:
 
 \begin{lstlisting}[language=bash]
 mvn -version
@@ -37,7 +37,7 @@ export IMPORT_SUPABASE_KEY='<supabase-anon-or-service-role-key>'
 mvn javafx:run
 \end{lstlisting}
 
-Nếu dùng file \texttt{.env}, đặt file này tại \texttt{Homework07/Group/.env} với nội dung:
+Nếu dùng file \texttt{.env}, đặt file này tại thư mục gốc của project với nội dung:
 
 \begin{lstlisting}
 IMPORT_SUPABASE_URL=https://<project-ref>.supabase.co

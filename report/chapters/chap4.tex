@@ -18,22 +18,191 @@
 
 \section{Đặc tả màn hình}
 
+Các bảng đặc tả dưới đây mô tả các thành phần giao diện chính của từng màn hình. Mỗi thành phần được phân loại theo vai trò hiển thị, nhập liệu, điều hướng hoặc thao tác để thuận tiện cho việc đối chiếu với thiết kế UI và mã nguồn JavaFX.
+
+\subsection{Màn hình LoginView}
+
 \begin{longtblr}{
-  colspec = {Q[0.20\textwidth, l] Q[0.15\textwidth, l] X[l] Q[0.25\textwidth, l]},
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
   hlines,
   vlines,
   rowhead = 1,
 }
-\textbf{Màn hình} & \textbf{Use case} & \textbf{Dữ liệu chính} & \textbf{Thao tác} \\
-\ucname{LoginView} & Xác thực & \fieldname{username}, \fieldname{password} & Đăng nhập, tạo quản trị viên đầu tiên. \\
-\ucname{OverviewView} & Tổng quan vận hành & Số yêu cầu, Site, tồn kho, phân bổ, đơn, phiếu nhận & Xem trạng thái nhanh của toàn luồng. \\
-\ucname{RequestView} & UC001 & \fieldname{requestId}, \fieldname{merchandiseCode}, \fieldname{quantity}, \fieldname{unit}, \fieldname{desiredDeliveryDate}, \fieldname{status} & Tạo yêu cầu, cập nhật, hủy, làm mới danh sách. \\
-\ucname{SiteView} & UC002 & \fieldname{siteCode}, \fieldname{siteName}, \fieldname{shipDays}, \fieldname{airDays}, \fieldname{merchandiseCatalog} & Cập nhật Site, xem danh sách Site. \\
-\ucname{InventoryView} & UC003 & \fieldname{siteCode}, \fieldname{merchandiseCode}, \fieldname{inStockQuantity}, \fieldname{unit} & Ghi nhận tồn kho Site, lọc bản ghi theo mã hàng. \\
-\ucname{AllocationView} & UC004 & \fieldname{planId}, \fieldname{requestId}, \fieldname{siteCode}, \fieldname{deliveryMeans}, \fieldname{quantity} & Preview và xác nhận phương án phân bổ. \\
-\ucname{OrderView} & UC005 & \fieldname{orderReference}, \fieldname{siteCode}, \fieldname{status}, \fieldname{ackToken} & Tạo đơn từ phương án, xác nhận, từ chối. \\
-\ucname{ReceivingView} & UC006 & \fieldname{orderReference}, \fieldname{quantityReceived}, \fieldname{discrepancyNote} & Nhập số lượng thực nhận, ghi phiếu, xem sai lệch. \\
-\ucname{AdminView} & UC007 & \fieldname{username}, \fieldname{email}, \fieldname{actorRoles}, \fieldname{operationLog} & Tạo user, gán vai trò, xem log, cập nhật lịch sao lưu. \\
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Logo hệ thống & Label/Image & Hiển thị logo và tên hệ thống đặt hàng nhập khẩu. \\
+2 & Form đăng nhập & Container/Panel & Gom các trường đăng nhập và thông báo trạng thái xác thực. \\
+3 & Ô \fieldname{username} & Text Field & Nhập tên đăng nhập của người dùng. \\
+4 & Ô \fieldname{password} & Password Field & Nhập mật khẩu, nội dung được ẩn trên giao diện. \\
+5 & Nút Login & Button & Xác thực tài khoản và mở Dashboard khi thông tin hợp lệ. \\
+6 & Nút Create first admin & Button & Khởi tạo tài khoản \actorname{SystemAdministrator} đầu tiên khi hệ thống chưa có quản trị viên. \\
+7 & Vùng thông báo lỗi & Message Label & Hiển thị lỗi đăng nhập sai hoặc dữ liệu tạo admin không hợp lệ. \\
+\end{longtblr}
+
+\subsection{Màn hình OverviewView}
+
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Thanh điều hướng & Navigation Menu & Cho phép chuyển tới Requests, Sites, Inventory, Allocation, Orders, Receiving và Admin theo quyền. \\
+2 & Thông tin phiên đăng nhập & Information Panel & Hiển thị username, role và trạng thái đăng nhập hiện tại. \\
+3 & Thẻ tổng số request & Summary Card & Hiển thị số lượng yêu cầu nhập đang có trong hệ thống. \\
+4 & Thẻ Site & Summary Card & Hiển thị số Site nhập khẩu và dữ liệu catalog đang quản lý. \\
+5 & Thẻ tồn kho & Summary Card & Hiển thị số bản ghi tồn kho đã thu thập từ Site. \\
+6 & Thẻ đơn hàng & Summary Card & Hiển thị số đơn đặt hàng theo trạng thái xử lý. \\
+7 & Khu vực hoạt động gần đây & Data Panel & Tóm tắt các thay đổi mới nhất trong request, order, receipt và operation log. \\
+8 & Nút Logout & Button & Kết thúc phiên làm việc và quay về màn hình đăng nhập. \\
+\end{longtblr}
+
+\subsection{Màn hình RequestView}
+
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Requests & Label & Hiển thị tên màn hình quản lý yêu cầu nhập hàng. \\
+2 & Bảng import request & Data Grid/Table & Hiển thị \fieldname{requestId}, danh sách item, \fieldname{desiredDeliveryDate} và \fieldname{status}. \\
+3 & Ô \fieldname{merchandiseCode} & Text Field & Nhập mã hàng cần đặt, chỉ chấp nhận mã tồn tại trong master merchandise. \\
+4 & Ô \fieldname{quantity} & Number Field & Nhập số lượng cần nhập, giá trị phải là số nguyên dương. \\
+5 & Ô \fieldname{unit} & Combo Box & Chọn đơn vị tính hợp lệ của mặt hàng. \\
+6 & Ô \fieldname{desiredDeliveryDate} & Date Picker & Chọn ngày nhận mong muốn, không nhỏ hơn ngày tạo request. \\
+7 & Nút Add item & Button & Thêm dòng mặt hàng vào danh sách request đang soạn. \\
+8 & Nút Submit request & Button & Gửi yêu cầu nhập hàng và chuyển trạng thái sang Submitted. \\
+9 & Nút Update & Button & Cập nhật request khi trạng thái chưa bị khóa xử lý. \\
+10 & Nút Cancel & Button & Hủy request và chuyển trạng thái sang Cancelled. \\
+11 & Vùng thông báo lỗi & Message Label & Hiển thị lỗi validation tại thời điểm nhập hoặc gửi dữ liệu. \\
+\end{longtblr}
+
+\subsection{Màn hình SiteView}
+
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Sites & Label & Hiển thị tên màn hình quản lý hồ sơ Site nhập khẩu. \\
+2 & Bảng Site & Data Grid/Table & Hiển thị \fieldname{siteCode}, \fieldname{siteName}, \fieldname{shipDays}, \fieldname{airDays} và catalog. \\
+3 & Ô \fieldname{siteCode} & Text Field & Nhập hoặc chọn mã Site cần cập nhật. \\
+4 & Ô \fieldname{siteName} & Text Field & Nhập tên Site nhập khẩu. \\
+5 & Ô \fieldname{shipDays} & Number Field & Nhập số ngày vận chuyển bằng tàu, bắt buộc lớn hơn 0. \\
+6 & Ô \fieldname{airDays} & Number Field & Nhập số ngày vận chuyển bằng hàng không, bắt buộc lớn hơn 0. \\
+7 & Danh sách \fieldname{merchandiseCatalog} & Multi Select/List & Chọn các \fieldname{merchandiseCode} mà Site kinh doanh. \\
+8 & Nút Save site & Button & Lưu hồ sơ Site, shipping time và catalog mới. \\
+9 & Nút Refresh & Button & Tải lại danh sách Site sau khi cập nhật. \\
+10 & Vùng thông báo & Message Label & Hiển thị kết quả lưu hoặc lỗi dữ liệu Site. \\
+\end{longtblr}
+
+\subsection{Màn hình InventoryView}
+
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Inventory & Label & Hiển thị tên màn hình thu thập tồn kho Site. \\
+2 & Bảng Site ứng viên & Data Grid/Table & Hiển thị các Site kinh doanh merchandise trong request. \\
+3 & Ô \fieldname{requestId} & Combo Box & Chọn yêu cầu nhập cần hỏi tồn kho. \\
+4 & Ô \fieldname{siteCode} & Combo Box & Chọn Site phản hồi tồn kho. \\
+5 & Ô \fieldname{merchandiseCode} & Combo Box & Chọn mã hàng cần ghi nhận tồn kho. \\
+6 & Ô \fieldname{inStockQuantity} & Number Field & Nhập số lượng tồn kho, cho phép bằng 0 khi Site hết hàng. \\
+7 & Ô \fieldname{unit} & Combo Box & Chọn đơn vị tính khớp với request. \\
+8 & Nút Record stock & Button & Ghi \ucname{InventoryRecord} theo \fieldname{siteCode} và \fieldname{merchandiseCode}. \\
+9 & Nút Retry & Button & Gửi lại yêu cầu hỏi tồn kho khi phản hồi bị timeout. \\
+10 & Vùng trạng thái phản hồi & Status Label & Hiển thị đã ghi nhận, hết hàng hoặc timeout. \\
+\end{longtblr}
+
+\subsection{Màn hình AllocationView}
+
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Allocation & Label & Hiển thị tên màn hình lập phương án phân bổ. \\
+2 & Ô \fieldname{requestId} & Combo Box & Chọn request đã có dữ liệu tồn kho để lập phương án. \\
+3 & Bảng \ucname{InventoryRecord} & Data Grid/Table & Hiển thị tồn kho và shipping time của các Site ứng viên. \\
+4 & Bảng Allocation preview & Data Grid/Table & Hiển thị \fieldname{siteCode}, \fieldname{merchandiseCode}, \fieldname{quantity} và \fieldname{deliveryMeans} dự kiến. \\
+5 & Cột \fieldname{deliveryMeans} & Table Column & Cho biết phương thức vận chuyển ship delivery hoặc air delivery. \\
+6 & Cột shortageWarning & Status Column & Cảnh báo khi không đủ nguồn cung đáp ứng ngày nhận mong muốn. \\
+7 & Nút Generate plan & Button & Tính phương án phân bổ theo các tiêu chí ưu tiên. \\
+8 & Nút Manual adjust & Button & Cho phép điều chỉnh số lượng phân bổ trước khi xác nhận. \\
+9 & Nút Confirm plan & Button & Xác nhận \ucname{AllocationPlan} và chuyển request sang Allocated. \\
+10 & Vùng thông báo & Message Label & Hiển thị lỗi thiếu nguồn cung hoặc kết quả xác nhận. \\
+\end{longtblr}
+
+\subsection{Màn hình OrderView}
+
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Orders & Label & Hiển thị tên màn hình lập và gửi đơn đặt hàng quốc tế. \\
+2 & Ô \fieldname{planId} & Combo Box & Chọn \ucname{AllocationPlan} đã xác nhận. \\
+3 & Bảng order preview & Data Grid/Table & Hiển thị đơn sẽ tạo theo từng \fieldname{siteCode}. \\
+4 & Bảng \ucname{OrderLine} & Data Grid/Table & Hiển thị \fieldname{merchandiseCode}, \fieldname{quantity}, \fieldname{unit} và \fieldname{deliveryMeans}. \\
+5 & Cột \fieldname{orderReference} & Table Column & Hiển thị mã đơn đặt hàng chính thức. \\
+6 & Cột \fieldname{status} & Status Column & Hiển thị Transmitted, Acknowledged hoặc Rejected. \\
+7 & Nút Generate orders & Button & Sinh đơn đặt hàng từ \ucname{AllocationPlan}. \\
+8 & Nút Send & Button & Gửi đơn tới Site và chuyển trạng thái Transmitted. \\
+9 & Nút Acknowledge/Reject & Button & Ghi nhận phản hồi xác nhận hoặc từ chối từ Site. \\
+10 & Vùng phản hồi Site & Message Label & Hiển thị ackToken, rejectToken hoặc lý do từ chối. \\
+\end{longtblr}
+
+\subsection{Màn hình ReceivingView}
+
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Receiving & Label & Hiển thị tên màn hình nhận và đối chiếu hàng nhập kho. \\
+2 & Ô \fieldname{orderReference} & Combo Box & Chọn đơn đặt hàng cần kiểm nhận. \\
+3 & Bảng ordered lines & Data Grid/Table & Hiển thị số lượng đã đặt theo \fieldname{merchandiseCode}. \\
+4 & Ô \fieldname{receivedQuantity} & Number Field & Nhập số lượng thực nhận, giá trị không âm. \\
+5 & Ô \fieldname{discrepancyNote} & Text Area & Nhập ghi chú khi số lượng thực nhận khác số lượng đã đặt. \\
+6 & Cột \fieldname{discrepancyType} & Status Column & Hiển thị Match, Shortage hoặc Surplus theo từng dòng. \\
+7 & Nút Reconcile & Button & So sánh \fieldname{receivedQuantity} với \fieldname{orderedQuantity}. \\
+8 & Nút Save receipt & Button & Lưu \ucname{GoodsReceipt} và cập nhật \ucname{WarehouseStock}. \\
+9 & Vùng cảnh báo & Message Label & Cảnh báo khi thiếu ghi chú sai lệch hoặc sai lệch vượt ngưỡng. \\
+10 & Bảng warehouse stock & Data Grid/Table & Hiển thị tồn kho nội bộ sau khi nhận hàng. \\
+\end{longtblr}
+
+\subsection{Màn hình AdminView}
+
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Admin & Label & Hiển thị tên màn hình quản trị hệ thống. \\
+2 & Bảng user account & Data Grid/Table & Hiển thị \fieldname{username}, \fieldname{email}, role và trạng thái active. \\
+3 & Ô \fieldname{username} & Text Field & Nhập tên đăng nhập duy nhất. \\
+4 & Ô \fieldname{email} & Text Field & Nhập email hợp lệ của người dùng. \\
+5 & Ô role & Combo Box & Chọn vai trò như SalesDepartment, InternationalOrderingDepartment hoặc SystemAdministrator. \\
+6 & Bảng master data & Data Grid/Table & Hiển thị merchandise, unit và dữ liệu cấu hình dùng chung. \\
+7 & Bảng operation log & Data Grid/Table & Hiển thị hành động quản trị và thời điểm thao tác. \\
+8 & Ô \fieldname{backupSchedule} & Text Field & Nhập lịch sao lưu dữ liệu hệ thống. \\
+9 & Nút Save user & Button & Tạo hoặc cập nhật tài khoản và ghi operation log. \\
+10 & Nút Save backup & Button & Lưu lịch sao lưu sau khi kiểm tra quyền quản trị. \\
 \end{longtblr}
 
 \section{Quy tắc tương tác}

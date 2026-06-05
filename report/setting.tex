@@ -36,8 +36,12 @@
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
-\IfFileExists{microtype.sty}{\usepackage[]{microtype}}{}
-\IfFileExists{letterspace.sty}{\usepackage{letterspace}}{}
+\ifPDFTeX
+  \IfFileExists{microtype.sty}{\usepackage[]{microtype}}{}
+  \IfFileExists{letterspace.sty}{\usepackage{letterspace}}{}
+\else
+  \providecommand{\textls}[2][]{#2}
+\fi
 \usepackage{xcolor} % Added for defining custom colors if needed, also used by literate replacement
 \definecolor{ucgreen}{HTML}{C3F0E0}
 \definecolor{ucorange}{HTML}{FFC896}
@@ -45,7 +49,7 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{float}
-\hypersetup{hidelinks, pdfcreator={LaTeX via pandoc}}
+\hypersetup{hidelinks, pdfcreator={XeLaTeX}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
 \setcounter{secnumdepth}{2}
@@ -97,3 +101,9 @@
              % {ì}{{\`i}}1
              % However, it's best to rely on inputencoding=utf8 first.
 }
+
+% Override tabularray continued texts
+\DefTblrTemplate{contfoot-text}{default}{(tiếp tục ở trang sau)}
+\SetTblrTemplate{contfoot-text}{default}
+\DefTblrTemplate{conthead-text}{default}{(tiếp)}
+\SetTblrTemplate{conthead-text}{default}

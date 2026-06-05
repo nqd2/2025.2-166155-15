@@ -1,0 +1,277 @@
+\documentclass[12pt]{extreport}
+\input{../setting}
+
+\newcommand{\ReportTitle}{Báo cáo cá nhân: \\ UC006 - ReceiveAndReconcileGoods}
+\newcommand{\ReportPeopleBlock}{%
+\textbf{Sinh viên thực hiện:}\\[0.2cm]
+Nguyễn Hữu Nhân - 20235798\\
+Lớp: ITSS\\
+Giảng viên hướng dẫn: TS. Trịnh Tuấn Đạt
+}
+
+\begin{document}
+\input{../cover}
+
+\tableofcontents
+\newpage
+
+\chapter{Tài liệu đặc tả yêu cầu phần mềm SRS}
+\section{Giới thiệu phạm vi nghiệp vụ cá nhân}
+Phạm vi công việc cá nhân tập trung vào việc quản lý, đối chiếu số lượng hàng hóa thực tế khi nhập kho so với đơn đặt hàng nước ngoài đã phát hành, ghi nhận các sai lệch thừa thiếu và cập nhật thông tin tồn kho nội bộ của công ty.
+
+\section{Phân công nhiệm vụ nhóm}
+Dưới đây là bảng phân công vai trò phụ trách use case của các thành viên trong nhóm:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.30\textwidth,l] Q[0.18\textwidth,l] X[l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Thành viên & MSSV & Use case phụ trách \\
+Nguyễn Hữu Nhân & 20235798 & UC006 - ReceiveAndReconcileGoods \\
+Vũ Đức Hoàng Anh & 20235658 & UC001 - ManageImportRequests, UC007 - ManageSystem \\
+Trần Đăng Sinh & 20235821 & UC003 - CollectInventoryData \\
+Phan Khánh Vũ & 20235880 & UC004 - PlanImportAllocation \\
+Lương Quốc Khánh & 20235754 & UC005 - PlaceOverseasOrders \\
+Nguyễn Quý Đức & 20235682 & UC002 - ManageSiteInformation \\
+\end{longtblr}
+
+\section{Đặc tả chi tiết Use Case UC006 -- ReceiveAndReconcileGoods}
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-006: ReceiveAndReconcileGoods},
+  label = {tbl:spec-uc006},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-006 \\
+Tên UseCase & \breakucname{ReceiveAndReconcileGoods} \\
+Tác nhân & \actorname{WarehouseManagementDepartment}, \actorname{InternationalOrderingDepartment} \\
+Tiền điều kiện & Đơn đặt hàng đã phát hành cho Site; \actorname{WarehouseManagementDepartment} có quyền tiếp nhận và kiểm hàng. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{InternationalOrderingDepartment} & Cung cấp dữ liệu số lượng đặt kỳ vọng cho \actorname{WarehouseManagementDepartment}. \\
+  2 & \actorname{WarehouseManagementDepartment} & Ghi nhận thông tin lô hàng thực tế khi hàng về kho. \\
+  3 & System & So sánh số lượng thực nhận với số lượng đã đặt theo từng mặt hàng. \\
+  4 & \actorname{WarehouseManagementDepartment} & Xác nhận kết quả kiểm nhận sau khi đối soát. \\
+  5 & System & Cập nhật tồn kho nội bộ theo số lượng thực nhận đã xác nhận. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  3a & System & Phát hiện sai lệch giữa thực nhận và đặt hàng, hệ thống mở bước ghi nhận discrepancy. \\
+  3b & \actorname{WarehouseManagementDepartment} & Ghi chi tiết sai lệch (thiếu/thừa/hư hỏng) và nguyên nhân quan sát được. \\
+  5a & System & Nếu sai lệch vượt ngưỡng, hệ thống gửi cảnh báo cho \actorname{InternationalOrderingDepartment} để xử lý tiếp. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Kết quả kiểm nhận và đối soát được lưu đầy đủ; tồn kho nội bộ được cập nhật; các sai lệch được ghi nhận và cảnh báo theo quy định. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{ReceiveAndReconcileGoods} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-006},
+  label = {tbl:input-uc006},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{orderReference} & Mã đơn đặt hàng cần kiểm nhận & Có & Tồn tại và ở trạng thái đã giao/đang giao & PO-2026-0008 \\
+2 & \fieldname{receivedQuantity} & Số lượng thực nhận theo mặt hàng & Có & Số nguyên không âm & 145 \\
+3 & \fieldname{orderedQuantity} & Số lượng đã đặt theo đơn & Có & Số nguyên dương & 150 \\
+4 & \fieldname{discrepancyNote} & Ghi chú sai lệch nếu có & Không & Bắt buộc khi receivedQuantity khác orderedQuantity & Thiếu 5 đơn vị do hư hỏng vận chuyển \\
+\end{longtblr}
+
+\section{Sơ đồ đặc tả}
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/usecase.png}{Use case phân rã UC006 - ReceiveAndReconcileGoods}{fig:uc006-usecase}
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/activity.png}{Activity diagram UC006 - ReceiveAndReconcileGoods}{fig:uc006-activity}
+
+\chapter{Tài liệu phân tích Use Case}
+\section{Mô tả luồng xử lý phân tích}
+Phân tích luồng xử lý của use case thực hiện bằng sequence diagram và communication diagram để làm rõ các tương tác giữa boundary, control và entity.
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/sequence_analysis.png}{Sequence diagram mức phân tích UC006 - ReceiveAndReconcileGoods}{fig:uc006-seq-analysis}
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/communication_analysis.png}{Communication diagram mức phân tích UC006 - ReceiveAndReconcileGoods}{fig:uc006-comm-analysis}
+
+\section{Sơ đồ lớp mức phân tích}
+Biểu diễn cấu trúc tĩnh ở mức phân tích nhằm mô tả mối quan hệ giữa các thực thể nghiệp vụ và lớp điều khiển trong use case.
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/screen_transition_overview.png}{Class diagram mức phân tích UC006 - ReceiveAndReconcileGoods}{fig:uc006-class-analysis}
+
+\chapter{Thiết kế giao diện và Subsystem}
+\section{Thiết kế và đặc tả màn hình}
+Màn hình ReceivingView hỗ trợ việc nhập liệu số lượng thực tế nhận được theo từng mã hàng của đơn hàng.
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/screen_transition.png}{Screen transition diagram UC006 - ReceiveAndReconcileGoods}{fig:uc006-screen-transition}
+
+\subsection{Đặc tả các thành phần giao diện màn hình ReceivingView}
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Receiving & Label & Hiển thị tên màn hình nhận và đối chiếu hàng nhập kho. \\
+2 & Ô \fieldname{orderReference} & Combo Box & Chọn đơn đặt hàng cần kiểm nhận. \\
+3 & Bảng ordered lines & Data Grid/Table & Hiển thị số lượng đã đặt theo \fieldname{merchandiseCode}. \\
+4 & Ô \fieldname{receivedQuantity} & Number Field & Nhập số lượng thực nhận, giá trị không âm. \\
+5 & Ô \fieldname{discrepancyNote} & Text Area & Nhập ghi chú khi số lượng thực nhận khác số lượng đã đặt. \\
+6 & Cột \fieldname{discrepancyType} & Status Column & Hiển thị Match, Shortage hoặc Surplus theo từng dòng. \\
+7 & Nút Reconcile & Button & So sánh \fieldname{receivedQuantity} với \fieldname{orderedQuantity}. \\
+8 & Nút Save receipt & Button & Lưu \ucname{GoodsReceipt} và cập nhật \ucname{WarehouseStock}. \\
+9 & Vùng cảnh báo & Message Label & Cảnh báo khi thiếu ghi chú sai lệch hoặc sai lệch vượt ngưỡng. \\
+10 & Bảng warehouse stock & Data Grid/Table & Hiển thị tồn kho nội bộ sau khi nhận hàng. \\
+\end{longtblr}
+
+\subsection{Giao diện chương trình minh họa}
+\diagramfigure{../images/receiving.png}{Giao diện nhận và đối chiếu hàng nhập kho}{fig:uc006-ui}
+
+\section{Thiết kế Subsystem}
+Thiết kế chi tiết cấu trúc tĩnh và động cho subsystem đối chiếu hàng nhập kho phục vụ cho use case.
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/class_subsystem.png}{Class diagram subsystem UC006 - ReceiveAndReconcileGoods}{fig:uc006-subsys-class}
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/sequence_subsystem.png}{Sequence diagram subsystem UC006 - ReceiveAndReconcileGoods}{fig:uc006-subsys-seq}
+
+\chapter{Thiết kế chi tiết phần mềm}
+\section{Thiết kế động và tĩnh chi tiết}
+Chuyển đổi các lớp phân tích sang thiết kế chi tiết ở mức mã nguồn lớp, xác định các thuộc tính, phương thức và mối liên kết.
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/sequence_design.png}{Sequence diagram mức thiết kế UC006 - ReceiveAndReconcileGoods}{fig:uc006-seq-design}
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/class_design.png}{Class diagram mức thiết kế UC006 - ReceiveAndReconcileGoods}{fig:uc006-class-design}
+
+\section{Biểu đồ phụ thuộc gói}
+Sắp xếp các lớp thiết kế vào các gói tương ứng theo cấu trúc kiến trúc đa tầng và chỉ ra mối phụ thuộc chiều dọc.
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods/package_design.png}{Package dependency diagram UC006 - ReceiveAndReconcileGoods}{fig:uc006-package}
+
+\chapter{Nguyên lý thiết kế và mẫu thiết kế áp dụng}
+\section{Nguyên lý thiết kế}
+Thiết kế của module UC006 áp dụng triệt để các nguyên lý kiến trúc sạch và lập trình hướng đối tượng:
+\begin{itemize}
+    \item \textbf{Single Responsibility Principle (SRP)}: Tách biệt hoàn toàn logic đối chiếu, kiểm tra sai lệch khỏi tầng hiển thị giao diện. Logic đối so soát nằm trọn vẹn trong các thực thể nghiệp vụ và lớp dịch vụ.
+    \item \textbf{Domain Consistency}: Đảm bảo sự nhất quán của mô hình nghiệp vụ. Lớp `ReceiptLine` tự chịu trách nhiệm tính toán sai lệch dựa trên số lượng nhận và số lượng đặt, ngăn ngừa việc ghi nhận thông tin không hợp lệ từ bên ngoài.
+    \item \textbf{Dependency Inversion Principle (DIP)}: Tầng ứng dụng giao tiếp với tầng lưu trữ dữ liệu thông qua port interface (`Store`), giúp hệ thống độc lập với hạ tầng cơ sở dữ liệu thật (như Supabase) và dễ dàng thay thế bằng cổng dữ liệu giả lập (`InMemoryStore`) khi chạy kiểm thử tự động.
+\end{itemize}
+
+\section{Mẫu thiết kế}
+Áp dụng mẫu thiết kế để giữ cấu trúc phần mềm rõ ràng và dễ bảo trì:
+\begin{itemize}
+    \item \textbf{Facade}: Cung cấp một điểm truy cập duy nhất đại diện cho toàn bộ hệ thống dịch vụ qua `ImportOrderingFacade`, giúp giảm thiểu mối liên kết giữa tầng giao diện người dùng JavaFX và các lớp dịch vụ nghiệp vụ.
+    \item \textbf{Repository (Port and Adapter)}: Đóng gói toàn bộ các thao tác truy xuất dữ liệu đằng sau cổng port giao tiếp, hỗ trợ việc chuyển đổi linh hoạt cơ chế lưu trữ.
+\end{itemize}
+
+\chapter{Kiểm thử phần mềm}
+\section{Thiết kế các ca kiểm thử}
+\subsection{Thiết kế kiểm thử hộp đen (Black-box Testing)}
+Thiết kế các ca kiểm thử cho phương thức nhận hàng `receive` trong lớp dịch vụ `ReceiptService`:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.15\textwidth,l] Q[0.35\textwidth,l] Q[0.25\textwidth,l] Q[0.25\textwidth,l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Ca kiểm thử & Dữ liệu đầu vào & Kết quả mong đợi & Nhóm phân vùng \\
+TC-UC006-BB1 & Số lượng thực nhận bằng số lượng đặt hàng. & Tạo biên nhận thành công, trạng thái khớp (MATCH), không có discrepancy. & Nhận hàng đủ và khớp. \\
+TC-UC006-BB2 & Số lượng thực nhận ít hơn đặt hàng, không cung cấp ghi chú sai lệch. & Hệ thống ném lỗi BusinessException bắt buộc nhập ghi chú. & Nhận thiếu hàng không có ghi chú. \\
+TC-UC006-BB3 & Số lượng thực nhận ít hơn đặt hàng, có nhập ghi chú đầy đủ. & Tạo biên nhận thành công, loại sai lệch thiếu (SHORTAGE), lưu ghi chú. & Nhận thiếu hàng có ghi chú hợp lệ. \\
+TC-UC006-BB4 & Số lượng thực nhận nhiều hơn đặt hàng, không cung cấp ghi chú sai lệch. & Hệ thống ném lỗi BusinessException bắt buộc nhập ghi chú. & Nhận thừa hàng không có ghi chú. \\
+TC-UC006-BB5 & Số lượng thực nhận nhiều hơn đặt hàng, có nhập ghi chú đầy đủ. & Tạo biên nhận thành công, loại sai lệch thừa (SURPLUS), lưu ghi chú. & Nhận thừa hàng có ghi chú hợp lệ. \\
+TC-UC006-BB6 & Số lượng thực nhận là số âm (-5). & Hệ thống ném lỗi kiểm tra dữ liệu không hợp lệ. & Giá trị số lượng biên ngoài không hợp lệ. \\
+\end{longtblr}
+
+\subsection{Thiết kế kiểm thử hộp trắng (White-box Testing - Độ bao phủ C1)}
+Thiết kế các ca kiểm thử bao phủ toàn bộ các nhánh logic (Branch Coverage) xử lý sai lệch của phương thức kiểm nhận:
+\begin{itemize}
+    \item \textbf{Nhánh 1}: Số lượng thực nhận bằng số lượng đặt hàng $\rightarrow$ Không xảy ra sai lệch, lưu biên nhận bình thường.
+    \item \textbf{Nhánh 2}: Số lượng thực nhận khác số lượng đặt hàng và ghi chú sai lệch trống $\rightarrow$ Ném lỗi `BusinessException` thông báo bắt buộc nhập ghi chú.
+    \item \textbf{Nhánh 3}: Số lượng thực nhận nhỏ hơn số lượng đặt hàng và ghi chú đầy đủ $\rightarrow$ Xác lập loại sai lệch `SHORTAGE` và lưu thông tin.
+    \item \textbf{Nhánh 4}: Số lượng thực nhận lớn hơn số lượng đặt hàng và ghi chú đầy đủ $\rightarrow$ Xác lập loại sai lệch `SURPLUS` và lưu thông tin.
+\end{itemize}
+Để bao phủ 4 nhánh này, thiết kế tối thiểu 2 phương thức JUnit test chứa các kịch bản kiểm thử: khớp số lượng và lệch số lượng (thiếu/thừa có/không có ghi chú).
+
+\section{Mã nguồn kiểm thử tự động}
+Mã nguồn chương trình kiểm thử tự động bằng JUnit 5 sử dụng cơ chế lưu trữ giả lập bộ nhớ:
+\begin{lstlisting}[language=Java]
+package vn.edu.hust.itss.group15.usecases;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import vn.edu.hust.itss.group15.application.BusinessException;
+import vn.edu.hust.itss.group15.application.ImportOrderingFacade;
+import vn.edu.hust.itss.group15.domain.AllocationPlan;
+import vn.edu.hust.itss.group15.domain.GoodsReceipt;
+import vn.edu.hust.itss.group15.domain.ImportRequest;
+import vn.edu.hust.itss.group15.domain.ImportRequestItem;
+import vn.edu.hust.itss.group15.domain.OverseasOrder;
+import vn.edu.hust.itss.group15.infrastructure.persistence.memory.InMemoryStore;
+
+class Uc006GoodsReceiptTest {
+  @Test
+  void tcUc00601ReceivesMatchedGoodsAndUpdatesWarehouseStock() {
+    ImportOrderingFacade facade = facade();
+    OverseasOrder order = facade.orders().generateOrders(allocationPlanAcrossTwoSites(facade).planId()).getFirst();
+    String merchandiseCode = order.orderLines().getFirst().merchandiseCode();
+    int orderedQuantity = order.orderLines().getFirst().quantityOrdered();
+
+    GoodsReceipt receipt = facade.receipts().receive(order.orderId(), Map.of(merchandiseCode, orderedQuantity), Map.of());
+
+    assertFalse(receipt.hasDiscrepancy());
+    assertEquals(orderedQuantity, facade.store().warehouseStock().getFirst().quantityInStock());
+  }
+
+  @Test
+  void tcUc00602RequiresDiscrepancyNoteForShortOrExcessReceipt() {
+    ImportOrderingFacade facade = facade();
+    OverseasOrder deficitOrder = facade.orders().generateOrders(allocationPlanAcrossTwoSites(facade).planId()).getFirst();
+    String deficitCode = deficitOrder.orderLines().getFirst().merchandiseCode();
+    int deficitOrdered = deficitOrder.orderLines().getFirst().quantityOrdered();
+
+    assertThrows(BusinessException.class, () -> facade.receipts().receive(
+        deficitOrder.orderId(),
+        Map.of(deficitCode, deficitOrdered - 1),
+        Map.of()));
+
+    GoodsReceipt surplusReceipt = facade.receipts().receive(
+        deficitOrder.orderId(),
+        Map.of(deficitCode, deficitOrdered + 1),
+        Map.of(deficitCode, "Supplier shipped one extra box"));
+    assertTrue(surplusReceipt.hasDiscrepancy());
+    assertEquals("SURPLUS", surplusReceipt.lines().getFirst().discrepancyType());
+  }
+
+  private ImportOrderingFacade facade() {
+    return new ImportOrderingFacade(new InMemoryStore());
+  }
+
+  private ImportRequestItem item(String merchandiseCode, int quantity, int daysFromNow) {
+    return new ImportRequestItem(merchandiseCode, quantity, "box", LocalDate.now().plusDays(daysFromNow));
+  }
+
+  private AllocationPlan allocationPlanAcrossTwoSites(ImportOrderingFacade facade) {
+    ImportRequest request = facade.importRequests().create(List.of(item("MH-001", 10, 25)));
+    facade.inventory().recordStock("SITE-SEA-01", "MH-001", 5, "box");
+    facade.inventory().recordStock("SITE-EU-04", "MH-001", 20, "box");
+    return facade.allocation().plan(request.requestId());
+  }
+}
+\end{lstlisting}
+
+\end{document}

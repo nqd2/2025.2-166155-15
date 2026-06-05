@@ -43,20 +43,20 @@ Các khái niệm nghiệp vụ được đặt thành record, enum và policy r
 
 \subsection{Facade}
 
-\ucname{ImportOrderingFacade} gom các service theo use case để giao diện truy cập qua một điểm vào ổn định. Các sơ đồ thiết kế cũng dùng facade ở subsystem như \ucname{ValidationFacade}, \ucname{AllocationFacade}, \ucname{ReconciliationFacade}, \ucname{SecurityFacade}.
+Nhóm áp dụng mẫu thiết kế Facade thông qua lớp \ucname{ImportOrderingFacade} nhằm cung cấp một điểm giao tiếp (entry point) duy nhất giữa tầng giao diện (Presentation) và hệ thống nghiệp vụ phức tạp bên dưới. Thay vì mỗi màn hình giao diện phải tự tìm và gọi các service riêng lẻ, chúng chỉ cần gọi qua Facade. Điều này giúp giảm thiểu sự phụ thuộc (coupling) giữa UI và logic nội bộ, giúp mã nguồn giao diện sạch hơn và dễ bảo trì khi cấu trúc nghiệp vụ thay đổi.
 
-\subsection{Repository/Port}
+\subsection{Repository (Port \& Adapter)}
 
-\ucname{Store} đóng vai trò port lưu trữ. \ucname{SupabaseStore} triển khai lưu trữ thật qua REST, còn \ucname{InMemoryStore} phục vụ test. Tầng application không biết dữ liệu nằm trong Supabase hay bộ nhớ.
+Mẫu Repository được sử dụng thông qua interface \ucname{Store}. Lựa chọn này xuất phát từ yêu cầu muốn tách biệt hoàn toàn lõi nghiệp vụ khỏi công nghệ lưu trữ. Bằng cách định nghĩa một hợp đồng (Port), tầng Application có thể lưu và tải dữ liệu mà không cần biết chúng đang nằm trên PostgreSQL hay trong bộ nhớ. \ucname{SupabaseStore} đóng vai trò là Adapter kết nối với cơ sở dữ liệu thật, trong khi \ucname{InMemoryStore} được dùng làm Adapter thay thế khi chạy unit test, giúp test chạy cực nhanh mà không cần thiết lập database.
 
 \subsection{Strategy}
 
-\ucname{AllocationPolicy} đóng vai trò strategy cho thuật toán phân bổ. Rule hiện tại ưu tiên đáp ứng ngày nhận, ưu tiên đường tàu khi có thể, ưu tiên Site có tồn kho lớn và giảm số Site tham gia.
+Bài toán tính toán phân bổ số lượng đặt hàng từ nhiều Site đòi hỏi sự mềm dẻo, vì tiêu chí ưu tiên có thể thay đổi theo nghiệp vụ thực tế. Mẫu Strategy được ứng dụng qua \ucname{AllocationPolicy} nhằm đóng gói (encapsulate) riêng biệt thuật toán phân bổ. Thiết kế này tuân thủ nguyên lý Open/Closed: khi cần áp dụng quy tắc phân bổ mới (ví dụ: ưu tiên theo chi phí thay vì thời gian), nhóm chỉ cần tạo một class mới triển khai policy này mà không phải sửa lại luồng code cốt lõi ở tầng service.
 
 \subsection{Adapter}
 
-\ucname{SupabaseStore} và \ucname{HttpSupabaseTransport} chuyển đổi lời gọi lưu trữ trong ứng dụng thành HTTP request tới Supabase REST. Adapter che chi tiết header, URL, JSON và mã lỗi HTTP khỏi tầng nghiệp vụ.
+Hệ thống cần giao tiếp với nền tảng Supabase, nhưng không muốn chi tiết về mạng (HTTP, JSON) làm rối tầng Domain. Mẫu Adapter được sử dụng thông qua \ucname{SupabaseStore} và \ucname{HttpSupabaseTransport} để "chuyển ngữ" từ các lời gọi hướng đối tượng thông thường thành HTTP Request. Adapter này đảm nhận toàn bộ rác kỹ thuật như thêm header xác thực, cấu trúc URL, và xử lý HTTP status code, giữ cho tầng nghiệp vụ hoàn toàn trong sạch.
 
 \subsection{Value Object và Record}
 
-Các dữ liệu bất biến như \texttt{Import}\allowbreak\texttt{Request}\allowbreak\texttt{Item}, \texttt{Allocation}\allowbreak\texttt{Line}, \texttt{Order}\allowbreak\texttt{Line}, \texttt{Receipt}\allowbreak\texttt{Line} được biểu diễn bằng Java record. Record giảm lỗi setter tùy ý và làm rõ dữ liệu nào thuộc một dòng nghiệp vụ.
+Với những thành phần mang tính chất tập hợp dữ liệu và không có vòng đời riêng biệt (như \texttt{Import}\allowbreak\texttt{Request}\allowbreak\texttt{Item}, \texttt{Allocation}\allowbreak\texttt{Line}, \texttt{Order}\allowbreak\texttt{Line}), nhóm quyết định dùng mẫu thiết kế Value Object, cụ thể là triển khai dưới dạng Java Record. Việc sử dụng Record mang lại lợi ích lớn về tính bất biến (immutability), chặn triệt để rủi ro vô ý làm thay đổi dữ liệu qua các hàm setter, đồng thời loại bỏ hoàn toàn các đoạn mã boilerplate (getter/setter/hashCode/equals) dư thừa.

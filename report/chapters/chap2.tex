@@ -577,4 +577,4 @@ Các thao tác liệt kê dữ liệu nghiệp vụ cần phản hồi đủ nha
 
 \subsection{Độ tin cậy}
 
-Hệ thống kiểm tra dữ liệu trước khi ghi, dùng trạng thái rõ ràng cho yêu cầu và đơn hàng, ghi nhật ký thao tác quản trị và giữ adapter lưu trữ tách khỏi rule nghiệp vụ. Khi kết nối Supabase lỗi, ứng dụng báo lỗi thay vì ghi dữ liệu không đầy đủ.
+Hệ thống áp dụng cơ chế kiểm tra tính hợp lệ của dữ liệu đầu vào (data validation) trước khi lưu trữ, đồng thời quản lý vòng đời của yêu cầu nhập và đơn hàng thông qua máy trạng thái (state machine). Mọi thao tác quản trị đều được ghi nhật ký hệ thống (audit log). Tầng lưu trữ (Persistence Adapter) được thiết kế lỏng lẻo (loose coupling) với lõi nghiệp vụ. Các giao dịch với cơ sở dữ liệu đảm bảo tính toàn vẹn; trong trường hợp mất kết nối với Supabase, hệ thống sẽ thực hiện rollback và throw exception thay vì commit một phần dữ liệu.

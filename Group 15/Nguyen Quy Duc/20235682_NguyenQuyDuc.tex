@@ -1,0 +1,232 @@
+\documentclass[12pt]{extreport}
+\input{../setting}
+
+\newcommand{\ReportTitle}{Báo cáo cá nhân: \\ UC002 - ManageSiteInformation}
+\newcommand{\ReportPeopleBlock}{%
+\textbf{Sinh viên thực hiện:}\\[0.2cm]
+Nguyễn Quý Đức - 20235682\\
+Lớp: ITSS\\
+Giảng viên hướng dẫn: TS. Trịnh Tuấn Đạt
+}
+
+\begin{document}
+\input{../cover}
+
+\tableofcontents
+\newpage
+
+\chapter{Tài liệu đặc tả yêu cầu phần mềm SRS}
+\section{Giới thiệu phạm vi nghiệp vụ cá nhân}
+Phạm vi công việc cá nhân tập trung vào việc quản lý hồ sơ các Site nhập khẩu ở nước ngoài, danh mục các mặt hàng mà Site kinh doanh và cập nhật thông tin thời gian vận chuyển (đường thủy và hàng không) từ mỗi Site về hệ thống.
+
+\section{Phân công nhiệm vụ nhóm}
+Dưới đây là bảng phân công vai trò phụ trách use case của các thành viên trong nhóm:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.30\textwidth,l] Q[0.18\textwidth,l] X[l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Thành viên & MSSV & Use case phụ trách \\
+Nguyễn Hữu Nhân & 20235798 & UC006 - ReceiveAndReconcileGoods \\
+Vũ Đức Hoàng Anh & 20235658 & UC001 - ManageImportRequests, UC007 - ManageSystem \\
+Trần Đăng Sinh & 20235821 & UC003 - CollectInventoryData \\
+Phan Khánh Vũ & 20235880 & UC004 - PlanImportAllocation \\
+Lương Quốc Khánh & 20235754 & UC005 - PlaceOverseasOrders \\
+Nguyễn Quý Đức & 20235682 & UC002 - ManageSiteInformation \\
+\end{longtblr}
+
+\section{Đặc tả chi tiết Use Case UC002 -- ManageSiteInformation}
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-002: ManageSiteInformation},
+  label = {tbl:spec-uc002},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-002 \\
+Tên UseCase & \breakucname{ManageSiteInformation} \\
+Tác nhân & \actorname{OverseasImportSite}, \actorname{InternationalOrderingDepartment} \\
+Tiền điều kiện & Thông tin Site đã được khởi tạo trên hệ thống và \actorname{OverseasImportSite} có quyền cập nhật dữ liệu Site. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{OverseasImportSite} & Mở chức năng quản lý thông tin Site và chọn hồ sơ Site cần cập nhật. \\
+  2 & \actorname{OverseasImportSite} & Cập nhật hồ sơ Site (tên Site, thông tin vận hành liên quan). \\
+  3 & \actorname{OverseasImportSite} & Cập nhật thời gian vận chuyển theo tàu và hàng không. \\
+  4 & \actorname{OverseasImportSite} & Cập nhật danh mục mặt hàng mà Site đang kinh doanh. \\
+  5 & System & Lưu thay đổi và gửi thông báo cập nhật cho \actorname{InternationalOrderingDepartment}. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  3a & System & Thời gian vận chuyển không hợp lệ, hệ thống từ chối lưu và yêu cầu nhập lại. \\
+  4a & System & Mặt hàng cập nhật không thuộc danh mục cho phép, hệ thống cảnh báo và giữ dữ liệu cũ. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Thông tin Site, thời gian vận chuyển và danh mục hàng kinh doanh được cập nhật đồng bộ, \actorname{InternationalOrderingDepartment} nhận được thông báo thay đổi. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{ManageSiteInformation} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-002},
+  label = {tbl:input-uc002},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{siteCode} & Mã định danh Site & Có & Tồn tại và còn hiệu lực trong hệ thống & SITE-SEA-01 \\
+2 & \fieldname{deliveryDaysByShip} & Số ngày vận chuyển bằng tàu & Có & Số nguyên dương & 18 \\
+3 & \fieldname{deliveryDaysByAir} & Số ngày vận chuyển bằng hàng không & Có & Số nguyên dương & 5 \\
+4 & \fieldname{merchandiseCatalog} & Danh sách mặt hàng Site kinh doanh & Có & Mỗi mặt hàng có mã hợp lệ, không trùng lặp trong danh sách & MH-001, MH-005, MH-014 \\
+\end{longtblr}
+
+\section{Sơ đồ đặc tả}
+\diagramfigure{diagram/UC002_ManageSiteInformation/usecase.png}{Use case phân rã UC002 - ManageSiteInformation}{fig:uc002-usecase}
+\diagramfigure{diagram/UC002_ManageSiteInformation/activity.png}{Activity diagram UC002 - ManageSiteInformation}{fig:uc002-activity}
+
+\chapter{Tài liệu phân tích Use Case}
+\section{Mô tả luồng xử lý phân tích}
+Phân tích tương tác động mô tả hành vi cập nhật danh mục và thông tin vận chuyển của Site thông qua mô hình phân tích.
+\diagramfigure{diagram/UC002_ManageSiteInformation/sequence_analysis.png}{Sequence diagram mức phân tích UC002 - ManageSiteInformation}{fig:uc002-seq-analysis}
+\diagramfigure{diagram/UC002_ManageSiteInformation/communication_analysis.png}{Communication diagram mức phân tích UC002 - ManageSiteInformation}{fig:uc002-comm-analysis}
+
+\section{Sơ đồ lớp mức phân tích}
+\diagramfigure{diagram/UC002_ManageSiteInformation/screen_transition_overview.png}{Class diagram mức phân tích UC002 - ManageSiteInformation}{fig:uc002-class-analysis}
+
+\chapter{Thiết kế giao diện và Subsystem}
+\section{Thiết kế và đặc tả màn hình}
+Màn hình SiteView hỗ trợ hiển thị hồ sơ Site và cập nhật các thông số chi tiết của từng đối tác Site nước ngoài.
+\diagramfigure{diagram/UC002_ManageSiteInformation/screen_transition.png}{Screen transition diagram UC002 - ManageSiteInformation}{fig:uc002-screen-transition}
+
+\subsection{Đặc tả các thành phần giao diện màn hình SiteView}
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Sites & Label & Hiển thị tên màn hình quản lý hồ sơ Site nhập khẩu. \\
+2 & Bảng Site & Data Grid/Table & Hiển thị \fieldname{siteCode}, \fieldname{siteName}, \fieldname{shipDays}, \fieldname{airDays} và catalog. \\
+3 & Ô \fieldname{siteCode} & Text Field & Nhập hoặc chọn mã Site cần cập nhật. \\
+4 & Ô \fieldname{siteName} & Text Field & Nhập tên Site nhập khẩu. \\
+5 & Ô \fieldname{shipDays} & Number Field & Nhập số ngày vận chuyển bằng tàu, bắt buộc lớn hơn 0. \\
+6 & Ô \fieldname{airDays} & Number Field & Nhập số ngày vận chuyển bằng hàng không, bắt buộc lớn hơn 0. \\
+7 & Danh sách \fieldname{merchandiseCatalog} & Multi Select/List & Chọn các \fieldname{merchandiseCode} mà Site kinh doanh. \\
+8 & Nút Save site & Button & Lưu hồ sơ Site, shipping time và catalog mới. \\
+9 & Nút Refresh & Button & Tải lại danh sách Site sau khi cập nhật. \\
+10 & Vùng thông báo & Message Label & Hiển thị kết quả lưu hoặc lỗi dữ liệu Site. \\
+\end{longtblr}
+
+\subsection{Giao diện chương trình minh họa}
+\diagramfigure{../images/sites.png}{Giao diện quản lý hồ sơ Site}{fig:uc002-ui}
+
+\section{Thiết kế Subsystem}
+\diagramfigure{diagram/UC002_ManageSiteInformation/class_subsystem.png}{Class diagram subsystem UC002 - ManageSiteInformation}{fig:uc002-subsys-class}
+\diagramfigure{diagram/UC002_ManageSiteInformation/sequence_subsystem.png}{Sequence diagram subsystem UC002 - ManageSiteInformation}{fig:uc002-subsys-seq}
+
+\chapter{Thiết kế chi tiết phần mềm}
+\section{Thiết kế động và tĩnh chi tiết}
+\diagramfigure{diagram/UC002_ManageSiteInformation/sequence_design.png}{Sequence diagram mức thiết kế UC002 - ManageSiteInformation}{fig:uc002-seq-design}
+\diagramfigure{diagram/UC002_ManageSiteInformation/class_design.png}{Class diagram mức thiết kế UC002 - ManageSiteInformation}{fig:uc002-class-design}
+
+\section{Biểu đồ phụ thuộc gói}
+\diagramfigure{diagram/UC002_ManageSiteInformation/package_design.png}{Package dependency diagram UC002 - ManageSiteInformation}{fig:uc002-package}
+
+\chapter{Nguyên lý thiết kế và mẫu thiết kế áp dụng}
+\section{Nguyên lý thiết kế}
+\begin{itemize}
+    \item \textbf{Single Responsibility Principle (SRP)}: Tách biệt logic quản lý hồ sơ Site khỏi UI. `SiteService` đảm nhận vai trò điều phối lưu trữ và gửi thông báo, còn tầng hiển thị chỉ tiếp nhận đầu vào của người dùng.
+    \item \textbf{High Cohesion}: Đóng gói toàn bộ các thực thể liên quan đến thông tin đối tác nước ngoài vào mô hình `ImportSite` giúp cấu trúc domain chặt chẽ, dễ kiểm tra và phát triển.
+\end{itemize}
+
+\section{Mẫu thiết kế}
+\begin{itemize}
+    \item \textbf{Facade}: Lớp `ImportOrderingFacade` tích hợp và điều phối cuộc gọi nghiệp vụ của hệ thống.
+    \item \textbf{Repository (Port and Adapter)}: Quản lý độc lập dữ liệu các đối tác Site.
+\end{itemize}
+
+\chapter{Kiểm thử phần mềm}
+\section{Thiết kế các ca kiểm thử}
+\subsection{Thiết kế kiểm thử hộp đen (Black-box Testing)}
+Thiết kế các ca kiểm thử cho phương thức cập nhật Site `updateSite` trong lớp dịch vụ `SiteService`:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.15\textwidth,l] Q[0.35\textwidth,l] Q[0.25\textwidth,l] Q[0.25\textwidth,l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Ca kiểm thử & Dữ liệu đầu vào & Kết quả mong đợi & Nhóm phân vùng \\
+TC-UC002-BB1 & Tên Site hợp lệ, ngày vận chuyển lớn hơn 0, mã hàng kinh doanh đúng. & Hồ sơ Site được lưu thành công với tên, thời gian và catalog mới. & Dữ liệu hợp lệ. \\
+TC-UC002-BB2 & Số ngày vận chuyển bằng tàu thủy là 0 (hoặc số âm). & Hệ thống ném lỗi BusinessException từ chối. & Thời gian vận chuyển không hợp lệ. \\
+TC-UC002-BB3 & Catalog chứa mã hàng lạ không tồn tại trong hệ thống (UNKNOWN). & Hệ thống ném lỗi BusinessException từ chối. & Mã hàng kinh doanh không hợp lệ. \\
+\end{longtblr}
+
+\subsection{Thiết kế kiểm thử hộp trắng (White-box Testing - Độ bao phủ C1)}
+Bao phủ các nhánh kiểm tra ràng buộc trước khi lưu hồ sơ Site:
+\begin{itemize}
+    \item \textbf{Nhánh 1}: Ngày vận chuyển bằng tàu hoặc bằng máy bay nhỏ hơn hoặc bằng 0 $\rightarrow$ Ném `BusinessException`.
+    \item \textbf{Nhánh 2}: Danh mục chứa mặt hàng không tồn tại $\rightarrow$ Ném `BusinessException`.
+    \item \textbf{Nhánh 3}: Dữ liệu hợp lệ hoàn toàn $\rightarrow$ Lưu thông tin Site mới và gửi thông báo thay đổi thành công.
+\end{itemize}
+
+\section{Mã nguồn kiểm thử tự động}
+Mã nguồn chương trình kiểm thử tự động bằng JUnit 5:
+\begin{lstlisting}[language=Java]
+package vn.edu.hust.itss.group15.usecases;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Set;
+import org.junit.jupiter.api.Test;
+import vn.edu.hust.itss.group15.application.BusinessException;
+import vn.edu.hust.itss.group15.application.ImportOrderingFacade;
+import vn.edu.hust.itss.group15.infrastructure.persistence.memory.InMemoryStore;
+
+class Uc002SiteProfileTest {
+  @Test
+  void tcUc00201UpdatesValidSiteProfile() {
+    ImportOrderingFacade facade = facade();
+
+    var site = facade.sites().updateSite("SITE-SEA-01", "Singapore Fast Site", 12, 3, Set.of("MH-001", "MH-002"));
+
+    assertEquals("Singapore Fast Site", site.siteName());
+    assertEquals(12, site.deliveryDaysByShip());
+    assertEquals(3, site.deliveryDaysByAir());
+    assertTrue(site.merchandiseCatalog().contains("MH-002"));
+  }
+
+  @Test
+  void tcUc00202RejectsInvalidTransitTimeOrCatalog() {
+    ImportOrderingFacade facade = facade();
+
+    assertThrows(BusinessException.class, () -> facade.sites().updateSite("SITE-SEA-01", "Site", 0, 5, Set.of("MH-001")));
+    assertThrows(BusinessException.class, () -> facade.sites().updateSite("SITE-SEA-01", "Site", 10, 5, Set.of("UNKNOWN")));
+  }
+
+  private ImportOrderingFacade facade() {
+    return new ImportOrderingFacade(new InMemoryStore());
+  }
+}
+\end{lstlisting}
+
+\end{document}

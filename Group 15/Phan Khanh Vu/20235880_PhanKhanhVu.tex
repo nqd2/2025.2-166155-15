@@ -1,0 +1,250 @@
+\documentclass[12pt]{extreport}
+\input{../setting}
+
+\newcommand{\ReportTitle}{Báo cáo cá nhân: \\ UC004 - PlanImportAllocation}
+\newcommand{\ReportPeopleBlock}{%
+\textbf{Sinh viên thực hiện:}\\[0.2cm]
+Phan Khánh Vũ - 20235880\\
+Lớp: ITSS\\
+Giảng viên hướng dẫn: TS. Trịnh Tuấn Đạt
+}
+
+\begin{document}
+\input{../cover}
+
+\tableofcontents
+\newpage
+
+\chapter{Tài liệu đặc tả yêu cầu phần mềm SRS}
+\section{Giới thiệu phạm vi nghiệp vụ cá nhân}
+Phạm vi công việc cá nhân tập trung vào thuật toán phân bổ phương án đặt hàng cho từng mặt hàng dựa trên dữ liệu tồn kho và thời gian vận chuyển của các Site, thực hiện việc ưu tiên phương tiện vận chuyển và chọn lọc số lượng tối ưu.
+
+\section{Phân công nhiệm vụ nhóm}
+Dưới đây là bảng phân công vai trò phụ trách use case của các thành viên trong nhóm:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.30\textwidth,l] Q[0.18\textwidth,l] X[l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Thành viên & MSSV & Use case phụ trách \\
+Nguyễn Hữu Nhân & 20235798 & UC006 - ReceiveAndReconcileGoods \\
+Vũ Đức Hoàng Anh & 20235658 & UC001 - ManageImportRequests, UC007 - ManageSystem \\
+Trần Đăng Sinh & 20235821 & UC003 - CollectInventoryData \\
+Phan Khánh Vũ & 20235880 & UC004 - PlanImportAllocation \\
+Lương Quốc Khánh & 20235754 & UC005 - PlaceOverseasOrders \\
+Nguyễn Quý Đức & 20235682 & UC002 - ManageSiteInformation \\
+\end{longtblr}
+
+\section{Đặc tả chi tiết Use Case UC004 -- PlanImportAllocation}
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-004: PlanImportAllocation},
+  label = {tbl:spec-uc004},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-004 \\
+Tên UseCase & \breakucname{PlanImportAllocation} \\
+Tác nhân & \actorname{InternationalOrderingDepartment} \\
+Tiền điều kiện & Đã có dữ liệu yêu cầu nhập và dữ liệu tồn kho theo Site; thông tin thời gian vận chuyển ship/air của Site đã cập nhật. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{InternationalOrderingDepartment} & Khởi tạo lập kế hoạch phân bổ cho yêu cầu nhập hiện tại. \\
+  2 & System & Xử lý từng mặt hàng một cách độc lập. \\
+  3 & System & Kiểm tra Site có thể đáp ứng ngày nhận mong muốn theo thời gian vận chuyển. \\
+  4 & System & Xếp hạng Site theo ưu tiên: ship trước, tồn kho lớn hơn, số Site ít hơn. \\
+  5 & System & Phân bổ số lượng đặt cho một hoặc nhiều Site đến khi đáp ứng đủ nhu cầu. \\
+  6 & \actorname{InternationalOrderingDepartment} & Xem và xác nhận phương án phân bổ nhập hàng. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  3a & System & Không có Site nào đáp ứng ngày nhận mong muốn, hệ thống đánh dấu mặt hàng rủi ro trễ hạn. \\
+  5a & System & Tổng tồn kho khả dụng nhỏ hơn nhu cầu, hệ thống phát sinh lỗi thiếu nguồn cung. \\
+  6a & \actorname{InternationalOrderingDepartment} & Không chấp nhận phương án, điều chỉnh tham số ưu tiên và chạy lại phân bổ. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Phương án phân bổ được lưu theo từng mặt hàng và từng Site, kèm phương thức vận chuyển dự kiến; các lỗi thiếu nguồn cung được ghi nhận nếu có. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{PlanImportAllocation} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-004},
+  label = {tbl:input-uc004},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{desiredDeliveryDate} & Ngày nhận mong muốn của từng mặt hàng & Có & Là ngày hợp lệ & 2026-06-01 \\
+2 & \fieldname{availableSites} & Danh sách Site có hàng cho mặt hàng & Có & Mỗi Site có siteCode hợp lệ và tồn kho đi kèm & SITE-SEA-01, SITE-EU-04 \\
+3 & \fieldname{inStockQuantityBySite} & Số lượng tồn kho theo từng Site & Có & Số nguyên không âm & 320, 150 \\
+4 & \fieldname{deliveryDaysByShipOrAir} & Số ngày vận chuyển theo từng phương thức của Site & Có & Số nguyên dương & ship=18, air=5 \\
+\end{longtblr}
+
+\section{Sơ đồ đặc tả}
+\diagramfigure{diagram/UC004_PlanImportAllocation/usecase.png}{Use case phân rã UC004 - PlanImportAllocation}{fig:uc004-usecase}
+\diagramfigure{diagram/UC004_PlanImportAllocation/activity.png}{Activity diagram UC004 - PlanImportAllocation}{fig:uc004-activity}
+
+\chapter{Tài liệu phân tích Use Case}
+\section{Mô tả luồng xử lý phân tích}
+Phân tích tương tác giữa biên, điều khiển và các lớp thực thể để tính toán phương án phân bổ.
+\diagramfigure{diagram/UC004_PlanImportAllocation/sequence_analysis.png}{Sequence diagram mức phân tích UC004 - PlanImportAllocation}{fig:uc004-seq-analysis}
+\diagramfigure{diagram/UC004_PlanImportAllocation/communication_analysis.png}{Communication diagram mức phân tích UC004 - PlanImportAllocation}{fig:uc004-comm-analysis}
+
+\section{Sơ đồ lớp mức phân tích}
+\diagramfigure{diagram/UC004_PlanImportAllocation/screen_transition_overview.png}{Class diagram mức phân tích UC004 - PlanImportAllocation}{fig:uc004-class-analysis}
+
+\chapter{Thiết kế giao diện và Subsystem}
+\section{Thiết kế và đặc tả màn hình}
+Màn hình AllocationView hỗ trợ việc sinh phương án phân bổ tự động, cảnh báo thiếu hụt nguồn cung và cho phép điều chỉnh thủ công trước khi xác nhận.
+\diagramfigure{diagram/UC004_PlanImportAllocation/screen_transition.png}{Screen transition diagram UC004 - PlanImportAllocation}{fig:uc004-screen-transition}
+
+\subsection{Đặc tả các thành phần giao diện màn hình AllocationView}
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Allocation & Label & Hiển thị tên màn hình lập phương án phân bổ. \\
+2 & Ô \fieldname{requestId} & Combo Box & Chọn request đã có dữ liệu tồn kho để lập phương án. \\
+3 & Bảng \ucname{InventoryRecord} & Data Grid/Table & Hiển thị tồn kho và shipping time của các Site ứng viên. \\
+4 & Bảng Allocation preview & Data Grid/Table & Hiển thị \fieldname{siteCode}, \fieldname{merchandiseCode}, \fieldname{quantity} và \fieldname{deliveryMeans} dự kiến. \\
+5 & Cột \fieldname{deliveryMeans} & Table Column & Cho biết phương thức vận chuyển ship delivery hoặc air delivery. \\
+6 & Cột shortageWarning & Status Column & Cảnh báo khi không đủ nguồn cung đáp ứng ngày nhận mong muốn. \\
+7 & Nút Generate plan & Button & Tính phương án phân bổ theo các tiêu chí ưu tiên. \\
+8 & Nút Manual adjust & Button & Cho phép điều chỉnh số lượng phân bổ trước khi xác nhận. \\
+9 & Nút Confirm plan & Button & Xác nhận \ucname{AllocationPlan} và chuyển request sang Allocated. \\
+10 & Vùng thông báo & Message Label & Hiển thị lỗi thiếu nguồn cung hoặc kết quả xác nhận. \\
+\end{longtblr}
+
+\subsection{Giao diện chương trình minh họa}
+\diagramfigure{../images/allocation.png}{Giao diện lập phương án phân bổ đặt hàng}{fig:uc004-ui}
+
+\section{Thiết kế Subsystem}
+\diagramfigure{diagram/UC004_PlanImportAllocation/class_subsystem.png}{Class diagram subsystem UC004 - PlanImportAllocation}{fig:uc004-subsys-class}
+\diagramfigure{diagram/UC004_PlanImportAllocation/sequence_subsystem.png}{Sequence diagram subsystem UC004 - PlanImportAllocation}{fig:uc004-subsys-seq}
+
+\chapter{Thiết kế chi tiết phần mềm}
+\section{Thiết kế động và tĩnh chi tiết}
+\diagramfigure{diagram/UC004_PlanImportAllocation/sequence_design.png}{Sequence diagram mức thiết kế UC004 - PlanImportAllocation}{fig:uc004-seq-design}
+\diagramfigure{diagram/UC004_PlanImportAllocation/class_design.png}{Class diagram mức thiết kế UC004 - PlanImportAllocation}{fig:uc004-class-design}
+
+\section{Biểu đồ phụ thuộc gói}
+\diagramfigure{diagram/UC004_PlanImportAllocation/package_design.png}{Package dependency diagram UC004 - PlanImportAllocation}{fig:uc004-package}
+
+\chapter{Nguyên lý thiết kế và mẫu thiết kế áp dụng}
+\section{Nguyên lý thiết kế}
+\begin{itemize}
+    \item \textbf{Single Responsibility Principle (SRP)}: Tách biệt hoàn toàn thuật toán phân bổ ra khỏi giao diện điều phối. Toàn bộ logic gom cụm, xếp hạng và chọn phương thức vận chuyển nằm trong lớp dịch vụ ứng dụng.
+    \item \textbf{High Cohesion}: Các thành phần trong engine tính toán phân bổ được thiết kế tập trung, bổ trợ chặt chẽ lẫn nhau (FeasibilityChecker kiểm tra thời gian vận chuyển, SiteRanker xếp hạng độ ưu tiên Site).
+\end{itemize}
+
+\section{Mẫu thiết kế}
+\begin{itemize}
+    \item \textbf{Facade}: Lớp facade tập trung điều hướng yêu cầu tính toán từ UI sang lớp xử lý phân bổ.
+    \item \textbf{Strategy Pattern}: Sử dụng chiến lược phân bổ linh hoạt. Tiêu chí ưu tiên vận chuyển bằng tàu thủy (SHIP) trước hàng không (AIR), tiếp đến ưu tiên tồn kho lớn có thể được đóng gói dưới dạng các chính sách phân bổ, giúp thuật toán dễ thay đổi trong tương lai mà không ảnh hưởng tới lớp gọi.
+\end{itemize}
+
+\chapter{Kiểm thử phần mềm}
+\section{Thiết kế các ca kiểm thử}
+\subsection{Thiết kế kiểm thử hộp đen (Black-box Testing)}
+Thiết kế các ca kiểm thử cho phương thức tính toán phân bổ `plan` trong lớp dịch vụ `AllocationService`:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.15\textwidth,l] Q[0.35\textwidth,l] Q[0.25\textwidth,l] Q[0.25\textwidth,l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Ca kiểm thử & Dữ liệu đầu vào & Kết quả mong đợi & Nhóm phân vùng \\
+TC-UC004-BB1 & Request có đủ nguồn cung tại các Site đáp ứng ngày nhận mong muốn. & Phân bổ thành công, tạo phương án và chuyển trạng thái request thành Allocated. & Đầy đủ nguồn cung. \\
+TC-UC004-BB2 & Site có cả đường biển (đáp ứng ngày mong muốn) và hàng không. & Ưu tiên chọn hình thức vận chuyển bằng tàu thủy (SHIP) trước hàng không (AIR). & Ưu tiên phương thức vận chuyển. \\
+TC-UC004-BB3 & Tổng tồn kho đáp ứng của các Site nhỏ hơn số lượng yêu cầu đặt hàng. & Hệ thống ném lỗi BusinessException cảnh báo thiếu nguồn cung. & Thiếu hụt nguồn cung nghiêm trọng. \\
+\end{longtblr}
+
+\subsection{Thiết kế kiểm thử hộp trắng (White-box Testing - Độ bao phủ C1)}
+Bao phủ các nhánh kiểm tra và gom lượng phân bổ:
+\begin{itemize}
+    \item \textbf{Nhánh 1}: Tổng lượng tồn kho khả dụng từ các Site lớn hơn hoặc bằng số lượng yêu cầu $\rightarrow$ Lập phương án phân bổ và đánh dấu request là `ALLOCATED`.
+    \item \textbf{Nhánh 2}: Tổng lượng tồn kho khả dụng nhỏ hơn số lượng yêu cầu $\rightarrow$ Ném lỗi `BusinessException` dừng xử lý.
+    \item \textbf{Nhánh 3}: Site đáp ứng bằng đường biển $\rightarrow$ Chọn SHIP.
+    \item \textbf{Nhánh 4}: Site chỉ đáp ứng bằng đường hàng không $\rightarrow$ Chọn AIR.
+\end{itemize}
+
+\section{Mã nguồn kiểm thử tự động}
+Mã nguồn chương trình kiểm thử tự động bằng JUnit 5:
+\begin{lstlisting}[language=Java]
+package vn.edu.hust.itss.group15.usecases;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.time.LocalDate;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import vn.edu.hust.itss.group15.application.BusinessException;
+import vn.edu.hust.itss.group15.application.ImportOrderingFacade;
+import vn.edu.hust.itss.group15.domain.AllocationPlan;
+import vn.edu.hust.itss.group15.domain.DeliveryMeans;
+import vn.edu.hust.itss.group15.domain.ImportRequest;
+import vn.edu.hust.itss.group15.domain.ImportRequestItem;
+import vn.edu.hust.itss.group15.domain.RequestStatus;
+import vn.edu.hust.itss.group15.infrastructure.persistence.memory.InMemoryStore;
+
+class Uc004AllocationTest {
+  @Test
+  void tcUc00401PlansAllocationByShipBeforeAirAndMarksRequestAllocated() {
+    ImportOrderingFacade facade = facade();
+    ImportRequest request = facade.importRequests().create(List.of(item("MH-001", 10, 25)));
+    facade.inventory().recordStock("SITE-SEA-01", "MH-001", 5, "box");
+    facade.inventory().recordStock("SITE-EU-04", "MH-001", 20, "box");
+
+    AllocationPlan plan = facade.allocation().plan(request.requestId());
+
+    assertEquals(2, plan.lines().size());
+    assertEquals("SITE-SEA-01", plan.lines().get(0).siteCode());
+    assertEquals(DeliveryMeans.SHIP, plan.lines().get(0).deliveryMeans());
+    assertEquals("SITE-EU-04", plan.lines().get(1).siteCode());
+    assertEquals(DeliveryMeans.AIR, plan.lines().get(1).deliveryMeans());
+    assertEquals(RequestStatus.ALLOCATED, facade.importRequests().find(request.requestId()).status());
+  }
+
+  @Test
+  void tcUc00402FailsAllocationWhenSupplyIsInsufficient() {
+    ImportOrderingFacade facade = facade();
+    ImportRequest request = facade.importRequests().create(List.of(item("MH-004", 10, 40)));
+    facade.inventory().recordStock("SITE-AIR-02", "MH-004", 5, "box");
+
+    assertThrows(BusinessException.class, () -> facade.allocation().plan(request.requestId()));
+  }
+
+  private ImportOrderingFacade facade() {
+    return new ImportOrderingFacade(new InMemoryStore());
+  }
+
+  private ImportRequestItem item(String merchandiseCode, int quantity, int daysFromNow) {
+    return new ImportRequestItem(merchandiseCode, quantity, "box", LocalDate.now().plusDays(daysFromNow));
+  }
+}
+\end{lstlisting}
+
+\end{document}

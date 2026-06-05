@@ -1,0 +1,243 @@
+\documentclass[12pt]{extreport}
+\input{../setting}
+
+\newcommand{\ReportTitle}{Báo cáo cá nhân: \\ UC003 - CollectInventoryData}
+\newcommand{\ReportPeopleBlock}{%
+\textbf{Sinh viên thực hiện:}\\[0.2cm]
+Trần Đăng Sinh - 20235821\\
+Lớp: ITSS\\
+Giảng viên hướng dẫn: TS. Trịnh Tuấn Đạt
+}
+
+\begin{document}
+\input{../cover}
+
+\tableofcontents
+\newpage
+
+\chapter{Tài liệu đặc tả yêu cầu phần mềm SRS}
+\section{Giới thiệu phạm vi nghiệp vụ cá nhân}
+Phạm vi công việc cá nhân tập trung vào việc lọc danh sách các Site nhập khẩu nước ngoài kinh doanh các mặt hàng yêu cầu, gửi truy vấn hỏi số lượng trong kho của từng Site và ghi nhận kết quả phản hồi vào Tệp thông tin kho (chấp nhận giá trị 0 khi hết hàng).
+
+\section{Phân công nhiệm vụ nhóm}
+Dưới đây là bảng phân công vai trò phụ trách use case của các thành viên trong nhóm:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.30\textwidth,l] Q[0.18\textwidth,l] X[l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Thành viên & MSSV & Use case phụ trách \\
+Nguyễn Hữu Nhân & 20235798 & UC006 - ReceiveAndReconcileGoods \\
+Vũ Đức Hoàng Anh & 20235658 & UC001 - ManageImportRequests, UC007 - ManageSystem \\
+Trần Đăng Sinh & 20235821 & UC003 - CollectInventoryData \\
+Phan Khánh Vũ & 20235880 & UC004 - PlanImportAllocation \\
+Lương Quốc Khánh & 20235754 & UC005 - PlaceOverseasOrders \\
+Nguyễn Quý Đức & 20235682 & UC002 - ManageSiteInformation \\
+\end{longtblr}
+
+\section{Đặc tả chi tiết Use Case UC003 -- CollectInventoryData}
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-003: CollectInventoryData},
+  label = {tbl:spec-uc003},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-003 \\
+Tên UseCase & \breakucname{CollectInventoryData} \\
+Tác nhân & \actorname{InternationalOrderingDepartment}, \actorname{OverseasImportSite} \\
+Tiền điều kiện & Yêu cầu nhập đã được gửi hợp lệ; dữ liệu Site và danh mục mặt hàng kinh doanh của từng Site đã sẵn có. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{InternationalOrderingDepartment} & Tìm các Site có kinh doanh ít nhất một mặt hàng trong danh sách yêu cầu. \\
+  2 & System & Lọc danh sách mặt hàng theo từng Site để tạo gói truy vấn tồn kho riêng. \\
+  3 & \actorname{InternationalOrderingDepartment} & Gửi yêu cầu kiểm tra tồn kho đến từng \actorname{OverseasImportSite}. \\
+  4 & \actorname{OverseasImportSite} & Phản hồi số lượng tồn kho theo từng mặt hàng được yêu cầu. \\
+  5 & System & Ghi dữ liệu phản hồi vào tệp thông tin kho theo cấu trúc chuẩn. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1a & System & Không tìm thấy Site phù hợp cho mặt hàng, hệ thống ghi nhận mặt hàng chưa có nguồn cung. \\
+  4a & \actorname{OverseasImportSite} & Site không có hàng, phản hồi inStockQuantity = 0 cho mặt hàng tương ứng. \\
+  4b & System & Site phản hồi chậm, hệ thống ghi log timeout và cho phép gửi lại yêu cầu. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Tệp thông tin kho được cập nhật với dữ liệu tồn kho mới nhất theo từng Site và từng mặt hàng để phục vụ phân bổ nhập hàng. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{CollectInventoryData} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-003},
+  label = {tbl:input-uc003},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{siteCode} & Mã Site nhận yêu cầu tồn kho & Có & Tồn tại trong tệp thông tin Site & SITE-SEA-01 \\
+2 & \fieldname{merchandiseCode} & Mã mặt hàng cần kiểm tra tồn kho & Có & Tồn tại trong danh mục mặt hàng & MH-001 \\
+3 & \fieldname{inStockQuantity} & Số lượng tồn kho Site phản hồi & Có & Số nguyên không âm & 320 \\
+4 & \fieldname{unit} & Đơn vị của số lượng tồn kho & Có & Khớp đơn vị chuẩn của mặt hàng & box \\
+\end{longtblr}
+
+\section{Sơ đồ đặc tả}
+\diagramfigure{diagram/UC003_CollectInventoryData/usecase.png}{Use case phân rã UC003 - CollectInventoryData}{fig:uc003-usecase}
+\diagramfigure{diagram/UC003_CollectInventoryData/activity.png}{Activity diagram UC003 - CollectInventoryData}{fig:uc003-activity}
+
+\chapter{Tài liệu phân tích Use Case}
+\section{Mô tả luồng xử lý phân tích}
+Phân tích luồng xử lý của use case thực hiện bằng sequence diagram, communication diagram và class diagram mức phân tích.
+\diagramfigure{diagram/UC003_CollectInventoryData/sequence_analysis.png}{Sequence diagram mức phân tích UC003 - CollectInventoryData}{fig:uc003-seq-analysis}
+\diagramfigure{diagram/UC003_CollectInventoryData/communication_analysis.png}{Communication diagram mức phân tích UC003 - CollectInventoryData}{fig:uc003-comm-analysis}
+
+\section{Sơ đồ lớp mức phân tích}
+\diagramfigure{diagram/UC003_CollectInventoryData/screen_transition_overview.png}{Class diagram mức phân tích UC003 - CollectInventoryData}{fig:uc003-class-analysis}
+
+\chapter{Thiết kế giao diện và Subsystem}
+\section{Thiết kế và đặc tả màn hình}
+Màn hình InventoryView cho phép chọn requestId, xem danh sách Site ứng viên, ghi nhận tồn kho và thực hiện gửi lại khi bị lỗi timeout.
+\diagramfigure{diagram/UC003_CollectInventoryData/screen_transition.png}{Screen transition diagram UC003 - CollectInventoryData}{fig:uc003-screen-transition}
+
+\subsection{Đặc tả các thành phần giao diện màn hình InventoryView}
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Inventory & Label & Hiển thị tên màn hình thu thập tồn kho Site. \\
+2 & Bảng Site ứng viên & Data Grid/Table & Hiển thị các Site kinh doanh merchandise trong request. \\
+3 & Ô \fieldname{requestId} & Combo Box & Chọn yêu cầu nhập cần hỏi tồn kho. \\
+4 & Ô \fieldname{siteCode} & Combo Box & Chọn Site phản hồi tồn kho. \\
+5 & Ô \fieldname{merchandiseCode} & Combo Box & Chọn mã hàng cần ghi nhận tồn kho. \\
+6 & Ô \fieldname{inStockQuantity} & Number Field & Nhập số lượng tồn kho, cho phép bằng 0 khi Site hết hàng. \\
+7 & Ô \fieldname{unit} & Combo Box & Chọn đơn vị tính khớp với request. \\
+8 & Nút Record stock & Button & Ghi \ucname{InventoryRecord} theo \fieldname{siteCode} và \fieldname{merchandiseCode}. \\
+9 & Nút Retry & Button & Gửi lại yêu cầu hỏi tồn kho khi phản hồi bị timeout. \\
+10 & Vùng trạng thái phản hồi & Status Label & Hiển thị đã ghi nhận, hết hàng hoặc timeout. \\
+\end{longtblr}
+
+\subsection{Giao diện chương trình minh họa}
+\diagramfigure{../images/inventory.png}{Giao diện thu thập tồn kho từ các Site}{fig:uc003-ui}
+
+\section{Thiết kế Subsystem}
+\diagramfigure{diagram/UC003_CollectInventoryData/class_subsystem.png}{Class diagram subsystem UC003 - CollectInventoryData}{fig:uc003-subsys-class}
+\diagramfigure{diagram/UC003_CollectInventoryData/sequence_subsystem.png}{Sequence diagram subsystem UC003 - CollectInventoryData}{fig:uc003-subsys-seq}
+
+\chapter{Thiết kế chi tiết phần mềm}
+\section{Thiết kế động và tĩnh chi tiết}
+\diagramfigure{diagram/UC003_CollectInventoryData/sequence_design.png}{Sequence diagram mức thiết kế UC003 - CollectInventoryData}{fig:uc003-seq-design}
+\diagramfigure{diagram/UC003_CollectInventoryData/class_design.png}{Class diagram mức thiết kế UC003 - CollectInventoryData}{fig:uc003-class-design}
+
+\section{Biểu đồ phụ thuộc gói}
+\diagramfigure{diagram/UC003_CollectInventoryData/package_design.png}{Package dependency diagram UC003 - CollectInventoryData}{fig:uc003-package}
+
+\chapter{Nguyên lý thiết kế và mẫu thiết kế áp dụng}
+\section{Nguyên lý thiết kế}
+\begin{itemize}
+    \item \textbf{Single Responsibility Principle (SRP)}: Tách biệt logic lọc Site và lưu thông tin tồn kho khỏi giao diện người dùng JavaFX. Lớp `InventoryService` chịu trách nhiệm điều phối toàn bộ các xử lý nghiệp vụ này.
+    \item \textbf{Dependency Inversion Principle (DIP)}: Tầng ứng dụng giao tiếp với cổng dữ liệu thông qua các interface trừu tượng, cho phép tách biệt khỏi nguồn cơ sở dữ liệu thật khi chạy các kịch bản kiểm thử tự động.
+\end{itemize}
+
+\section{Mẫu thiết kế}
+\begin{itemize}
+    \item \textbf{Facade}: `ImportOrderingFacade` đóng vai trò là giao diện duy nhất điều phối cuộc gọi của tầng giao diện tới `InventoryService`.
+    \item \textbf{Repository (Port and Adapter)}: Đóng gói toàn bộ cơ chế lưu trữ và đọc dữ liệu tồn kho.
+\end{itemize}
+
+\chapter{Kiểm thử phần mềm}
+\section{Thiết kế các ca kiểm thử}
+\subsection{Thiết kế kiểm thử hộp đen (Black-box Testing)}
+Thiết kế các ca kiểm thử cho phương thức ghi nhận tồn kho `recordStock` trong lớp dịch vụ `InventoryService`:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.15\textwidth,l] Q[0.35\textwidth,l] Q[0.25\textwidth,l] Q[0.25\textwidth,l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Ca kiểm thử & Dữ liệu đầu vào & Kết quả mong đợi & Nhóm phân vùng \\
+TC-UC003-BB1 & Ghi nhận tồn kho cho Site kinh doanh đúng mã hàng cần hỏi. & Lưu bản ghi tồn kho thành công. & Dữ liệu hợp lệ. \\
+TC-UC003-BB2 & Số lượng tồn kho trả về là 0 (hết hàng). & Lưu bản ghi tồn kho thành công với số lượng tồn bằng 0. & Hết hàng (giá trị 0). \\
+TC-UC003-BB3 & Ghi nhận tồn kho cho mặt hàng mà Site không kinh doanh. & Hệ thống ném lỗi BusinessException từ chối. & Mã hàng không thuộc danh mục kinh doanh của Site. \\
+TC-UC003-BB4 & Số lượng tồn kho là số âm. & Hệ thống ném lỗi kiểm tra dữ liệu không hợp lệ. & Số lượng âm không hợp lệ. \\
+\end{longtblr}
+
+\subsection{Thiết kế kiểm thử hộp trắng (White-box Testing - Độ bao phủ C1)}
+Bao phủ các nhánh logic kiểm tra danh mục kinh doanh của Site trước khi ghi nhận tồn kho:
+\begin{itemize}
+    \item \textbf{Nhánh 1}: Mặt hàng thuộc danh mục kinh doanh của Site $\rightarrow$ Lưu bản ghi tồn kho mới vào hệ thống.
+    \item \textbf{Nhánh 2}: Mặt hàng không nằm trong danh mục kinh doanh của Site $\rightarrow$ Ném `BusinessException` thông báo Site không kinh doanh mặt hàng này.
+\end{itemize}
+Viết JUnit test kiểm tra hai trường hợp này để đảm bảo độ bao phủ nhánh 100\% cho logic kiểm tra.
+
+\section{Mã nguồn kiểm thử tự động}
+Mã nguồn chương trình kiểm thử tự động bằng JUnit 5:
+\begin{lstlisting}[language=Java]
+package vn.edu.hust.itss.group15.usecases;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.time.LocalDate;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import vn.edu.hust.itss.group15.application.BusinessException;
+import vn.edu.hust.itss.group15.application.ImportOrderingFacade;
+import vn.edu.hust.itss.group15.domain.ImportRequest;
+import vn.edu.hust.itss.group15.domain.ImportRequestItem;
+import vn.edu.hust.itss.group15.domain.InventoryRecord;
+import vn.edu.hust.itss.group15.infrastructure.persistence.memory.InMemoryStore;
+
+class Uc003InventoryTest {
+  @Test
+  void tcUc00301FindsCandidateSitesAndRecordsZeroStock() {
+    ImportOrderingFacade facade = facade();
+    ImportRequest request = facade.importRequests().create(List.of(item("MH-014", 3, 20)));
+
+    List<String> candidateCodes = facade.inventory().findCandidateSites(request).stream()
+        .map(site -> site.siteCode())
+        .toList();
+    InventoryRecord zeroStock = facade.inventory().recordStock("SITE-EU-04", "MH-014", 0, "box");
+
+    assertEquals(List.of("SITE-EU-04", "SITE-AIR-02"), candidateCodes);
+    assertEquals(0, zeroStock.inStockQuantity());
+    assertEquals("MH-014", zeroStock.merchandiseCode());
+  }
+
+  @Test
+  void tcUc00302RejectsStockForUntradedMerchandise() {
+    ImportOrderingFacade facade = facade();
+
+    assertThrows(BusinessException.class, () -> facade.inventory().recordStock("SITE-SEA-01", "MH-014", 5, "box"));
+  }
+
+  private ImportOrderingFacade facade() {
+    return new ImportOrderingFacade(new InMemoryStore());
+  }
+
+  private ImportRequestItem item(String merchandiseCode, int quantity, int daysFromNow) {
+    return new ImportRequestItem(merchandiseCode, quantity, "box", LocalDate.now().plusDays(daysFromNow));
+  }
+}
+\end{lstlisting}
+
+\end{document}
