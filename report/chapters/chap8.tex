@@ -2,7 +2,7 @@
 
 \section{Công nghệ sử dụng}
 
-Chương trình minh họa được triển khai trong thư mục \texttt{Homework07/Group}. Ứng dụng là JavaFX desktop app, chạy bằng Maven và JDK 22. Tầng lưu trữ thật dùng Supabase REST API; tầng test dùng \ucname{InMemoryStore} để kiểm thử nhanh và không phụ thuộc mạng.
+Ứng dụng được xây dựng dưới dạng JavaFX desktop app, quản lý qua Maven và chạy trên JDK 22. Tầng lưu trữ dữ liệu thật sử dụng hệ quản trị cơ sở dữ liệu PostgreSQL cloud trên nền tảng Supabase thông qua REST API; trong khi tầng kiểm thử sử dụng \ucname{InMemoryStore} giả lập dữ liệu trên RAM để các test case chạy nhanh và độc lập với mạng.
 
 \begin{longtblr}{
   width = \textwidth,
@@ -21,6 +21,28 @@ Lưu trữ thật & Supabase REST & Lưu request, Site, tồn kho, allocation pl
 Lưu trữ kiểm thử & \ucname{InMemoryStore} & Chạy test tự động không cần Supabase thật. \\
 \end{longtblr}
 
+\section{Môi trường phát triển}
+
+Để xây dựng, biên dịch và vận hành thử nghiệm chương trình minh họa, hệ thống sử dụng môi trường phát triển và các công cụ bổ trợ được cấu hình như sau:
+
+\begin{longtblr}{
+  width = \textwidth,
+  colspec = {Q[0.24\textwidth, l] Q[0.26\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+  row{1} = {font=\bfseries},
+}
+Thành phần & Công cụ / Môi trường & Vai trò trong dự án \\
+Hệ điều hành & Windows 10/11, macOS, Linux & Nền tảng phát triển đa nền tảng cho Java và JavaFX. \\
+Trình soạn thảo mã nguồn & Visual Studio Code (VS Code) & Trình soạn thảo mã nguồn chính, tích hợp môi trường gỡ lỗi và quản lý tập tin cấu hình. \\
+Hỗ trợ ngôn ngữ & Extension Pack for Java (VS Code) & Bộ tiện ích hỗ trợ tự động hoàn thành mã nguồn (IntelliSense), định dạng code và kiểm thử trong VS Code. \\
+Quản lý build \& thư viện & Apache Maven 3.9+ (Maven CLI) & Quản lý gói thư viện phụ thuộc (dependencies), chạy test case (\texttt{mvn clean test}) và đóng gói sản phẩm (\texttt{mvn clean package}). \\
+Môi trường thực thi & OpenJDK 22 & Trực tiếp biên dịch và chạy chương trình trên máy ảo Java (JVM) với \texttt{maven.compiler.release=22}. \\
+Quản lý phiên bản & Git \& GitHub & Quản lý mã nguồn phân tán, đồng bộ hóa các nhánh tính năng cá nhân và tích hợp luồng nghiệp vụ. \\
+Quản trị cơ sở dữ liệu & Supabase PostgreSQL  & Kiểm tra, truy vấn trực tiếp và giám sát cơ sở dữ liệu PostgreSQL cloud trên Supabase. \\
+\end{longtblr}
+
 \section{Cấu trúc thư mục}
 
 \begin{longtblr}{
@@ -32,15 +54,15 @@ Lưu trữ kiểm thử & \ucname{InMemoryStore} & Chạy test tự động khô
   row{1} = {font=\bfseries},
 }
 Thư mục/package & Nội dung chính \\
-\pathtext{src/main/java/vn/edu/hust/itss/group15/app} & JavaFX entrypoint, session và wiring giao diện. \\
-\pathtext{app/ui} & Các màn hình \ucname{LoginView}, \ucname{DashboardView}, \ucname{RequestView}, \ucname{SiteView}, \ucname{InventoryView}, \ucname{AllocationView}, \ucname{OrderView}, \ucname{ReceivingView}, \ucname{AdminView}. \\
-\pathtext{application} & Service theo use case: import request, Site, inventory, allocation, order, receipt, admin, auth và \ucname{ImportOrderingFacade}. \\
-\pathtext{domain} & Entity, enum, record và rule nghiệp vụ thuần như \ucname{AllocationPolicy}. \\
-\pathtext{application/port} & Interface \ucname{Store}, tách tầng application khỏi chi tiết lưu trữ. \\
-\pathtext{infrastructure/persistence/supabase} & Adapter Supabase REST, cấu hình môi trường và JSON mapping. \\
-\pathtext{infrastructure/persistence/memory} & Adapter bộ nhớ phục vụ test. \\
-\pathtext{src/main/resources/db/schema.sql} & SQL tạo bảng Supabase. \\
-\pathtext{src/test/java} & JUnit tests cho chính sách phân bổ, facade, bảo mật mật khẩu, Supabase adapter và ma trận tính năng. \\
+\pathtext{app} & JavaFX entrypoint, quản lý session và tích hợp (wiring) toàn bộ hệ thống. \\
+\pathtext{app.ui} & Các màn hình \ucname{LoginView}, \ucname{DashboardView}, \ucname{RequestView}, \ucname{SiteView}, \ucname{InventoryView}, \ucname{AllocationView}, \ucname{OrderView}, \ucname{ReceivingView}, \ucname{AdminView}. \\
+\pathtext{application} & Chứa các Service theo từng use case (như Import request, Site, inventory...) và \ucname{ImportOrderingFacade}. \\
+\pathtext{domain} & Các Entity, Enum, Record cốt lõi và quy tắc nghiệp vụ thuần (như \ucname{AllocationPolicy}). \\
+\pathtext{application.port} & Interface \ucname{Store}, đóng vai trò cổng giao tiếp tách tầng application khỏi công nghệ lưu trữ. \\
+\pathtext{infrastructure.persistence.supabase} & Adapter giao tiếp Supabase REST API, quản lý môi trường và parse JSON. \\
+\pathtext{infrastructure.persistence.memory} & Adapter lưu trữ tạm trong bộ nhớ phục vụ chạy test nhanh. \\
+\pathtext{src/main/resources/db/schema.sql} & Kịch bản SQL khởi tạo các bảng trên PostgreSQL Supabase. \\
+\pathtext{src/test/java} & Toàn bộ Unit Test/Integration Test cho nghiệp vụ, policy, bảo mật và ma trận test case. \\
 \end{longtblr}
 
 \section{Sơ đồ dịch chuyển màn hình}

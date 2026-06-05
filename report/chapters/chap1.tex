@@ -6,7 +6,7 @@ Bài toán đặt ra là xây dựng hệ thống phần mềm hỗ trợ quy tr
 
 Hệ thống cần quản lý đồng bộ các thông tin chính: yêu cầu nhập hàng, hồ sơ Site, danh mục mặt hàng Site kinh doanh, tồn kho Site, thời gian vận chuyển, phương án phân bổ, đơn đặt hàng quốc tế, phiếu nhận hàng, sai lệch số lượng, tài khoản người dùng, vai trò và nhật ký vận hành. Các trường dữ liệu lõi được giữ thống nhất với tài liệu phân tích gồm \fieldname{requestId}, \fieldname{orderReference}, \fieldname{siteCode}, \fieldname{merchandiseCode}, \fieldname{quantity}, \fieldname{unit}, \fieldname{desiredDeliveryDate}, \fieldname{deliveryMeans}, \fieldname{status} và \fieldname{discrepancyNote}.
 
-Phần mềm minh họa được triển khai bằng JavaFX, Maven và JDK 22. Kiến trúc code chia theo các tầng giao diện, application service, domain model và persistence adapter. Hệ thống dùng Supabase REST cho lưu trữ thật và \ucname{InMemoryStore} cho kiểm thử tự động.
+Để giải quyết các yêu cầu trên, hệ thống phần mềm minh họa được xây dựng bằng công nghệ JavaFX, quản lý vòng đời bằng Maven và chạy trên nền tảng JDK 22. Kiến trúc mã nguồn tuân thủ nguyên lý phân tầng chặt chẽ (Presentation, Application, Domain, Infrastructure), kết hợp lưu trữ dữ liệu thông qua nền tảng Supabase PostgreSQL.
 
 \section{Khảo sát bài toán}
 
@@ -47,16 +47,19 @@ UC007 -- \breakucname{ManageSystem} & Tài khoản, vai trò, dữ liệu master
 \section{Phân công nhiệm vụ}
 
 \begin{longtblr}{
-  colspec = {Q[0.22\textwidth, l] Q[0.32\textwidth, l] X[l]},
+  colspec = {Q[0.22\textwidth, l] Q[0.28\textwidth, l] X[l] Q[0.12\textwidth, c]},
   hlines,
   vlines,
   rowhead = 1,
 }
-\textbf{Thành viên} & \textbf{Email} & \textbf{Use case phụ trách} \\
-Nguyễn Hữu Nhân & \nolinkurl{nguyenhuunhanht2005@gmail.com} & UC006 -- \ucname{ReceiveAndReconcileGoods}. \\
-Vũ Đức Hoàng Anh & \nolinkurl{incuksuk123@gmail.com} & UC001 -- \ucname{ManageImportRequests}; UC007 -- \ucname{ManageSystem}. \\
-Trần Đăng Sinh & \nolinkurl{ctan4991@gmail.com} & UC003 -- \ucname{CollectInventoryData}. \\
-Phan Khánh Vũ & \nolinkurl{hi3sirin@gmail.com} & UC004 -- \ucname{PlanImportAllocation}. \\
-Lương Quốc Khánh & \nolinkurl{khanhlq.hust.work@gmail.com} & UC005 -- \ucname{PlaceOverseasOrders}. \\
-Nguyễn Quý Đức & \nolinkurl{nguyenquyduc_hsgs20@hus.edu.vn} & UC002 -- \ucname{ManageSiteInformation}; tích hợp nhóm. \\
+\textbf{Thành viên} & \textbf{Email} & \textbf{Use case phụ trách} & \textbf{Đóng góp} \\
+Nguyễn Hữu Nhân & \nolinkurl{nguyenhuunhanht2005@gmail.com} & UC006 -- \ucname{ReceiveAndReconcileGoods}. & 16\% \\
+Vũ Đức Hoàng Anh & \nolinkurl{incuksuk123@gmail.com} & UC001 -- \ucname{ManageImportRequests}; UC007 -- \ucname{ManageSystem}. & 16\% \\
+Trần Đăng Sinh & \nolinkurl{ctan4991@gmail.com} & UC003 -- \ucname{CollectInventoryData}. & 16\% \\
+Phan Khánh Vũ & \nolinkurl{hi3sirin@gmail.com} & UC004 -- \ucname{PlanImportAllocation}. & 16\% \\
+Lương Quốc Khánh & \nolinkurl{khanhlq.hust.work@gmail.com} & UC005 -- \ucname{PlaceOverseasOrders}. & 16\% \\
+Nguyễn Quý Đức & \nolinkurl{nguyenquyduc_hsgs20@hus.edu.vn} & UC002 -- \ucname{ManageSiteInformation}; tích hợp nhóm. & 20\% \\
+\textbf{Tổng} & & & \textbf{100\%} \\
 \end{longtblr}
+
+Tỷ lệ đóng góp phản ánh phần việc thực hiện trong toàn bộ đồ án, bao gồm phân tích, thiết kế, cài đặt, kiểm thử, tích hợp và hoàn thiện báo cáo. Nguyễn Quý Đức đảm nhiệm thêm vai trò trưởng nhóm, tích hợp kết quả và rà soát đồng bộ nên tỷ lệ đóng góp là 20\%; các thành viên còn lại đóng góp 16\% mỗi người theo use case được phân công.

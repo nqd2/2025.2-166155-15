@@ -1,0 +1,254 @@
+\documentclass[12pt]{extreport}
+\input{../setting}
+
+\newcommand{\ReportTitle}{Báo cáo cá nhân: \\ UC005 - PlaceOverseasOrders}
+\newcommand{\ReportPeopleBlock}{%
+\textbf{Sinh viên thực hiện:}\\[0.2cm]
+Lương Quốc Khánh - 20235754\\
+Lớp: ITSS\\
+Giảng viên hướng dẫn: TS. Trịnh Tuấn Đạt
+}
+
+\begin{document}
+\input{../cover}
+
+\tableofcontents
+\newpage
+
+\chapter{Tài liệu đặc tả yêu cầu phần mềm SRS}
+\section{Giới thiệu phạm vi nghiệp vụ cá nhân}
+Phạm vi công việc cá nhân tập trung vào việc tổng hợp dữ liệu phân bổ đặt hàng từ các Site, tạo các đơn đặt hàng chính thức gửi sang các Site ở nước ngoài tương ứng, và tiếp nhận các phản hồi xác nhận hoặc từ chối từ Site.
+
+\section{Phân công nhiệm vụ nhóm}
+Dưới đây là bảng phân công vai trò phụ trách use case của các thành viên trong nhóm:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.30\textwidth,l] Q[0.18\textwidth,l] X[l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Thành viên & MSSV & Use case phụ trách \\
+Nguyễn Hữu Nhân & 20235798 & UC006 - ReceiveAndReconcileGoods \\
+Vũ Đức Hoàng Anh & 20235658 & UC001 - ManageImportRequests, UC007 - ManageSystem \\
+Trần Đăng Sinh & 20235821 & UC003 - CollectInventoryData \\
+Phan Khánh Vũ & 20235880 & UC004 - PlanImportAllocation \\
+Lương Quốc Khánh & 20235754 & UC005 - PlaceOverseasOrders \\
+Nguyễn Quý Đức & 20235682 & UC002 - ManageSiteInformation \\
+\end{longtblr}
+
+\section{Đặc tả chi tiết Use Case UC005 -- PlaceOverseasOrders}
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-005: PlaceOverseasOrders},
+  label = {tbl:spec-uc005},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-005 \\
+Tên UseCase & \breakucname{PlaceOverseasOrders} \\
+Tác nhân & \actorname{InternationalOrderingDepartment}, \actorname{OverseasImportSite} \\
+Tiền điều kiện & Phương án phân bổ nhập hàng đã được xác nhận và có danh sách Site được chọn cho từng mặt hàng. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{InternationalOrderingDepartment} & Tạo đơn đặt hàng quốc tế từ kết quả phân bổ. \\
+  2 & System & Tạo các dòng đặt hàng theo từng Site và từng mặt hàng. \\
+  3 & System & Gán phương thức vận chuyển cho từng dòng (ship delivery hoặc air delivery). \\
+  4 & \actorname{InternationalOrderingDepartment} & Xác nhận gửi đơn đặt hàng đến các Site đã chọn. \\
+  5 & \actorname{OverseasImportSite} & Nhận đơn và xác nhận tiếp nhận xử lý đơn đặt hàng. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  3a & System & Không xác định được phương thức vận chuyển hợp lệ, hệ thống chặn gửi đơn và yêu cầu kiểm tra lại phân bổ. \\
+  5a & \actorname{OverseasImportSite} & Site từ chối đơn do thay đổi năng lực cung ứng, hệ thống chuyển đơn sang trạng thái Rejected và báo về bộ phận đặt hàng. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Đơn đặt hàng quốc tế được ghi nhận, gửi đến Site và cập nhật trạng thái tiếp nhận/từ chối theo phản hồi thực tế. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{PlaceOverseasOrders} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-005},
+  label = {tbl:input-uc005},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{siteCode} & Mã Site nhận đơn đặt hàng & Có & Nằm trong danh sách Site đã chọn từ bước phân bổ & SITE-EU-04 \\
+2 & \fieldname{merchandiseCode} & Mã mặt hàng được đặt & Có & Khớp với yêu cầu nhập đã duyệt & MH-005 \\
+3 & \fieldname{quantityOrdered} & Số lượng đặt theo từng dòng đơn & Có & Số nguyên dương và không vượt quá phân bổ đã duyệt & 150 \\
+4 & \fieldname{deliveryMeans} & Phương thức vận chuyển & Có & Chỉ nhận ship delivery hoặc air delivery & ship delivery \\
+\end{longtblr}
+
+\section{Sơ đồ đặc tả}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/usecase.png}{Use case phân rã UC005 - PlaceOverseasOrders}{fig:uc005-usecase}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/activity.png}{Activity diagram UC005 - PlaceOverseasOrders}{fig:uc005-activity}
+
+\chapter{Tài liệu phân tích Use Case}
+\section{Mô tả luồng xử lý phân tích}
+Phân tích luồng tương tác giữa boundary, control và entity trong việc gom đơn hàng và gửi cho các đối tác nước ngoài.
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/sequence_analysis.png}{Sequence diagram mức phân tích UC005 - PlaceOverseasOrders}{fig:uc005-seq-analysis}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/communication_analysis.png}{Communication diagram mức phân tích UC005 - PlaceOverseasOrders}{fig:uc005-comm-analysis}
+
+\section{Sơ đồ lớp mức phân tích}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/screen_transition_overview.png}{Class diagram mức phân tích UC005 - PlaceOverseasOrders}{fig:uc005-class-analysis}
+
+\chapter{Thiết kế giao diện và Subsystem}
+\section{Thiết kế và đặc tả màn hình}
+Màn hình OrderView hỗ trợ chọn phương án phân bổ, xem trước đơn hàng gom theo Site, gửi đơn và ghi nhận kết quả xác nhận hoặc từ chối từ Site.
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/screen_transition.png}{Screen transition diagram UC005 - PlaceOverseasOrders}{fig:uc005-screen-transition}
+
+\subsection{Đặc tả các thành phần giao diện màn hình OrderView}
+\begin{longtblr}{
+  colspec = {Q[0.08\textwidth, c] Q[0.23\textwidth, l] Q[0.18\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{STT} & \textbf{Tên thành phần} & \textbf{Phân loại} & \textbf{Giải thích chi tiết} \\
+1 & Tiêu đề Orders & Label & Hiển thị tên màn hình lập và gửi đơn đặt hàng quốc tế. \\
+2 & Ô \fieldname{planId} & Combo Box & Chọn \ucname{AllocationPlan} đã xác nhận. \\
+3 & Bảng order preview & Data Grid/Table & Hiển thị đơn sẽ tạo theo từng \fieldname{siteCode}. \\
+4 & Bảng \ucname{OrderLine} & Data Grid/Table & Hiển thị \fieldname{merchandiseCode}, \fieldname{quantity}, \fieldname{unit} và \fieldname{deliveryMeans}. \\
+5 & Cột \fieldname{orderReference} & Table Column & Hiển thị mã đơn đặt hàng chính thức. \\
+6 & Cột \fieldname{status} & Status Column & Hiển thị Transmitted, Acknowledged hoặc Rejected. \\
+7 & Nút Generate orders & Button & Sinh đơn đặt hàng từ \ucname{AllocationPlan}. \\
+8 & Nút Send & Button & Gửi đơn tới Site và chuyển trạng thái Transmitted. \\
+9 & Nút Acknowledge/Reject & Button & Ghi nhận phản hồi xác nhận hoặc từ chối từ Site. \\
+10 & Vùng phản hồi Site & Message Label & Hiển thị ackToken, rejectToken hoặc lý do từ chối. \\
+\end{longtblr}
+
+\subsection{Giao diện chương trình minh họa}
+\diagramfigure{../images/orders.png}{Giao diện gửi đơn đặt hàng quốc tế}{fig:uc005-ui}
+
+\section{Thiết kế Subsystem}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/class_subsystem.png}{Class diagram subsystem UC005 - PlaceOverseasOrders}{fig:uc005-subsys-class}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/sequence_subsystem.png}{Sequence diagram subsystem UC005 - PlaceOverseasOrders}{fig:uc005-subsys-seq}
+
+\chapter{Thiết kế chi tiết phần mềm}
+\section{Thiết kế động và tĩnh chi tiết}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/sequence_design.png}{Sequence diagram mức thiết kế UC005 - PlaceOverseasOrders}{fig:uc005-seq-design}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/class_design.png}{Class diagram mức thiết kế UC005 - PlaceOverseasOrders}{fig:uc005-class-design}
+
+\section{Biểu đồ phụ thuộc gói}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders/package_design.png}{Package dependency diagram UC005 - PlaceOverseasOrders}{fig:uc005-package}
+
+\chapter{Nguyên lý thiết kế và mẫu thiết kế áp dụng}
+\section{Nguyên lý thiết kế}
+\begin{itemize}
+    \item \textbf{Single Responsibility Principle (SRP)}: Tách biệt logic phát hành và gửi đơn hàng ra khỏi giao diện điều hướng UI. Logic này được định vị hoàn toàn tại `OrderService` và các đối tượng domain.
+    \item \textbf{DDD-style Domain Model}: `OverseasOrder` là thực thể quản lý nhất quán vòng đời đơn hàng, tự duy trì trạng thái hợp lệ thông qua các phương thức chuyển trạng thái nghiệp vụ.
+\end{itemize}
+
+\section{Mẫu thiết kế}
+\begin{itemize}
+    \item \textbf{Facade}: `ImportOrderingFacade` đóng gói toàn bộ dịch vụ nghiệp vụ đặt hàng, cung cấp điểm gọi thống nhất cho UI.
+    \item \textbf{Repository (Port and Adapter)}: Quản lý lưu trữ trạng thái đơn hàng.
+\end{itemize}
+
+\chapter{Kiểm thử phần mềm}
+\section{Thiết kế các ca kiểm thử}
+\subsection{Thiết kế kiểm thử hộp đen (Black-box Testing)}
+Thiết kế các ca kiểm thử cho chức năng phát hành đơn hàng và ghi nhận phản hồi trong lớp dịch vụ `OrderService`:
+\begin{longtblr}{width=\textwidth,colspec={Q[0.15\textwidth,l] Q[0.35\textwidth,l] Q[0.25\textwidth,l] Q[0.25\textwidth,l]},hlines,vlines,row{1}={font=\bfseries,bg=headergray}}
+Ca kiểm thử & Dữ liệu đầu vào & Kết quả mong đợi & Nhóm phân vùng \\
+TC-UC005-BB1 & Lập đơn hàng từ một phương án phân bổ có hai Site. & Hệ thống tự động sinh 2 đơn hàng tương ứng cho 2 Site ở trạng thái Transmitted. & Lập đơn hàng thành công. \\
+TC-UC005-BB2 & Đơn hàng đã gửi nhận phản hồi xác nhận từ đối tác Site. & Trạng thái đơn chuyển sang Acknowledged và sinh token dạng ACK-*. & Đối tác xác nhận đơn. \\
+TC-UC005-BB3 & Đơn hàng đã gửi nhận phản hồi từ chối từ đối tác Site. & Trạng thái đơn chuyển sang Rejected và sinh token dạng REJ-*. & Đối tác từ chối đơn. \\
+\end{longtblr}
+
+\subsection{Thiết kế kiểm thử hộp trắng (White-box Testing - Độ bao phủ C1)}
+Bao phủ các nhánh logic chuyển đổi trạng thái của đơn đặt hàng:
+\begin{itemize}
+    \item \textbf{Nhánh 1}: Phát hành đơn hàng $\rightarrow$ Trạng thái ban đầu bắt buộc chuyển sang `TRANSMITTED`.
+    \item \textbf{Nhánh 2}: Ghi nhận xác nhận khi đang ở trạng thái Transmitted $\rightarrow$ Chuyển trạng thái sang `ACKNOWLEDGED`.
+    \item \textbf{Nhánh 3}: Ghi nhận từ chối khi đang ở trạng thái Transmitted $\rightarrow$ Chuyển trạng thái sang `REJECTED`.
+\end{itemize}
+
+\section{Mã nguồn kiểm thử tự động}
+Mã nguồn chương trình kiểm thử tự động bằng JUnit 5:
+\begin{lstlisting}[language=Java]
+package vn.edu.hust.itss.group15.usecases;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDate;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import vn.edu.hust.itss.group15.application.ImportOrderingFacade;
+import vn.edu.hust.itss.group15.domain.AllocationPlan;
+import vn.edu.hust.itss.group15.domain.ImportRequest;
+import vn.edu.hust.itss.group15.domain.ImportRequestItem;
+import vn.edu.hust.itss.group15.domain.OrderStatus;
+import vn.edu.hust.itss.group15.domain.OverseasOrder;
+import vn.edu.hust.itss.group15.infrastructure.persistence.memory.InMemoryStore;
+
+class Uc005OrderTransmissionTest {
+  @Test
+  void tcUc00501GeneratesSiteGroupedTransmittedOrders() {
+    ImportOrderingFacade facade = facade();
+    AllocationPlan plan = allocationPlanAcrossTwoSites(facade);
+
+    List<OverseasOrder> orders = facade.orders().generateOrders(plan.planId());
+
+    assertEquals(2, orders.size());
+    assertTrue(orders.stream().allMatch(order -> order.status() == OrderStatus.TRANSMITTED));
+    assertTrue(orders.stream().anyMatch(order -> order.siteCode().equals("SITE-SEA-01")));
+    assertTrue(orders.stream().anyMatch(order -> order.siteCode().equals("SITE-EU-04")));
+  }
+
+  @Test
+  void tcUc00502RecordsSiteAcknowledgementAndRejection() {
+    ImportOrderingFacade facade = facade();
+    List<OverseasOrder> orders = facade.orders().generateOrders(allocationPlanAcrossTwoSites(facade).planId());
+
+    OverseasOrder acknowledged = facade.orders().acknowledge(orders.get(0).orderId());
+    OverseasOrder rejected = facade.orders().reject(orders.get(1).orderId());
+
+    assertEquals(OrderStatus.ACKNOWLEDGED, acknowledged.status());
+    assertTrue(acknowledged.acknowledgementToken().startsWith("ACK-"));
+    assertEquals(OrderStatus.REJECTED, rejected.status());
+    assertTrue(rejected.acknowledgementToken().startsWith("REJ-"));
+  }
+
+  private ImportOrderingFacade facade() {
+    return new ImportOrderingFacade(new InMemoryStore());
+  }
+
+  private ImportRequestItem item(String merchandiseCode, int quantity, int daysFromNow) {
+    return new ImportRequestItem(merchandiseCode, quantity, "box", LocalDate.now().plusDays(daysFromNow));
+  }
+
+  private AllocationPlan allocationPlanAcrossTwoSites(ImportOrderingFacade facade) {
+    ImportRequest request = facade.importRequests().create(List.of(item("MH-001", 10, 25)));
+    facade.inventory().recordStock("SITE-SEA-01", "MH-001", 5, "box");
+    facade.inventory().recordStock("SITE-EU-04", "MH-001", 20, "box");
+    return facade.allocation().plan(request.requestId());
+  }
+}
+\end{lstlisting}
+
+\end{document}

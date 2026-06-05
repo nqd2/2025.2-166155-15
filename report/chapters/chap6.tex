@@ -2,7 +2,7 @@
 
 \section{Biểu đồ lớp}
 
-Thiết kế chi tiết sử dụng lớp biên cho giao diện, lớp điều khiển cho luồng thao tác, lớp entity cho dữ liệu nghiệp vụ và lớp repository hoặc adapter cho lưu trữ. Code triển khai giữ cùng ranh giới bằng các package \ucname{app}, \ucname{application}, \ucname{domain}, \ucname{infrastructure}.
+Kiến trúc hệ thống được xây dựng theo mô hình Domain-Driven Design (DDD), phân tách rõ ràng trách nhiệm của từng thành phần. Cụ thể, code triển khai được tổ chức thành các package: \ucname{domain} chứa các entity và quy tắc nghiệp vụ cốt lõi; \ucname{application} định nghĩa các use case và điều phối luồng thao tác (Application Service); \ucname{app} chịu trách nhiệm hiển thị giao diện người dùng (Presentation Layer) thông qua JavaFX; và \ucname{infrastructure} cung cấp các adapter để tương tác với cơ sở dữ liệu bên ngoài (như Supabase) thông qua mẫu thiết kế Repository.
 
 \subsection{\ucname{ManageImportRequests}}
 
@@ -63,4 +63,4 @@ Project sử dụng Maven, JDK 22 và JavaFX 22.0.2. Cấu hình biên dịch đ
 
 \section{Dữ liệu bền vững}
 
-Các bảng lưu trữ phản ánh các aggregate chính: yêu cầu nhập, Site nhập khẩu, tồn kho Site, phương án phân bổ, đơn đặt hàng, phiếu nhận hàng, tồn kho nội bộ, tài khoản người dùng và nhật ký vận hành. Dữ liệu được đọc ghi qua \ucname{Store} để tầng application không phụ thuộc trực tiếp vào Supabase.
+Mô hình dữ liệu bền vững (Persistence Data Model) được thiết kế xoay quanh các Aggregate Root cốt lõi: \ucname{ImportRequest} (lưu trữ thông tin yêu cầu nhập hàng cùng danh sách mặt hàng cần đặt), \ucname{ImportSite} (hồ sơ đối tác nhập khẩu), \ucname{InventoryRecord} (số liệu tồn kho tại mỗi Site), \ucname{AllocationPlan} (phương án phân bổ số lượng mua), \ucname{OverseasOrder} (đơn đặt hàng quốc tế), và \ucname{GoodsReceipt} (phiếu xác nhận hàng về kho kèm đối soát). Việc lưu trữ và truy xuất các Aggregate này được trừu tượng hóa hoàn toàn thông qua interface \ucname{Store} (đóng vai trò như một kho chứa - Repository), giúp lõi nghiệp vụ ở các tầng Application và Domain được độc lập hoàn toàn với công nghệ lưu trữ PostgreSQL trên Supabase ở tầng Infrastructure.

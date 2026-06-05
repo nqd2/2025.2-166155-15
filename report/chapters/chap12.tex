@@ -2,7 +2,7 @@
 
 \section{Kế hoạch làm việc nhóm}
 
-Nhóm làm Homework07 theo bốn giai đoạn. Giai đoạn đầu khởi tạo Maven project, thống nhất package, cấu trúc test và skeleton giao diện. Giai đoạn hai mỗi thành viên triển khai use case được phân công trên nhánh riêng. Giai đoạn ba tích hợp luồng nghiệp vụ từ tạo yêu cầu nhập đến nhận hàng. Giai đoạn bốn ổn định, kiểm thử, hoàn thiện tài liệu và đóng gói bài nộp.
+Quá trình thực hiện đồ án được chia thành bốn giai đoạn chính. Giai đoạn đầu tập trung khởi tạo dự án Maven, thống nhất cấu trúc package, bộ khung unit test và giao diện cơ sở. Giai đoạn hai, mỗi thành viên triển khai độc lập các use case được phân công trên nhánh (branch) riêng. Giai đoạn ba tiến hành tích hợp toàn bộ luồng nghiệp vụ end-to-end, từ bước tạo yêu cầu nhập hàng cho đến khi đối soát hàng về kho. Giai đoạn cuối cùng dành cho việc sửa lỗi (bug fix), hoàn thiện bộ kiểm thử, viết tài liệu báo cáo và đóng gói sản phẩm cuối cùng.
 
 \begin{longtblr}{
   colspec = {Q[0.16\textwidth, l] Q[0.32\textwidth, l] X[l]},
@@ -50,4 +50,4 @@ Quản lý role và dữ liệu master dễ lấn sang nghiệp vụ chính & UC
 
 \section{Kết quả đạt được}
 
-Nhóm hoàn thành mô hình nghiệp vụ chính của hệ thống đặt hàng nhập khẩu. Ứng dụng có giao diện JavaFX, service theo use case, domain model, adapter Supabase, adapter bộ nhớ cho test và cấu hình Maven chạy trên JDK 22. Báo cáo mô tả thống nhất đặc tả yêu cầu, phân tích use case, thiết kế giao diện, subsystem, thiết kế chi tiết, nguyên lý thiết kế và nhật ký làm việc nhóm.
+Nhóm đã xây dựng thành công phần mềm cốt lõi cho Hệ thống Đặt hàng Nhập khẩu, đáp ứng trọn vẹn các yêu cầu nghiệp vụ đã đề ra. Về mặt kỹ thuật, dự án ứng dụng kiến trúc phân tầng (Layered/DDD) chặt chẽ với giao diện JavaFX, xử lý luồng thao tác qua Application Service, gom nhóm nghiệp vụ tại Domain Model và kết nối cơ sở dữ liệu thật qua Supabase. Về mặt tài liệu, nhóm đã biên soạn hoàn chỉnh và thống nhất các tài liệu cấu thành đồ án bao gồm: Đặc tả yêu cầu (SRS), Phân tích \& Thiết kế Use Case, Thiết kế Giao diện, Thiết kế Chi tiết, cùng với việc giải trình rõ ràng các Nguyên lý và Mẫu thiết kế đã được hiện thực hóa trong mã nguồn.
