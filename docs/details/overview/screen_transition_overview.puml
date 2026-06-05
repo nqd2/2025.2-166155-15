@@ -1,0 +1,48 @@
+@startuml screen_transition_overview
+left to right direction
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+
+title ScreenTransitionOverview - ImportAssignmentSystem
+
+[LoginView] as LoginView
+[DashboardView] as DashboardView
+[OverviewView] as OverviewView
+[RequestView] as RequestView
+[SiteView] as SiteView
+[InventoryView] as InventoryView
+[AllocationView] as AllocationView
+[OrderView] as OrderView
+[ReceivingView] as ReceivingView
+[AdminView] as AdminView
+
+LoginView --> DashboardView : login success
+DashboardView --> LoginView : logout
+
+DashboardView --> OverviewView : open operations overview
+OverviewView --> DashboardView : back to dashboard
+
+DashboardView --> RequestView : UC001 ManageImportRequests
+RequestView --> DashboardView : back to dashboard
+
+DashboardView --> SiteView : UC002 ManageSiteInformation
+SiteView --> DashboardView : back to dashboard
+
+DashboardView --> InventoryView : UC003 CollectInventoryData
+InventoryView --> DashboardView : back to dashboard
+
+DashboardView --> AllocationView : UC004 PlanImportAllocation
+AllocationView --> DashboardView : back to dashboard
+
+DashboardView --> OrderView : UC005 PlaceOverseasOrders
+OrderView --> DashboardView : back to dashboard
+
+DashboardView --> ReceivingView : UC006 ReceiveAndReconcileGoods
+ReceivingView --> DashboardView : back to dashboard
+
+DashboardView --> AdminView : UC007 ManageSystem
+AdminView --> DashboardView : back to dashboard
+
+@enduml

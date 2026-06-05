@@ -97,51 +97,49 @@
     <td><strong>Hậu điều kiện</strong></td>
     <td colspan="3">Phương án phân bổ được lưu theo từng mặt hàng và từng Site, kèm phương thức vận chuyển dự kiến; các lỗi thiếu nguồn cung được ghi nhận nếu có.</td>
   </tr>
+</table>
+<br/>
+
+**Dữ liệu đầu vào:**
+<table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
   <tr>
-    <td><strong>Dữ liệu đầu vào</strong></td>
-    <td colspan="3">
-      <table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <tr>
-          <th>STT</th>
-          <th>Trường dữ liệu</th>
-          <th>Mô tả</th>
-          <th>Bắt buộc</th>
-          <th>Điều kiện hợp lệ</th>
-          <th>Ví dụ</th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>desiredDeliveryDate</td>
-          <td>Ngày nhận mong muốn của từng mặt hàng</td>
-          <td>Có</td>
-          <td>Là ngày hợp lệ</td>
-          <td>2026-06-01</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>availableSites</td>
-          <td>Danh sách Site có hàng cho mặt hàng</td>
-          <td>Có</td>
-          <td>Mỗi Site có siteCode hợp lệ và tồn kho đi kèm</td>
-          <td>SITE-SEA-01, SITE-EU-04</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>inStockQuantityBySite</td>
-          <td>Số lượng tồn kho theo từng Site</td>
-          <td>Có</td>
-          <td>Số nguyên không âm</td>
-          <td>320, 150</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>deliveryDaysByShipOrAir</td>
-          <td>Số ngày vận chuyển theo từng phương thức của Site</td>
-          <td>Có</td>
-          <td>Số nguyên dương</td>
-          <td>ship=18, air=5</td>
-        </tr>
-      </table>
-    </td>
+    <th>STT</th>
+    <th>Trường dữ liệu</th>
+    <th>Mô tả</th>
+    <th>Bắt buộc</th>
+    <th>Điều kiện hợp lệ</th>
+    <th>Ví dụ</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>desiredDeliveryDate</td>
+    <td>Ngày nhận mong muốn của từng mặt hàng</td>
+    <td>Có</td>
+    <td>Là ngày hợp lệ</td>
+    <td>2026-06-01</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>availableSites</td>
+    <td>Danh sách Site có hàng cho mặt hàng</td>
+    <td>Có</td>
+    <td>Mỗi Site có siteCode hợp lệ và tồn kho đi kèm</td>
+    <td>SITE-SEA-01, SITE-EU-04</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>inStockQuantityBySite</td>
+    <td>Số lượng tồn kho theo từng Site</td>
+    <td>Có</td>
+    <td>Số nguyên không âm</td>
+    <td>320, 150</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>deliveryDaysByShipOrAir</td>
+    <td>Số ngày vận chuyển theo từng phương thức của Site</td>
+    <td>Có</td>
+    <td>Số nguyên dương</td>
+    <td>ship=18, air=5</td>
   </tr>
 </table>

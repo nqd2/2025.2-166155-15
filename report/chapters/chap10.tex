@@ -1,0 +1,64 @@
+\chapter{Hướng dẫn sử dụng}
+
+\section{Chuẩn bị môi trường}
+
+Máy chạy chương trình cần cài JDK 22 và Maven. Dự án được cấu hình trong \pathtext{Homework07/Group/pom.xml}; thuộc tính \pathtext{maven.compiler.release} đặt là \texttt{22}. Nếu chạy với Supabase thật, cần tạo Supabase project và chạy file \pathtext{src/main/resources/db/schema.sql} trong Supabase SQL Editor trước lần khởi động đầu tiên.
+
+\begin{longtblr}{
+  width = \textwidth,
+  colspec = {Q[0.28\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+  row{1} = {font=\bfseries},
+}
+Thành phần & Yêu cầu \\
+JDK & JDK 22 trở lên; khuyến nghị dùng đúng JDK 22 khi nộp bài. \\
+Maven & Maven 3.9+ để chạy build, test, package và JavaFX plugin. \\
+Supabase & Project đã có bảng theo \texttt{schema.sql}; cần REST URL và API key. \\
+Biến môi trường & \texttt{IMPORT\_SUPABASE\_URL}, \texttt{IMPORT\_SUPABASE\_KEY}; tùy chọn \texttt{IMPORT\_APP\_NAME}. \\
+\end{longtblr}
+
+\section{Build và chạy chương trình}
+
+Từ thư mục \texttt{Homework07/Group}, chạy các lệnh sau:
+
+\begin{lstlisting}[language=bash]
+mvn -version
+mvn clean test
+mvn clean package
+\end{lstlisting}
+
+Để chạy ứng dụng JavaFX với Supabase:
+
+\begin{lstlisting}[language=bash]
+export IMPORT_SUPABASE_URL='https://<project-ref>.supabase.co'
+export IMPORT_SUPABASE_KEY='<supabase-anon-or-service-role-key>'
+mvn javafx:run
+\end{lstlisting}
+
+Nếu dùng file \texttt{.env}, đặt file này tại \texttt{Homework07/Group/.env} với nội dung:
+
+\begin{lstlisting}
+IMPORT_SUPABASE_URL=https://<project-ref>.supabase.co
+IMPORT_SUPABASE_KEY=<supabase-anon-or-service-role-key>
+IMPORT_APP_NAME=Nexus Import Portal
+\end{lstlisting}
+
+\section{Sử dụng các chức năng chính}
+
+\begin{enumerate}
+  \item Khởi động ứng dụng. Nếu hệ thống chưa có tài khoản, màn hình đầu tiên yêu cầu tạo \ucname{SystemAdministrator}.
+  \item Đăng nhập bằng tài khoản đã tạo. Dashboard hiển thị các nhóm chức năng theo quyền người dùng.
+  \item Vào \ucname{Requests} để tạo yêu cầu nhập hàng, nhập mã hàng, số lượng, đơn vị và ngày nhận mong muốn.
+  \item Vào \ucname{Sites} để cập nhật hồ sơ Site, danh mục mặt hàng và thời gian vận chuyển bằng tàu/hàng không.
+  \item Vào \ucname{Inventory} để ghi nhận phản hồi tồn kho từ Site theo từng mã hàng.
+  \item Vào \ucname{Allocation} để preview và xác nhận phương án phân bổ nhập hàng.
+  \item Vào \ucname{Orders} để sinh đơn đặt hàng theo Site, sau đó ghi nhận Site xác nhận hoặc từ chối.
+  \item Vào \ucname{Receiving} để nhập số lượng thực nhận, ghi chú sai lệch nếu thiếu/thừa và cập nhật tồn kho nội bộ.
+  \item Vào \ucname{Admin} để quản lý người dùng, role, nhật ký và lịch sao lưu.
+\end{enumerate}
+
+\section{Lưu ý vận hành}
+
+Người dùng cần nhập đúng mã hàng và đơn vị có trong dữ liệu master. Ngày nhận mong muốn phải nằm trong tương lai. Khi nhận hàng thiếu hoặc thừa, hệ thống bắt buộc nhập \fieldname{discrepancyNote} để phục vụ truy vết. Nếu ứng dụng báo lỗi kết nối Supabase, cần kiểm tra lại REST URL, API key và việc đã chạy \texttt{schema.sql}.

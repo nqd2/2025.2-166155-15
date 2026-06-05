@@ -2,11 +2,11 @@
 title Analysis Sequence Diagram - PlanImportAllocation
 
 actor InternationalOrderingDepartment as Actor
-participant "ImportAllocationUI" as Boundary <<boundary>>
-participant "ImportAllocationController" as Control <<control>>
-entity "InventoryRecord" as Record <<entity>>
-entity "ImportSite" as Site <<entity>>
-entity "AllocationPlan" as Entity <<entity>>
+boundary "Boundary:ImportAllocationUI" as Boundary
+control "Control:ImportAllocationController" as Control
+entity "Record:InventoryRecord" as Record
+entity "Site:ImportSite" as Site
+entity "Entity:AllocationPlan" as Entity
 
 Actor -> Boundary : triggerAllocation(requestId)
 activate Boundary

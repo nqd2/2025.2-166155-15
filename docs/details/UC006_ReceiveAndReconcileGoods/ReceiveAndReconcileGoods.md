@@ -92,51 +92,49 @@
     <td><strong>Hậu điều kiện</strong></td>
     <td colspan="3">Kết quả kiểm nhận và đối soát được lưu đầy đủ; tồn kho nội bộ được cập nhật; các sai lệch được ghi nhận và cảnh báo theo quy định.</td>
   </tr>
+</table>
+<br/>
+
+**Dữ liệu đầu vào:**
+<table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
   <tr>
-    <td><strong>Dữ liệu đầu vào</strong></td>
-    <td colspan="3">
-      <table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <tr>
-          <th>STT</th>
-          <th>Trường dữ liệu</th>
-          <th>Mô tả</th>
-          <th>Bắt buộc</th>
-          <th>Điều kiện hợp lệ</th>
-          <th>Ví dụ</th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>orderReference</td>
-          <td>Mã đơn đặt hàng cần kiểm nhận</td>
-          <td>Có</td>
-          <td>Tồn tại và ở trạng thái đã giao/đang giao</td>
-          <td>PO-2026-0008</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>receivedQuantity</td>
-          <td>Số lượng thực nhận theo mặt hàng</td>
-          <td>Có</td>
-          <td>Số nguyên không âm</td>
-          <td>145</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>orderedQuantity</td>
-          <td>Số lượng đã đặt theo đơn</td>
-          <td>Có</td>
-          <td>Số nguyên dương</td>
-          <td>150</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>discrepancyNote</td>
-          <td>Ghi chú sai lệch nếu có</td>
-          <td>Không</td>
-          <td>Bắt buộc khi receivedQuantity khác orderedQuantity</td>
-          <td>Thiếu 5 đơn vị do hư hỏng vận chuyển</td>
-        </tr>
-      </table>
-    </td>
+    <th>STT</th>
+    <th>Trường dữ liệu</th>
+    <th>Mô tả</th>
+    <th>Bắt buộc</th>
+    <th>Điều kiện hợp lệ</th>
+    <th>Ví dụ</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>orderReference</td>
+    <td>Mã đơn đặt hàng cần kiểm nhận</td>
+    <td>Có</td>
+    <td>Tồn tại và ở trạng thái đã giao/đang giao</td>
+    <td>PO-2026-0008</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>receivedQuantity</td>
+    <td>Số lượng thực nhận theo mặt hàng</td>
+    <td>Có</td>
+    <td>Số nguyên không âm</td>
+    <td>145</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>orderedQuantity</td>
+    <td>Số lượng đã đặt theo đơn</td>
+    <td>Có</td>
+    <td>Số nguyên dương</td>
+    <td>150</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>discrepancyNote</td>
+    <td>Ghi chú sai lệch nếu có</td>
+    <td>Không</td>
+    <td>Bắt buộc khi receivedQuantity khác orderedQuantity</td>
+    <td>Thiếu 5 đơn vị do hư hỏng vận chuyển</td>
   </tr>
 </table>

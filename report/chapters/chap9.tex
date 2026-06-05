@@ -1,0 +1,49 @@
+\chapter{Kiểm thử}
+
+\section{Chiến lược kiểm thử}
+
+Kiểm thử tập trung vào rule nghiệp vụ theo từng use case và luồng tích hợp end-to-end. Các test tự động dùng JUnit Jupiter và \ucname{InMemoryStore}; nhờ vậy test không phụ thuộc Supabase thật, không cần mạng và chạy ổn định trong quá trình phát triển.
+
+Trước khi bổ sung ma trận kiểm thử, lệnh \texttt{mvn test} chạy thành công với 22 test hiện có. Sau khi bổ sung \ucname{FeatureTestMatrixTest}, bộ kiểm thử có thêm 16 test theo từng tính năng, nâng tổng số test tự động lên 38.
+
+\section{Ma trận kiểm thử chức năng}
+
+\begin{longtblr}{
+  width = \textwidth,
+  colspec = {Q[0.13\textwidth, l] Q[0.16\textwidth, l] X[l] X[l] X[l] Q[0.22\textwidth, l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+  row{1} = {font=\bfseries},
+  row{2-Z} = {font=\tiny},
+}
+Mã test & Tính năng & Mục tiêu & Dữ liệu vào & Kết quả mong đợi & JUnit method \\
+TC-AUTH-01 & Auth & Tạo quản trị viên đầu tiên và đăng nhập. & username, email, password hợp lệ. & User có role \breakucname{SystemAdministrator}; hệ thống không còn yêu cầu first admin. & \breakucname{tcAuth01CreatesFirstAdminAndLogsIn} \\
+TC-AUTH-02 & Auth & Từ chối đăng nhập sai mật khẩu. & username đúng, password sai. & Ném \breakucname{BusinessException}. & \breakucname{tcAuth02RejectsWrongPassword} \\
+TC-UC001-01 & UC001 & Tạo, cập nhật, hủy yêu cầu nhập. & Item \fieldname{MH-001}, \fieldname{MH-002}, unit \fieldname{box}, ngày tương lai. & Trạng thái lần lượt Submitted, Updated, Cancelled; request đã hủy không cập nhật được. & \breakucname{tcUc00101CreatesUpdatesAndCancelsImportRequest} \\
+TC-UC001-02 & UC001 & Chặn dữ liệu yêu cầu nhập không hợp lệ. & Mã hàng UNKNOWN, unit \fieldname{ton}, ngày không ở tương lai. & Ném \breakucname{BusinessException}. & \breakucname{tcUc00102RejectsInvalidImportRequestInput} \\
+TC-UC002-01 & UC002 & Cập nhật hồ sơ Site hợp lệ. & \fieldname{SITE-SEA-01}, ship 12 ngày, air 3 ngày, catalog hợp lệ. & Site được lưu với tên, thời gian và catalog mới. & \breakucname{tcUc00201UpdatesValidSiteProfile} \\
+TC-UC002-02 & UC002 & Chặn thời gian vận chuyển hoặc catalog sai. & shipDays bằng 0; catalog chứa UNKNOWN. & Ném \breakucname{BusinessException}. & \breakucname{tcUc00202RejectsInvalidTransitTimeOrCatalog} \\
+TC-UC003-01 & UC003 & Lọc Site ứng viên và ghi nhận tồn kho bằng 0. & Request cho \fieldname{MH-014}; stock 0 tại \fieldname{SITE-EU-04}. & Tìm đúng Site ứng viên; bản ghi tồn kho 0 được chấp nhận. & \breakucname{tcUc00301FindsCandidateSitesAndRecordsZeroStock} \\
+TC-UC003-02 & UC003 & Chặn ghi tồn kho cho Site không kinh doanh mã hàng. & \fieldname{SITE-SEA-01}, \fieldname{MH-014}. & Ném \breakucname{BusinessException}. & \breakucname{tcUc00302RejectsStockForUntradedMerchandise} \\
+TC-UC004-01 & UC004 & Lập phương án phân bổ theo ưu tiên ship trước air. & Request 10 box \fieldname{MH-001}; tồn kho tại SEA và EU. & Dòng SEA dùng SHIP đứng trước; dòng EU dùng AIR; request chuyển Allocated. & \breakucname{tcUc00401PlansAllocationByShipBeforeAirAndMarksRequestAllocated} \\
+TC-UC004-02 & UC004 & Chặn phân bổ khi thiếu nguồn cung. & Request 10 box \fieldname{MH-004}; tồn kho chỉ 5 box. & Ném \breakucname{BusinessException}. & \breakucname{tcUc00402FailsAllocationWhenSupplyIsInsufficient} \\
+TC-UC005-01 & UC005 & Sinh đơn đặt hàng theo Site từ allocation plan. & Allocation plan có hai Site. & Tạo 2 order, tất cả trạng thái Transmitted. & \breakucname{tcUc00501GeneratesSiteGroupedTransmittedOrders} \\
+TC-UC005-02 & UC005 & Ghi nhận Site xác nhận hoặc từ chối đơn. & Hai order đã truyền. & Một order Acknowledged với token ACK; một order Rejected với token REJ. & \breakucname{tcUc00502RecordsSiteAcknowledgementAndRejection} \\
+TC-UC006-01 & UC006 & Nhận hàng khớp số lượng và cập nhật tồn kho nội bộ. & Số lượng thực nhận bằng số lượng đặt. & Receipt không có discrepancy; warehouse stock tăng đúng số lượng. & \breakucname{tcUc00601ReceivesMatchedGoodsAndUpdatesWarehouseStock} \\
+TC-UC006-02 & UC006 & Bắt buộc ghi chú khi nhận thiếu hoặc thừa. & Số lượng thực nhận khác số lượng đặt, có/không có note. & Thiếu note bị từ chối; có note thì tạo receipt có discrepancy. & \breakucname{tcUc00602RequiresDiscrepancyNoteForShortOrExcessReceipt} \\
+TC-UC007-01 & UC007 & Tạo user, gán role và ghi log. & username, email, role \breakucname{SalesDepartment}. & User active được tạo; log \texttt{CREATE\_USER} tồn tại. & \breakucname{tcUc00701CreatesUserAssignsRoleAndWritesOperationLog} \\
+TC-UC007-02 & UC007 & Chặn dữ liệu quản trị sai và cập nhật lịch sao lưu. & role sai, email sai, lịch sao lưu hợp lệ/rỗng. & Role/email sai bị từ chối; lịch hợp lệ được trim và lưu; lịch rỗng bị từ chối. & \breakucname{tcUc00702RejectsInvalidUserDataAndUpdatesBackupSchedule} \\
+\end{longtblr}
+
+\section{Cách chạy kiểm thử}
+
+Các lệnh kiểm thử được chạy tại thư mục \texttt{Homework07/Group}:
+
+\begin{lstlisting}[language=bash]
+mvn -version
+mvn test
+mvn clean package
+\end{lstlisting}
+
+Kết quả mong đợi là Maven build thành công, Surefire báo không có lỗi và không có test bị bỏ qua. Bộ test mới kiểm tra trực tiếp qua \ucname{ImportOrderingFacade}, vì vậy các màn hình JavaFX và Supabase adapter không cần khởi động để xác nhận rule nghiệp vụ.

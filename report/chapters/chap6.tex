@@ -1,0 +1,66 @@
+\chapter{Thiết kế chi tiết phần mềm}
+
+\section{Biểu đồ lớp}
+
+Thiết kế chi tiết sử dụng lớp biên cho giao diện, lớp điều khiển cho luồng thao tác, lớp entity cho dữ liệu nghiệp vụ và lớp repository hoặc adapter cho lưu trữ. Code triển khai giữ cùng ranh giới bằng các package \ucname{app}, \ucname{application}, \ucname{domain}, \ucname{infrastructure}.
+
+\subsection{\ucname{ManageImportRequests}}
+
+\diagramfigure{diagram/UC001_ManageImportRequests_all/ClassDiagram_2_000.png}{Biểu đồ lớp thiết kế của \ucname{ManageImportRequests}.}{fig:class-design-uc001}
+
+\subsection{\ucname{ManageSiteInformation}}
+
+\diagramfigure{diagram/UC002_ManageSiteInformation_all/ClassDiagram_2_000.png}{Biểu đồ lớp thiết kế của \ucname{ManageSiteInformation}.}{fig:class-design-uc002}
+
+\subsection{\ucname{CollectInventoryData}}
+
+\diagramfigure{diagram/UC003_CollectInventoryData_all/ClassDiagram_2_000.png}{Biểu đồ lớp thiết kế của \ucname{CollectInventoryData}.}{fig:class-design-uc003}
+
+\subsection{\ucname{PlanImportAllocation}}
+
+\diagramfigure{diagram/UC004_PlanImportAllocation_all/ClassDiagram_2_000.png}{Biểu đồ lớp thiết kế của \ucname{PlanImportAllocation}.}{fig:class-design-uc004}
+
+\subsection{\ucname{PlaceOverseasOrders}}
+
+\diagramfigure{diagram/UC005_PlaceOverseasOrders_all/ClassDiagram_2_000.png}{Biểu đồ lớp thiết kế của \ucname{PlaceOverseasOrders}.}{fig:class-design-uc005}
+
+\subsection{\ucname{ReceiveAndReconcileGoods}}
+
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods_all/ClassDiagram_2_000.png}{Biểu đồ lớp thiết kế của \ucname{ReceiveAndReconcileGoods}.}{fig:class-design-uc006}
+
+\subsection{\ucname{ManageSystem}}
+
+\diagramfigure{diagram/UC007_ManageSystem_all/ClassDiagram_2_000.png}{Biểu đồ lớp thiết kế của \ucname{ManageSystem}.}{fig:class-design-uc007}
+
+\section{Biểu đồ gói}
+
+Các package chính có vai trò rõ ràng. \ucname{app} chứa JavaFX screen và wiring. \ucname{application} chứa service theo use case, xác thực và facade. \ucname{domain} chứa entity, enum, value record và chính sách nghiệp vụ thuần. \ucname{application.port} định nghĩa cổng lưu trữ. \ucname{infrastructure.persistence.supabase} và \ucname{infrastructure.persistence.memory} triển khai cổng lưu trữ.
+
+\begin{table}[H]
+\centering
+\begin{tblr}{
+  width = \textwidth,
+  colspec = {Q[0.34\textwidth, l] X[l] X[l]},
+  hlines,
+  vlines,
+  row{2-Z} = {font=\scriptsize},
+}
+\textbf{Package} & \textbf{Trách nhiệm} & \textbf{Lớp tiêu biểu} \\
+\ucname{app.ui} & Hiển thị màn hình, nhận thao tác, gọi service qua session. & \ucname{RequestView}, \ucname{SiteView}, \ucname{InventoryView}, \ucname{AllocationView}, \ucname{OrderView}, \ucname{ReceivingView}, \ucname{AdminView}. \\
+\ucname{application} & Điều phối use case và kiểm tra rule nghiệp vụ ở mức ứng dụng. & \ucname{ImportRequestService}, \ucname{SiteService}, \ucname{InventoryService}, \ucname{AllocationService}, \ucname{OrderService}, \ucname{ReceiptService}, \ucname{AdminService}. \\
+\ucname{domain} & Mô hình nghiệp vụ và rule thuần, không phụ thuộc giao diện hoặc lưu trữ. & \ucname{ImportRequest}, \ucname{ImportSite}, \ucname{InventoryRecord}, \ucname{AllocationPolicy}, \ucname{OverseasOrder}, \ucname{GoodsReceipt}. \\
+\ucname{application.port} & Hợp đồng lưu trữ mà tầng application sử dụng. & \ucname{Store}. \\
+\ucname{infrastructure.persistence} & Adapter lưu trữ, gồm Supabase REST và bộ nhớ cho test. & \ucname{SupabaseStore}, \ucname{HttpSupabaseTransport}, \ucname{InMemoryStore}. \\
+\end{tblr}
+\caption{Cấu trúc package triển khai.}
+\end{table}
+
+\diagramfigure{diagram/UC001_ManageImportRequests_all/ClassDiagram_4_000.png}{Biểu đồ gói mẫu cho tầng trình bày, nghiệp vụ, domain và hạ tầng.}{fig:package-design-sample}
+
+\section{Cấu hình công nghệ}
+
+Project sử dụng Maven, JDK 22 và JavaFX 22.0.2. Cấu hình biên dịch đặt \texttt{maven.}\allowbreak\texttt{compiler.}\allowbreak\texttt{release} bằng \ucname{22}. Kiểm thử dùng JUnit Jupiter. Ứng dụng kết nối Supabase qua REST API bằng \ucname{HttpClient}; môi trường chạy cung cấp \texttt{IMPORT\_}\allowbreak\texttt{SUPABASE\_}\allowbreak\texttt{URL} và \texttt{IMPORT\_}\allowbreak\texttt{SUPABASE\_}\allowbreak\texttt{KEY}.
+
+\section{Dữ liệu bền vững}
+
+Các bảng lưu trữ phản ánh các aggregate chính: yêu cầu nhập, Site nhập khẩu, tồn kho Site, phương án phân bổ, đơn đặt hàng, phiếu nhận hàng, tồn kho nội bộ, tài khoản người dùng và nhật ký vận hành. Dữ liệu được đọc ghi qua \ucname{Store} để tầng application không phụ thuộc trực tiếp vào Supabase.

@@ -250,10 +250,10 @@ SC00305 --> SC003 : done
 title Analysis Sequence Diagram - CollectInventoryData
 
 actor InternationalOrderingDepartment as Actor
-participant "InventoryCollectionUI" as Boundary <<boundary>>
-participant "InventoryCollectionController" as Control <<control>>
-entity "ImportSite" as Site <<entity>>
-entity "InventoryRecord" as Record <<entity>>
+boundary "Boundary:InventoryCollectionUI" as Boundary
+control "Control:InventoryCollectionController" as Control
+entity "Site:ImportSite" as Site
+entity "Record:InventoryRecord" as Record
 actor OverseasImportSite as SiteActor
 
 Actor -> Boundary : triggerCollection(requestList)
@@ -348,9 +348,9 @@ title Subsystem Sequence Diagram - StockQuerySubsystem (CollectInventoryData)
 
 participant "InventoryCollectionController" as Client
 box "StockQuerySubsystem" #LightBlue
-  participant "StockQueryFacade" as Facade <<subsystem>>
-  participant "StockQueryService" as Service <<service>>
-  participant "APIConnectionPool" as Connection <<service>>
+  participant "Facade:StockQueryFacade" as Facade
+  participant "Service:StockQueryService" as Service
+  participant "Connection:APIConnectionPool" as Connection
 end box
 
 Client -> Facade : queryStock(siteCode, items)

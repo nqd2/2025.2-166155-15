@@ -1,0 +1,38 @@
+graph LR
+  LoginView["LoginView"]
+  DashboardView["DashboardView"]
+  OverviewView["OverviewView"]
+  RequestView["RequestView (UC001)"]
+  SiteView["SiteView (UC002)"]
+  InventoryView["InventoryView (UC003)"]
+  AllocationView["AllocationView (UC004)"]
+  OrderView["OrderView (UC005)"]
+  ReceivingView["ReceivingView (UC006)"]
+  AdminView["AdminView (UC007)"]
+
+  LoginView -->|"login success"| DashboardView
+  DashboardView -->|"logout"| LoginView
+
+  DashboardView -->|"open operations overview"| OverviewView
+  OverviewView -->|"back to dashboard"| DashboardView
+
+  DashboardView -->|"UC001 ManageImportRequests"| RequestView
+  RequestView -->|"back to dashboard"| DashboardView
+
+  DashboardView -->|"UC002 ManageSiteInformation"| SiteView
+  SiteView -->|"back to dashboard"| DashboardView
+
+  DashboardView -->|"UC003 CollectInventoryData"| InventoryView
+  InventoryView -->|"back to dashboard"| DashboardView
+
+  DashboardView -->|"UC004 PlanImportAllocation"| AllocationView
+  AllocationView -->|"back to dashboard"| DashboardView
+
+  DashboardView -->|"UC005 PlaceOverseasOrders"| OrderView
+  OrderView -->|"back to dashboard"| DashboardView
+
+  DashboardView -->|"UC006 ReceiveAndReconcileGoods"| ReceivingView
+  ReceivingView -->|"back to dashboard"| DashboardView
+
+  DashboardView -->|"UC007 ManageSystem"| AdminView
+  AdminView -->|"back to dashboard"| DashboardView

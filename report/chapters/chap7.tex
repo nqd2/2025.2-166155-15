@@ -1,0 +1,62 @@
+\chapter{Nguyên lý thiết kế và mẫu thiết kế áp dụng}
+
+\section{Các nguyên lý thiết kế áp dụng}
+
+\subsection{Single Responsibility Principle}
+
+Mỗi service xử lý một nhóm hành vi nghiệp vụ. \ucname{ImportRequestService} quản lý yêu cầu nhập, \ucname{InventoryService} quản lý dữ liệu tồn kho, \ucname{AllocationService} lập phương án phân bổ, \ucname{OrderService} phát hành đơn, \ucname{ReceiptService} ghi nhận hàng nhập kho. Cách chia này giúp thành viên phụ trách từng use case chỉnh sửa trong phạm vi hẹp.
+
+\subsection{Dependency Inversion Principle}
+
+Tầng application phụ thuộc vào interface \ucname{Store}. Adapter Supabase và adapter bộ nhớ triển khai cùng hợp đồng. Nhờ vậy test có thể chạy bằng \ucname{InMemoryStore}, còn ứng dụng thật chạy bằng \ucname{SupabaseStore}.
+
+\subsection{Layered Architecture}
+
+Dependency đi từ giao diện vào application, từ application vào domain và port. Domain không gọi JavaFX, Supabase hoặc HTTP. Rule nghiệp vụ quan trọng như phân bổ và đối chiếu nằm ngoài giao diện.
+
+\subsection{DDD-style domain model}
+
+\begin{sloppypar}
+Các khái niệm nghiệp vụ được đặt thành record, enum và policy rõ nghĩa: \ucname{ImportRequest}, \texttt{Import}\allowbreak\texttt{Request}\allowbreak\texttt{Item}, \ucname{ImportSite}, \texttt{Inventory}\allowbreak\texttt{Record}, \ucname{AllocationPlan}, \ucname{OverseasOrder}, \ucname{GoodsReceipt}, \ucname{WarehouseStock}. Field dùng cùng ngôn ngữ nghiệp vụ như \fieldname{requestId}, \fieldname{siteCode}, \texttt{merchandise}\allowbreak\texttt{Code}, \texttt{desired}\allowbreak\texttt{Delivery}\allowbreak\texttt{Date}, \fieldname{deliveryMeans}, \texttt{discrepancy}\allowbreak\texttt{Note}.
+\end{sloppypar}
+
+\section{Nguyên lý theo use case}
+
+\begin{longtblr}{
+  colspec = {Q[0.32\textwidth, l] Q[0.26\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+  row{2-Z} = {font=\scriptsize},
+}
+\textbf{Use case} & \textbf{Nguyên lý chính} & \textbf{Cách áp dụng} \\
+\ucname{ManageImportRequests} & SRP, validation tập trung & Service tạo/cập nhật/hủy yêu cầu; rule dữ liệu đầu vào nằm ngoài màn hình. \\
+\ucname{ManageSiteInformation} & Encapsulation & \ucname{ImportSite} giữ dữ liệu vận chuyển và catalog; service kiểm tra ngày vận chuyển trước khi lưu. \\
+\ucname{CollectInventoryData} & Interface segregation & Màn hình chỉ ghi nhận thao tác; service lọc Site và cập nhật tồn kho. \\
+\ucname{PlanImportAllocation} & Open/Closed & \ucname{AllocationPolicy} chứa rule xếp hạng Site; có thể thay policy mà không đổi giao diện. \\
+\ucname{PlaceOverseasOrders} & Low coupling & Service tạo đơn từ phương án phân bổ, không phụ thuộc chi tiết hiển thị bảng đơn. \\
+\ucname{ReceiveAndReconcileGoods} & Domain consistency & \ucname{ReceiptLine} tự xác định sai lệch; service chỉ điều phối lưu phiếu và cập nhật tồn kho. \\
+\ucname{ManageSystem} & Least privilege & Vai trò người dùng được quản lý qua \ucname{UserAccount} và service quản trị. \\
+\end{longtblr}
+
+\section{Các mẫu thiết kế áp dụng}
+
+\subsection{Facade}
+
+\ucname{ImportOrderingFacade} gom các service theo use case để giao diện truy cập qua một điểm vào ổn định. Các sơ đồ thiết kế cũng dùng facade ở subsystem như \ucname{ValidationFacade}, \ucname{AllocationFacade}, \ucname{ReconciliationFacade}, \ucname{SecurityFacade}.
+
+\subsection{Repository/Port}
+
+\ucname{Store} đóng vai trò port lưu trữ. \ucname{SupabaseStore} triển khai lưu trữ thật qua REST, còn \ucname{InMemoryStore} phục vụ test. Tầng application không biết dữ liệu nằm trong Supabase hay bộ nhớ.
+
+\subsection{Strategy}
+
+\ucname{AllocationPolicy} đóng vai trò strategy cho thuật toán phân bổ. Rule hiện tại ưu tiên đáp ứng ngày nhận, ưu tiên đường tàu khi có thể, ưu tiên Site có tồn kho lớn và giảm số Site tham gia.
+
+\subsection{Adapter}
+
+\ucname{SupabaseStore} và \ucname{HttpSupabaseTransport} chuyển đổi lời gọi lưu trữ trong ứng dụng thành HTTP request tới Supabase REST. Adapter che chi tiết header, URL, JSON và mã lỗi HTTP khỏi tầng nghiệp vụ.
+
+\subsection{Value Object và Record}
+
+Các dữ liệu bất biến như \texttt{Import}\allowbreak\texttt{Request}\allowbreak\texttt{Item}, \texttt{Allocation}\allowbreak\texttt{Line}, \texttt{Order}\allowbreak\texttt{Line}, \texttt{Receipt}\allowbreak\texttt{Line} được biểu diễn bằng Java record. Record giảm lỗi setter tùy ý và làm rõ dữ liệu nào thuộc một dòng nghiệp vụ.

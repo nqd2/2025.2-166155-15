@@ -1,7 +1,200 @@
 ' ========================================== 
 ' MERGED PLANTUML DIAGRAMS FOR USE CASE: overview
-' Total Diagrams: 1
+' Total Diagrams: 3
 ' ========================================== 
+
+' ------------------------------------------
+' Source File: class_analysis_overview.puml
+' ------------------------------------------
+@startuml class_analysis_overview
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+skinparam ClassBorderColor #37474F
+skinparam ClassBackgroundColor #ECEFF1
+skinparam ClassHeaderBackgroundColor #CFD8DC
+skinparam ClassAttributeIconSize 0
+
+title ClassAnalysisOverview - ImportAssignmentSystem
+
+package "Import Request" {
+  class ImportRequest <<entity>> {
+    -requestId: String
+    -status: RequestStatus
+    -createdAt: DateTime
+  }
+
+  class ImportRequestItem <<entity>> {
+    -merchandiseCode: String
+    -quantityOrdered: int
+    -unit: String
+    -desiredDeliveryDate: Date
+  }
+}
+
+package "Site And Inventory" {
+  class ImportSite <<entity>> {
+    -siteCode: String
+    -siteName: String
+    -deliveryDaysByShip: int
+    -deliveryDaysByAir: int
+    -merchandiseCatalog: StringSet
+  }
+
+  class InventoryRecord <<entity>> {
+    -siteCode: String
+    -merchandiseCode: String
+    -inStockQuantity: int
+    -unit: String
+  }
+}
+
+package "Allocation And Ordering" {
+  class AllocationPlan <<entity>> {
+    -planId: String
+    -requestId: String
+  }
+
+  class AllocationLine <<entity>> {
+    -requestId: String
+    -siteCode: String
+    -merchandiseCode: String
+    -quantityOrdered: int
+    -unit: String
+    -deliveryMeans: DeliveryMeans
+  }
+
+  class OverseasOrder <<entity>> {
+    -orderId: String
+    -siteCode: String
+    -status: OrderStatus
+    -acknowledgementToken: String
+  }
+
+  class OrderLine <<entity>> {
+    -merchandiseCode: String
+    -quantityOrdered: int
+    -unit: String
+    -deliveryMeans: DeliveryMeans
+  }
+}
+
+package "Receiving" {
+  class GoodsReceipt <<entity>> {
+    -receiptId: String
+    -orderReference: String
+    -receivedAt: DateTime
+  }
+
+  class ReceiptLine <<entity>> {
+    -merchandiseCode: String
+    -orderedQuantity: int
+    -receivedQuantity: int
+    -discrepancyQuantity: int
+    -discrepancyType: String
+    -discrepancyNote: String
+  }
+
+  class WarehouseStock <<entity>> {
+    -merchandiseCode: String
+    -quantityInStock: int
+  }
+}
+
+package "Administration" {
+  class UserAccount <<entity>> {
+    -userId: String
+    -username: String
+    -email: String
+    -status: UserStatus
+    -actorRoles: StringSet
+  }
+
+  class OperationLog <<entity>> {
+    -logId: String
+    -operatorId: String
+    -actionType: String
+    -timestamp: DateTime
+  }
+}
+
+ImportRequest "1" *-- "1..*" ImportRequestItem
+ImportRequest --> AllocationPlan : selected for planning
+ImportRequestItem --> InventoryRecord : matched by merchandiseCode
+
+ImportSite "1" o-- "*" InventoryRecord
+InventoryRecord --> AllocationLine : supplies quantity
+ImportSite --> AllocationLine : selected site
+
+AllocationPlan "1" *-- "1..*" AllocationLine
+AllocationPlan --> OverseasOrder : generates
+OverseasOrder "1" *-- "1..*" OrderLine
+AllocationLine --> OrderLine : composed into order
+ImportSite --> OverseasOrder : receives order
+
+OverseasOrder --> GoodsReceipt : reconciled by
+GoodsReceipt "1" *-- "1..*" ReceiptLine
+OrderLine --> ReceiptLine : expected quantity
+ReceiptLine --> WarehouseStock : updates
+
+UserAccount --> OperationLog : writes
+UserAccount --> ImportRequest : creates
+UserAccount --> GoodsReceipt : records
+
+@enduml
+
+' ------------------------------------------
+' Source File: screen_transition_overview.puml
+' ------------------------------------------
+@startuml screen_transition_overview
+left to right direction
+skinparam BackgroundColor #FFFFFF
+skinparam RoundCorner 8
+skinparam DefaultFontName "Helvetica"
+skinparam DefaultFontSize 12
+
+title ScreenTransitionOverview - ImportAssignmentSystem
+
+[LoginView] as LoginView
+[DashboardView] as DashboardView
+[OverviewView] as OverviewView
+[RequestView] as RequestView
+[SiteView] as SiteView
+[InventoryView] as InventoryView
+[AllocationView] as AllocationView
+[OrderView] as OrderView
+[ReceivingView] as ReceivingView
+[AdminView] as AdminView
+
+LoginView --> DashboardView : login success
+DashboardView --> LoginView : logout
+
+DashboardView --> OverviewView : open operations overview
+OverviewView --> DashboardView : back to dashboard
+
+DashboardView --> RequestView : UC001 ManageImportRequests
+RequestView --> DashboardView : back to dashboard
+
+DashboardView --> SiteView : UC002 ManageSiteInformation
+SiteView --> DashboardView : back to dashboard
+
+DashboardView --> InventoryView : UC003 CollectInventoryData
+InventoryView --> DashboardView : back to dashboard
+
+DashboardView --> AllocationView : UC004 PlanImportAllocation
+AllocationView --> DashboardView : back to dashboard
+
+DashboardView --> OrderView : UC005 PlaceOverseasOrders
+OrderView --> DashboardView : back to dashboard
+
+DashboardView --> ReceivingView : UC006 ReceiveAndReconcileGoods
+ReceivingView --> DashboardView : back to dashboard
+
+DashboardView --> AdminView : UC007 ManageSystem
+AdminView --> DashboardView : back to dashboard
+
+@enduml
 
 ' ------------------------------------------
 ' Source File: usecase_overview.puml
@@ -9,7 +202,7 @@
 @startuml usecase_overview
 left to right direction
 
-title UseCaseOverview - HeThongDatHangNhapKhau
+title UseCaseOverview - ImportAssignmentSystem
 
 actor "SalesDepartment" as SalesDepartment
 actor "InternationalOrderingDepartment" as InternationalOrderingDepartment

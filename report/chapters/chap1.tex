@@ -1,0 +1,62 @@
+\chapter{Khảo sát bài toán}
+
+\section{Mô tả yêu cầu bài toán}
+
+Bài toán đặt ra là xây dựng hệ thống phần mềm hỗ trợ quy trình đặt hàng nhập khẩu cho doanh nghiệp có nhiều bộ phận cùng tham gia. Quy trình bắt đầu khi \actorname{SalesDepartment} tạo yêu cầu nhập hàng, sau đó \actorname{InternationalOrderingDepartment} kiểm tra Site phù hợp, thu thập tồn kho, lập phương án phân bổ, phát hành đơn đặt hàng chính thức và cuối cùng \actorname{WarehouseManagementDepartment} ghi nhận hàng thực nhận tại kho.
+
+Hệ thống cần quản lý đồng bộ các thông tin chính: yêu cầu nhập hàng, hồ sơ Site, danh mục mặt hàng Site kinh doanh, tồn kho Site, thời gian vận chuyển, phương án phân bổ, đơn đặt hàng quốc tế, phiếu nhận hàng, sai lệch số lượng, tài khoản người dùng, vai trò và nhật ký vận hành. Các trường dữ liệu lõi được giữ thống nhất với tài liệu phân tích gồm \fieldname{requestId}, \fieldname{orderReference}, \fieldname{siteCode}, \fieldname{merchandiseCode}, \fieldname{quantity}, \fieldname{unit}, \fieldname{desiredDeliveryDate}, \fieldname{deliveryMeans}, \fieldname{status} và \fieldname{discrepancyNote}.
+
+Phần mềm minh họa được triển khai bằng JavaFX, Maven và JDK 22. Kiến trúc code chia theo các tầng giao diện, application service, domain model và persistence adapter. Hệ thống dùng Supabase REST cho lưu trữ thật và \ucname{InMemoryStore} cho kiểm thử tự động.
+
+\section{Khảo sát bài toán}
+
+Trong quy trình thủ công, thông tin yêu cầu nhập, tồn kho Site, thời gian vận chuyển, đơn đặt hàng và hàng thực nhận thường nằm rải rác ở nhiều tệp hoặc trao đổi qua email. Cách làm này khiến bộ phận đặt hàng khó biết yêu cầu nào đã được xử lý, Site nào còn tồn kho, mặt hàng nào thiếu nguồn cung và đơn nào đã được xác nhận.
+
+Các rủi ro chính gồm:
+\begin{itemize}
+  \item Sai lệch giữa số lượng Sales yêu cầu, số lượng Site xác nhận và số lượng kho thực nhận.
+  \item Chọn phương thức vận chuyển không đáp ứng ngày nhận mong muốn.
+  \item Ghi tồn kho không đúng Site hoặc mã hàng Site không kinh doanh.
+  \item Không theo dõi được trạng thái Submitted, Updated, Cancelled, Allocated, Transmitted, Acknowledged hoặc Rejected.
+  \item Thiếu nhật ký vận hành để truy vết người thao tác và nguyên nhân thay đổi.
+\end{itemize}
+
+Vì vậy hệ thống cần gom dữ liệu nghiệp vụ vào một luồng thống nhất. Mỗi use case đảm nhiệm một bước rõ ràng, còn \ucname{ManageSystem} cung cấp quyền, tài khoản, dữ liệu master, log và cấu hình sao lưu cho toàn bộ hệ thống.
+
+\section{Xác định thông tin cơ bản cho nghiệp vụ của bài toán}
+
+\begin{longtblr}{
+  width = \textwidth,
+  colspec = {Q[0.24\textwidth, l] X[l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+  row{1} = {font=\bfseries},
+  row{2-Z} = {font=\scriptsize},
+}
+Case Study (Chức năng) & Output (Kết quả đầu ra) & Điều kiện \\
+UC001 -- \breakucname{ManageImportRequests} & Yêu cầu nhập hàng có mã \fieldname{requestId}, danh sách mặt hàng, số lượng, đơn vị, ngày nhận mong muốn và trạng thái Submitted/Updated/Cancelled. & \actorname{SalesDepartment} đã đăng nhập; mã hàng và đơn vị nằm trong dữ liệu master. \\
+UC002 -- \breakucname{ManageSiteInformation} & Hồ sơ Site, danh mục hàng Site kinh doanh và thời gian vận chuyển bằng tàu/hàng không được cập nhật. & Người dùng có quyền \actorname{InternationalOrderingDepartment} hoặc \actorname{SystemAdministrator}; Site tồn tại trong hệ thống. \\
+UC003 -- \breakucname{CollectInventoryData} & Danh sách Site ứng viên và bản ghi tồn kho theo \fieldname{siteCode}, \fieldname{merchandiseCode}, \fieldname{quantity}, \fieldname{unit}. & Yêu cầu nhập đã được tạo; Site kinh doanh mã hàng cần kiểm tra. \\
+UC004 -- \breakucname{PlanImportAllocation} & Phương án phân bổ gồm các dòng Site, mặt hàng, số lượng và \fieldname{deliveryMeans}; yêu cầu được chuyển sang trạng thái Allocated. & Có yêu cầu nhập hợp lệ, dữ liệu tồn kho Site và thời gian vận chuyển đủ để tính toán. \\
+UC005 -- \breakucname{PlaceOverseasOrders} & Đơn đặt hàng chính thức theo từng Site, trạng thái Transmitted/Acknowledged/Rejected và mã xác nhận. & Có phương án phân bổ đã được xác nhận. \\
+UC006 -- \breakucname{ReceiveAndReconcileGoods} & Phiếu nhận hàng, dòng đối chiếu thiếu/thừa/khớp và tồn kho nội bộ được cập nhật. & Đơn đặt hàng tồn tại và không bị Site từ chối; nếu có sai lệch phải có \fieldname{discrepancyNote}. \\
+UC007 -- \breakucname{ManageSystem} & Tài khoản, vai trò, dữ liệu master, nhật ký vận hành và lịch sao lưu được quản trị. & Người dùng có quyền \actorname{SystemAdministrator}. \\
+\end{longtblr}
+
+\section{Phân công nhiệm vụ}
+
+\begin{longtblr}{
+  colspec = {Q[0.22\textwidth, l] Q[0.32\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{Thành viên} & \textbf{Email} & \textbf{Use case phụ trách} \\
+Nguyễn Hữu Nhân & \nolinkurl{nguyenhuunhanht2005@gmail.com} & UC006 -- \ucname{ReceiveAndReconcileGoods}. \\
+Vũ Đức Hoàng Anh & \nolinkurl{incuksuk123@gmail.com} & UC001 -- \ucname{ManageImportRequests}; UC007 -- \ucname{ManageSystem}. \\
+Trần Đăng Sinh & \nolinkurl{ctan4991@gmail.com} & UC003 -- \ucname{CollectInventoryData}. \\
+Phan Khánh Vũ & \nolinkurl{hi3sirin@gmail.com} & UC004 -- \ucname{PlanImportAllocation}. \\
+Lương Quốc Khánh & \nolinkurl{khanhlq.hust.work@gmail.com} & UC005 -- \ucname{PlaceOverseasOrders}. \\
+Nguyễn Quý Đức & \nolinkurl{nguyenquyduc_hsgs20@hus.edu.vn} & UC002 -- \ucname{ManageSiteInformation}; tích hợp nhóm. \\
+\end{longtblr}

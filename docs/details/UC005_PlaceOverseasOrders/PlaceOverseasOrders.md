@@ -87,51 +87,49 @@
     <td><strong>Hậu điều kiện</strong></td>
     <td colspan="3">Đơn đặt hàng quốc tế được ghi nhận, gửi đến Site và cập nhật trạng thái tiếp nhận/từ chối theo phản hồi thực tế.</td>
   </tr>
+</table>
+<br/>
+
+**Dữ liệu đầu vào:**
+<table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
   <tr>
-    <td><strong>Dữ liệu đầu vào</strong></td>
-    <td colspan="3">
-      <table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <tr>
-          <th>STT</th>
-          <th>Trường dữ liệu</th>
-          <th>Mô tả</th>
-          <th>Bắt buộc</th>
-          <th>Điều kiện hợp lệ</th>
-          <th>Ví dụ</th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>siteCode</td>
-          <td>Mã Site nhận đơn đặt hàng</td>
-          <td>Có</td>
-          <td>Nằm trong danh sách Site đã chọn từ bước phân bổ</td>
-          <td>SITE-EU-04</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>merchandiseCode</td>
-          <td>Mã mặt hàng được đặt</td>
-          <td>Có</td>
-          <td>Khớp với yêu cầu nhập đã duyệt</td>
-          <td>MH-005</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>quantityOrdered</td>
-          <td>Số lượng đặt theo từng dòng đơn</td>
-          <td>Có</td>
-          <td>Số nguyên dương và không vượt quá phân bổ đã duyệt</td>
-          <td>150</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>deliveryMeans</td>
-          <td>Phương thức vận chuyển</td>
-          <td>Có</td>
-          <td>Chỉ nhận ship delivery hoặc air delivery</td>
-          <td>ship delivery</td>
-        </tr>
-      </table>
-    </td>
+    <th>STT</th>
+    <th>Trường dữ liệu</th>
+    <th>Mô tả</th>
+    <th>Bắt buộc</th>
+    <th>Điều kiện hợp lệ</th>
+    <th>Ví dụ</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>siteCode</td>
+    <td>Mã Site nhận đơn đặt hàng</td>
+    <td>Có</td>
+    <td>Nằm trong danh sách Site đã chọn từ bước phân bổ</td>
+    <td>SITE-EU-04</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>merchandiseCode</td>
+    <td>Mã mặt hàng được đặt</td>
+    <td>Có</td>
+    <td>Khớp với yêu cầu nhập đã duyệt</td>
+    <td>MH-005</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>quantityOrdered</td>
+    <td>Số lượng đặt theo từng dòng đơn</td>
+    <td>Có</td>
+    <td>Số nguyên dương và không vượt quá phân bổ đã duyệt</td>
+    <td>150</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>deliveryMeans</td>
+    <td>Phương thức vận chuyển</td>
+    <td>Có</td>
+    <td>Chỉ nhận ship delivery hoặc air delivery</td>
+    <td>ship delivery</td>
   </tr>
 </table>

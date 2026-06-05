@@ -3,10 +3,10 @@ title Subsystem Sequence Diagram - AllocationEngineSubsystem (PlanImportAllocati
 
 participant "ImportAllocationController" as Client
 box "AllocationEngineSubsystem" #LightBlue
-  participant "AllocationFacade" as Facade <<subsystem>>
-  participant "FeasibilityChecker" as Checker <<service>>
-  participant "SiteRanker" as Ranker <<service>>
-  participant "SplitCalculator" as Splitter <<service>>
+  participant "Facade:AllocationFacade" as Facade
+  participant "Checker:FeasibilityChecker" as Checker
+  participant "Ranker:SiteRanker" as Ranker
+  participant "Splitter:SplitCalculator" as Splitter
 end box
 
 Client -> Facade : calculateAllocation(requestId, stockRecords, sites)

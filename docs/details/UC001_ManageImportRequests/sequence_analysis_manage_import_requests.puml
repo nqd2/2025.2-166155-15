@@ -2,10 +2,10 @@
 title Analysis Sequence Diagram - ManageImportRequests
 
 actor SalesDepartment as Actor
-participant "ImportRequestUI" as Boundary <<boundary>>
-participant "ImportRequestController" as Control <<control>>
-entity "Merchandise" as Merchandise <<entity>>
-entity "ImportRequest" as Entity <<entity>>
+boundary "Boundary:ImportRequestUI" as Boundary
+control "Control:ImportRequestController" as Control
+entity "Merchandise:Merchandise" as Merchandise
+entity "Entity:ImportRequest" as Entity
 
 Actor -> Boundary : openCreateRequestForm()
 activate Boundary

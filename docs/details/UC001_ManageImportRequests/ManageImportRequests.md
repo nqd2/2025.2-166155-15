@@ -92,51 +92,49 @@
     <td><strong>Hậu điều kiện</strong></td>
     <td colspan="3">Yêu cầu nhập được lưu với mã định danh và trạng thái phù hợp (Submitted/Updated/Cancelled), sẵn sàng cho các bước xử lý tiếp theo.</td>
   </tr>
+</table>
+<br/>
+
+**Dữ liệu đầu vào:**
+<table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
   <tr>
-    <td><strong>Dữ liệu đầu vào</strong></td>
-    <td colspan="3">
-      <table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <tr>
-          <th>STT</th>
-          <th>Trường dữ liệu</th>
-          <th>Mô tả</th>
-          <th>Bắt buộc</th>
-          <th>Điều kiện hợp lệ</th>
-          <th>Ví dụ</th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>merchandiseCode</td>
-          <td>Mã hàng cần nhập</td>
-          <td>Có</td>
-          <td>Tồn tại trong danh mục mặt hàng</td>
-          <td>MH-001</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>quantityOrdered</td>
-          <td>Số lượng cần nhập</td>
-          <td>Có</td>
-          <td>Số nguyên dương lớn hơn 0</td>
-          <td>500</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>unit</td>
-          <td>Đơn vị tính của số lượng nhập</td>
-          <td>Có</td>
-          <td>Thuộc danh mục đơn vị hợp lệ</td>
-          <td>box</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>desiredDeliveryDate</td>
-          <td>Ngày nhận mong muốn (year/month/date)</td>
-          <td>Có</td>
-          <td>Là ngày hợp lệ và không nhỏ hơn ngày hiện tại</td>
-          <td>2026-05-20</td>
-        </tr>
-      </table>
-    </td>
+    <th>STT</th>
+    <th>Trường dữ liệu</th>
+    <th>Mô tả</th>
+    <th>Bắt buộc</th>
+    <th>Điều kiện hợp lệ</th>
+    <th>Ví dụ</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>merchandiseCode</td>
+    <td>Mã hàng cần nhập</td>
+    <td>Có</td>
+    <td>Tồn tại trong danh mục mặt hàng</td>
+    <td>MH-001</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>quantityOrdered</td>
+    <td>Số lượng cần nhập</td>
+    <td>Có</td>
+    <td>Số nguyên dương lớn hơn 0</td>
+    <td>500</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>unit</td>
+    <td>Đơn vị tính của số lượng nhập</td>
+    <td>Có</td>
+    <td>Thuộc danh mục đơn vị hợp lệ</td>
+    <td>box</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>desiredDeliveryDate</td>
+    <td>Ngày nhận mong muốn (year/month/date)</td>
+    <td>Có</td>
+    <td>Là ngày hợp lệ và không nhỏ hơn ngày hiện tại</td>
+    <td>2026-05-20</td>
   </tr>
 </table>

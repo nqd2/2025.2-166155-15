@@ -2,9 +2,9 @@
 title Analysis Sequence Diagram - ManageSiteInformation
 
 actor OverseasImportSite as Actor
-participant "SiteInformationUI" as Boundary <<boundary>>
-participant "SiteInformationController" as Control <<control>>
-entity "ImportSite" as Entity <<entity>>
+boundary "Boundary:SiteInformationUI" as Boundary
+control "Control:SiteInformationController" as Control
+entity "Entity:ImportSite" as Entity
 actor InternationalOrderingDepartment as OrderingDept
 
 Actor -> Boundary : selectSiteProfile(siteCode)

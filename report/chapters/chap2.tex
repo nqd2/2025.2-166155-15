@@ -1,0 +1,580 @@
+\chapter{Tài liệu đặc tả phần mềm SRS}
+
+\section{Biểu đồ Use case}
+
+\subsection{Biểu đồ Use case tổng quan}
+
+\diagramfigure{diagram/overview/UseCaseDiagram_2_000.png}{Use case tổng quan của hệ thống đặt hàng nhập khẩu.}{fig:usecase-overview}
+
+\subsection{Biểu đồ Use case phân rã}
+
+\diagramfigure{diagram/UC001_ManageImportRequests_all/UseCaseDiagram_10_000.png}{Use case phân rã \ucname{ManageImportRequests}.}{fig:usecase-uc001}
+\diagramfigure{diagram/UC002_ManageSiteInformation_all/UseCaseDiagram_10_000.png}{Use case phân rã \ucname{ManageSiteInformation}.}{fig:usecase-uc002}
+\diagramfigure{diagram/UC003_CollectInventoryData_all/UseCaseDiagram_10_000.png}{Use case phân rã \ucname{CollectInventoryData}.}{fig:usecase-uc003}
+\diagramfigure{diagram/UC004_PlanImportAllocation_all/UseCaseDiagram_10_000.png}{Use case phân rã \ucname{PlanImportAllocation}.}{fig:usecase-uc004}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders_all/UseCaseDiagram_10_000.png}{Use case phân rã \ucname{PlaceOverseasOrders}.}{fig:usecase-uc005}
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods_all/UseCaseDiagram_10_000.png}{Use case phân rã \ucname{ReceiveAndReconcileGoods}.}{fig:usecase-uc006}
+\diagramfigure{diagram/UC007_ManageSystem_all/UseCaseDiagram_10_000.png}{Use case phân rã \ucname{ManageSystem}.}{fig:usecase-uc007}
+
+\section{Đặc tả Usecase}
+
+\subsection{Danh sách use case}
+
+\begin{longtblr}{
+  width = \textwidth,
+  colspec = {X[12,l] X[32,l] X[56,l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{Mã} & \textbf{Tên use case} & \textbf{Mục tiêu} \\
+UC001 & \breakucname{ManageImportRequests} & Tạo, cập nhật, hủy và theo dõi yêu cầu nhập hàng. \\
+UC002 & \breakucname{ManageSiteInformation} & Quản lý hồ sơ Site, danh mục hàng và thời gian vận chuyển. \\
+UC003 & \breakucname{CollectInventoryData} & Thu thập tồn kho từ Site theo mã hàng. \\
+UC004 & \breakucname{PlanImportAllocation} & Tính phương án phân bổ nhập hàng theo tồn kho và ngày nhận. \\
+UC005 & \breakucname{PlaceOverseasOrders} & Lập và gửi đơn đặt hàng quốc tế. \\
+UC006 & \breakucname{ReceiveAndReconcileGoods} & Ghi nhận hàng nhập kho và đối chiếu sai lệch. \\
+UC007 & \breakucname{ManageSystem} & Quản trị người dùng, vai trò, dữ liệu master, log và sao lưu. \\
+\end{longtblr}
+
+\subsection{UC001 -- \ucname{ManageImportRequests}}
+
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-001: ManageImportRequests},
+  label = {tbl:spec-uc001},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-001 \\
+Tên UseCase & \breakucname{ManageImportRequests} \\
+Tác nhân & \actorname{SalesDepartment}, \actorname{InternationalOrderingDepartment} \\
+Tiền điều kiện & \actorname{SalesDepartment} đã đăng nhập và có quyền tạo yêu cầu nhập; danh mục mặt hàng và đơn vị tính đã tồn tại trong hệ thống. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{SalesDepartment} & Tạo yêu cầu nhập hàng mới và nhập danh sách mặt hàng cần đặt. \\
+  2 & System & Kiểm tra hợp lệ dữ liệu đầu vào (mã hàng, số lượng, đơn vị, ngày nhận mong muốn). \\
+  3 & \actorname{SalesDepartment} & Xác nhận gửi yêu cầu nhập sang \actorname{InternationalOrderingDepartment}. \\
+  4 & System & Ghi nhận yêu cầu ở trạng thái Submitted và phát sinh mã yêu cầu. \\
+  5 & \actorname{InternationalOrderingDepartment} & Tra cứu và theo dõi trạng thái xử lý của yêu cầu nhập. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  2a & System & Dữ liệu không hợp lệ, hệ thống hiển thị lỗi và yêu cầu nhập lại trước khi gửi. \\
+  4a & \actorname{SalesDepartment} & Cập nhật yêu cầu khi trạng thái chưa bị khóa xử lý. \\
+  4b & \actorname{SalesDepartment} & Hủy yêu cầu khi nhu cầu thay đổi, hệ thống chuyển trạng thái Cancelled. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Yêu cầu nhập được lưu với mã định danh và trạng thái phù hợp (Submitted/Updated/Cancelled), sẵn sàng cho các bước xử lý tiếp theo. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{ManageImportRequests} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-001},
+  label = {tbl:input-uc001},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{merchandiseCode} & Mã hàng cần nhập & Có & Tồn tại trong danh mục mặt hàng & MH-001 \\
+2 & \fieldname{quantityOrdered} & Số lượng cần nhập & Có & Số nguyên dương lớn hơn 0 & 500 \\
+3 & \fieldname{unit} & Đơn vị tính của số lượng nhập & Có & Thuộc danh mục đơn vị hợp lệ & box \\
+4 & \fieldname{desiredDeliveryDate} & Ngày nhận mong muốn (year/month/date) & Có & Là ngày hợp lệ và không nhỏ hơn ngày hiện tại & 2026-05-20 \\
+\end{longtblr}
+
+\subsection{UC002 -- \ucname{ManageSiteInformation}}
+
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-002: ManageSiteInformation},
+  label = {tbl:spec-uc002},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-002 \\
+Tên UseCase & \breakucname{ManageSiteInformation} \\
+Tác nhân & \actorname{OverseasImportSite}, \actorname{InternationalOrderingDepartment} \\
+Tiền điều kiện & Thông tin Site đã được khởi tạo trên hệ thống và \actorname{OverseasImportSite} có quyền cập nhật dữ liệu Site. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{OverseasImportSite} & Mở chức năng quản lý thông tin Site và chọn hồ sơ Site cần cập nhật. \\
+  2 & \actorname{OverseasImportSite} & Cập nhật hồ sơ Site (tên Site, thông tin vận hành liên quan). \\
+  3 & \actorname{OverseasImportSite} & Cập nhật thời gian vận chuyển theo tàu và hàng không. \\
+  4 & \actorname{OverseasImportSite} & Cập nhật danh mục mặt hàng mà Site đang kinh doanh. \\
+  5 & System & Lưu thay đổi và gửi thông báo cập nhật cho \actorname{InternationalOrderingDepartment}. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  3a & System & Thời gian vận chuyển không hợp lệ, hệ thống từ chối lưu và yêu cầu nhập lại. \\
+  4a & System & Mặt hàng cập nhật không thuộc danh mục cho phép, hệ thống cảnh báo và giữ dữ liệu cũ. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Thông tin Site, thời gian vận chuyển và danh mục hàng kinh doanh được cập nhật đồng bộ, \actorname{InternationalOrderingDepartment} nhận được thông báo thay đổi. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{ManageSiteInformation} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-002},
+  label = {tbl:input-uc002},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{siteCode} & Mã định danh Site & Có & Tồn tại và còn hiệu lực trong hệ thống & SITE-SEA-01 \\
+2 & \fieldname{deliveryDaysByShip} & Số ngày vận chuyển bằng tàu & Có & Số nguyên dương & 18 \\
+3 & \fieldname{deliveryDaysByAir} & Số ngày vận chuyển bằng hàng không & Có & Số nguyên dương & 5 \\
+4 & \fieldname{merchandiseCatalog} & Danh sách mặt hàng Site kinh doanh & Có & Mỗi mặt hàng có mã hợp lệ, không trùng lặp trong danh sách & MH-001, MH-005, MH-014 \\
+\end{longtblr}
+
+\subsection{UC003 -- \ucname{CollectInventoryData}}
+
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-003: CollectInventoryData},
+  label = {tbl:spec-uc003},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-003 \\
+Tên UseCase & \breakucname{CollectInventoryData} \\
+Tác nhân & \actorname{InternationalOrderingDepartment}, \actorname{OverseasImportSite} \\
+Tiền điều kiện & Yêu cầu nhập đã được gửi hợp lệ; dữ liệu Site và danh mục mặt hàng kinh doanh của từng Site đã sẵn có. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{InternationalOrderingDepartment} & Tìm các Site có kinh doanh ít nhất một mặt hàng trong danh sách yêu cầu. \\
+  2 & System & Lọc danh sách mặt hàng theo từng Site để tạo gói truy vấn tồn kho riêng. \\
+  3 & \actorname{InternationalOrderingDepartment} & Gửi yêu cầu kiểm tra tồn kho đến từng \actorname{OverseasImportSite}. \\
+  4 & \actorname{OverseasImportSite} & Phản hồi số lượng tồn kho theo từng mặt hàng được yêu cầu. \\
+  5 & System & Ghi dữ liệu phản hồi vào tệp thông tin kho theo cấu trúc chuẩn. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1a & System & Không tìm thấy Site phù hợp cho mặt hàng, hệ thống ghi nhận mặt hàng chưa có nguồn cung. \\
+  4a & \actorname{OverseasImportSite} & Site không có hàng, phản hồi inStockQuantity = 0 cho mặt hàng tương ứng. \\
+  4b & System & Site phản hồi chậm, hệ thống ghi log timeout và cho phép gửi lại yêu cầu. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Tệp thông tin kho được cập nhật với dữ liệu tồn kho mới nhất theo từng Site và từng mặt hàng để phục vụ phân bổ nhập hàng. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{CollectInventoryData} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-003},
+  label = {tbl:input-uc003},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{siteCode} & Mã Site nhận yêu cầu tồn kho & Có & Tồn tại trong tệp thông tin Site & SITE-SEA-01 \\
+2 & \fieldname{merchandiseCode} & Mã mặt hàng cần kiểm tra tồn kho & Có & Tồn tại trong danh mục mặt hàng & MH-001 \\
+3 & \fieldname{inStockQuantity} & Số lượng tồn kho Site phản hồi & Có & Số nguyên không âm & 320 \\
+4 & \fieldname{unit} & Đơn vị của số lượng tồn kho & Có & Khớp đơn vị chuẩn của mặt hàng & box \\
+\end{longtblr}
+
+\subsection{UC004 -- \ucname{PlanImportAllocation}}
+
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-004: PlanImportAllocation},
+  label = {tbl:spec-uc004},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-004 \\
+Tên UseCase & \breakucname{PlanImportAllocation} \\
+Tác nhân & \actorname{InternationalOrderingDepartment} \\
+Tiền điều kiện & Đã có dữ liệu yêu cầu nhập và dữ liệu tồn kho theo Site; thông tin thời gian vận chuyển ship/air của Site đã cập nhật. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{InternationalOrderingDepartment} & Khởi tạo lập kế hoạch phân bổ cho yêu cầu nhập hiện tại. \\
+  2 & System & Xử lý từng mặt hàng một cách độc lập. \\
+  3 & System & Kiểm tra Site có thể đáp ứng ngày nhận mong muốn theo thời gian vận chuyển. \\
+  4 & System & Xếp hạng Site theo ưu tiên: ship trước, tồn kho lớn hơn, số Site ít hơn. \\
+  5 & System & Phân bổ số lượng đặt cho một hoặc nhiều Site đến khi đáp ứng đủ nhu cầu. \\
+  6 & \actorname{InternationalOrderingDepartment} & Xem và xác nhận phương án phân bổ nhập hàng. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  3a & System & Không có Site nào đáp ứng ngày nhận mong muốn, hệ thống đánh dấu mặt hàng rủi ro trễ hạn. \\
+  5a & System & Tổng tồn kho khả dụng nhỏ hơn nhu cầu, hệ thống phát sinh lỗi thiếu nguồn cung. \\
+  6a & \actorname{InternationalOrderingDepartment} & Không chấp nhận phương án, điều chỉnh tham số ưu tiên và chạy lại phân bổ. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Phương án phân bổ được lưu theo từng mặt hàng và từng Site, kèm phương thức vận chuyển dự kiến; các lỗi thiếu nguồn cung được ghi nhận nếu có. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{PlanImportAllocation} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-004},
+  label = {tbl:input-uc004},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{desiredDeliveryDate} & Ngày nhận mong muốn của từng mặt hàng & Có & Là ngày hợp lệ & 2026-06-01 \\
+2 & \fieldname{availableSites} & Danh sách Site có hàng cho mặt hàng & Có & Mỗi Site có siteCode hợp lệ và tồn kho đi kèm & SITE-SEA-01, SITE-EU-04 \\
+3 & \fieldname{inStockQuantityBySite} & Số lượng tồn kho theo từng Site & Có & Số nguyên không âm & 320, 150 \\
+4 & \fieldname{deliveryDaysByShipOrAir} & Số ngày vận chuyển theo từng phương thức của Site & Có & Số nguyên dương & ship=18, air=5 \\
+\end{longtblr}
+
+\subsection{UC005 -- \ucname{PlaceOverseasOrders}}
+
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-005: PlaceOverseasOrders},
+  label = {tbl:spec-uc005},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-005 \\
+Tên UseCase & \breakucname{PlaceOverseasOrders} \\
+Tác nhân & \actorname{InternationalOrderingDepartment}, \actorname{OverseasImportSite} \\
+Tiền điều kiện & Phương án phân bổ nhập hàng đã được xác nhận và có danh sách Site được chọn cho từng mặt hàng. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{InternationalOrderingDepartment} & Tạo đơn đặt hàng quốc tế từ kết quả phân bổ. \\
+  2 & System & Tạo các dòng đặt hàng theo từng Site và từng mặt hàng. \\
+  3 & System & Gán phương thức vận chuyển cho từng dòng (ship delivery hoặc air delivery). \\
+  4 & \actorname{InternationalOrderingDepartment} & Xác nhận gửi đơn đặt hàng đến các Site đã chọn. \\
+  5 & \actorname{OverseasImportSite} & Nhận đơn và xác nhận tiếp nhận xử lý đơn đặt hàng. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  3a & System & Không xác định được phương thức vận chuyển hợp lệ, hệ thống chặn gửi đơn và yêu cầu kiểm tra lại phân bổ. \\
+  5a & \actorname{OverseasImportSite} & Site từ chối đơn do thay đổi năng lực cung ứng, hệ thống chuyển đơn sang trạng thái Rejected và báo về bộ phận đặt hàng. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Đơn đặt hàng quốc tế được ghi nhận, gửi đến Site và cập nhật trạng thái tiếp nhận/từ chối theo phản hồi thực tế. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{PlaceOverseasOrders} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-005},
+  label = {tbl:input-uc005},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{siteCode} & Mã Site nhận đơn đặt hàng & Có & Nằm trong danh sách Site đã chọn từ bước phân bổ & SITE-EU-04 \\
+2 & \fieldname{merchandiseCode} & Mã mặt hàng được đặt & Có & Khớp với yêu cầu nhập đã duyệt & MH-005 \\
+3 & \fieldname{quantityOrdered} & Số lượng đặt theo từng dòng đơn & Có & Số nguyên dương và không vượt quá phân bổ đã duyệt & 150 \\
+4 & \fieldname{deliveryMeans} & Phương thức vận chuyển & Có & Chỉ nhận ship delivery hoặc air delivery & ship delivery \\
+\end{longtblr}
+
+\subsection{UC006 -- \ucname{ReceiveAndReconcileGoods}}
+
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-006: ReceiveAndReconcileGoods},
+  label = {tbl:spec-uc006},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-006 \\
+Tên UseCase & \breakucname{ReceiveAndReconcileGoods} \\
+Tác nhân & \actorname{WarehouseManagementDepartment}, \actorname{InternationalOrderingDepartment} \\
+Tiền điều kiện & Đơn đặt hàng đã phát hành cho Site; \actorname{WarehouseManagementDepartment} có quyền tiếp nhận và kiểm hàng. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{InternationalOrderingDepartment} & Cung cấp dữ liệu số lượng đặt kỳ vọng cho \actorname{WarehouseManagementDepartment}. \\
+  2 & \actorname{WarehouseManagementDepartment} & Ghi nhận thông tin lô hàng thực tế khi hàng về kho. \\
+  3 & System & So sánh số lượng thực nhận với số lượng đã đặt theo từng mặt hàng. \\
+  4 & \actorname{WarehouseManagementDepartment} & Xác nhận kết quả kiểm nhận sau khi đối soát. \\
+  5 & System & Cập nhật tồn kho nội bộ theo số lượng thực nhận đã xác nhận. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  3a & System & Phát hiện sai lệch giữa thực nhận và đặt hàng, hệ thống mở bước ghi nhận discrepancy. \\
+  3b & \actorname{WarehouseManagementDepartment} & Ghi chi tiết sai lệch (thiếu/thừa/hư hỏng) và nguyên nhân quan sát được. \\
+  5a & System & Nếu sai lệch vượt ngưỡng, hệ thống gửi cảnh báo cho \actorname{InternationalOrderingDepartment} để xử lý tiếp. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Kết quả kiểm nhận và đối soát được lưu đầy đủ; tồn kho nội bộ được cập nhật; các sai lệch được ghi nhận và cảnh báo theo quy định. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{ReceiveAndReconcileGoods} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-006},
+  label = {tbl:input-uc006},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{orderReference} & Mã đơn đặt hàng cần kiểm nhận & Có & Tồn tại và ở trạng thái đã giao/đang giao & PO-2026-0008 \\
+2 & \fieldname{receivedQuantity} & Số lượng thực nhận theo mặt hàng & Có & Số nguyên không âm & 145 \\
+3 & \fieldname{orderedQuantity} & Số lượng đã đặt theo đơn & Có & Số nguyên dương & 150 \\
+4 & \fieldname{discrepancyNote} & Ghi chú sai lệch nếu có & Không & Bắt buộc khi receivedQuantity khác orderedQuantity & Thiếu 5 đơn vị do hư hỏng vận chuyển \\
+\end{longtblr}
+
+\subsection{UC007 -- \ucname{ManageSystem}}
+
+\begin{longtblr}[
+  caption = {Đặc tả Use Case UC-007: ManageSystem},
+  label = {tbl:spec-uc007},
+]{
+  width = \textwidth,
+  colspec = {X[20,l] X[80,l]},
+  hlines,
+  vlines,
+  cell{1}{1} = {bg=ucgreen, font=\bfseries, halign=c},
+  cell{2-8}{1} = {bg=ucgreen, font=\bfseries},
+}
+\SetCell[c=2]{c} Đặc tả Use Case & \\
+Mã UseCase & UC-007 \\
+Tên UseCase & \breakucname{ManageSystem} \\
+Tác nhân & \actorname{SystemAdministrator} \\
+Tiền điều kiện & \actorname{SystemAdministrator} đã đăng nhập với quyền quản trị cao nhất. \\
+Luồng sự kiện chính & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1 & \actorname{SystemAdministrator} & Quản lý người dùng và vai trò cho các actor nghiệp vụ. \\
+  2 & \actorname{SystemAdministrator} & Quản lý dữ liệu master dùng chung (mặt hàng, đơn vị, Site, trạng thái nghiệp vụ). \\
+  3 & \actorname{SystemAdministrator} & Theo dõi nhật ký vận hành và thao tác liên phòng ban để truy vết. \\
+  4 & \actorname{SystemAdministrator} & Thiết lập lịch sao lưu dữ liệu nghiệp vụ. \\
+  5 & System & Thực thi sao lưu/khôi phục theo yêu cầu và ghi log kết quả. \\
+  \end{tblr}
+  }
+} \\
+Luồng sự kiện thay thế & {
+  \parbox{\linewidth}{%
+  \begin{tblr}{
+    width = \linewidth,
+    colspec = {X[10,c] X[32,l] X[58,l]},
+    hlines,
+    vlines,
+    row{1} = {bg=ucorange, font=\bfseries},
+  }
+  STT & Thực hiện bởi & Hành động \\
+  1a & System & Dữ liệu tài khoản hoặc phân quyền không hợp lệ, hệ thống từ chối cập nhật và báo lỗi chi tiết. \\
+  5a & System & Khôi phục thất bại do bản sao lưu lỗi, hệ thống giữ nguyên trạng thái hiện tại và cảnh báo quản trị. \\
+  \end{tblr}
+  }
+} \\
+Hậu điều kiện & Cấu hình hệ thống, dữ liệu master, phân quyền và bản ghi vận hành được cập nhật đầy đủ; hoạt động sao lưu/khôi phục có nhật ký truy vết. \\
+\end{longtblr}
+
+\noindent * Dữ liệu đầu vào của usecase \breakucname{ManageSystem} gồm các trường dữ liệu sau:
+\begin{longtblr}[
+  caption = {Dữ liệu đầu vào UC-007},
+  label = {tbl:input-uc007},
+]{
+  width = \textwidth,
+  colspec = {X[8,c] X[22,l] X[20,l] X[10,c] X[27,l] X[13,l]},
+  hlines,
+  vlines,
+  row{1} = {bg=ucorange, font=\bfseries},
+}
+STT & Trường dữ liệu & Mô tả & Bắt buộc & Điều kiện hợp lệ & Ví dụ \\
+1 & \fieldname{userAccount} & Thông tin tài khoản người dùng nội bộ & Có & Tên đăng nhập duy nhất, email hợp lệ, trạng thái rõ ràng & \fieldname{iord.nguyenvana} \\
+2 & \fieldname{actorRole} & Vai trò nghiệp vụ được gán cho tài khoản & Có & Nằm trong tập vai trò đã định nghĩa & \actorname{InternationalOrderingDepartment} \\
+3 & \fieldname{sharedMasterData} & Dữ liệu danh mục dùng chung & Có & Bản ghi không trùng khóa và đúng định dạng & \fieldname{unit=box}, \fieldname{merchandiseCode=MH-001} \\
+4 & \fieldname{backupSchedule} & Lịch sao lưu dữ liệu & Có & Có tần suất và thời điểm hợp lệ & Daily 23:00 \\
+\end{longtblr}
+
+\section{Từ điển thuật ngữ}
+
+\begin{longtblr}{
+  width = \textwidth,
+  colspec = {X[24,l] X[76,l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{Thuật ngữ} & \textbf{Định nghĩa} \\
+Site & Đơn vị nhập khẩu ở nước ngoài có tồn kho, danh mục mặt hàng và thời gian vận chuyển riêng. \\
+Import request & Yêu cầu nhập hàng do \actorname{SalesDepartment} tạo. \\
+Inventory record & Bản ghi tồn kho của một mã hàng tại một Site. \\
+Allocation plan & Phương án chia số lượng cần nhập cho một hoặc nhiều Site. \\
+Overseas order & Đơn đặt hàng chính thức gửi cho Site nước ngoài. \\
+Goods receipt & Phiếu ghi nhận hàng thực nhận tại kho. \\
+Discrepancy & Sai lệch giữa số lượng đặt và số lượng thực nhận. \\
+\end{longtblr}
+
+\section{Đặc tả phụ trợ}
+
+\subsection{Chức năng}
+
+Hệ thống hỗ trợ tạo và quản lý yêu cầu nhập, quản lý Site, thu thập tồn kho, lập phân bổ, phát hành đơn, nhận hàng, đối chiếu sai lệch, quản trị người dùng, phân quyền, nhật ký và sao lưu.
+
+\subsection{Hiệu năng}
+
+Các thao tác liệt kê dữ liệu nghiệp vụ cần phản hồi đủ nhanh cho màn hình desktop. Dữ liệu được phân tách theo bảng nghiệp vụ để truy vấn theo mã yêu cầu, mã Site, mã hàng và mã đơn. Test nghiệp vụ chạy bằng bộ nhớ để giảm thời gian phản hồi trong quá trình phát triển.
+
+\subsection{Độ tin cậy}
+
+Hệ thống kiểm tra dữ liệu trước khi ghi, dùng trạng thái rõ ràng cho yêu cầu và đơn hàng, ghi nhật ký thao tác quản trị và giữ adapter lưu trữ tách khỏi rule nghiệp vụ. Khi kết nối Supabase lỗi, ứng dụng báo lỗi thay vì ghi dữ liệu không đầy đủ.

@@ -3,9 +3,9 @@ title Subsystem Sequence Diagram - SecuritySubsystem (ManageSystem)
 
 participant "SystemAdminController" as Client
 box "SecuritySubsystem" #LightBlue
-  participant "SecurityFacade" as Facade <<subsystem>>
-  participant "RBACAuthorizationService" as RBAC <<service>>
-  participant "UserSessionManager" as Session <<service>>
+  participant "Facade:SecurityFacade" as Facade
+  participant "RBAC:RBACAuthorizationService" as RBAC
+  participant "Session:UserSessionManager" as Session
 end box
 
 Client -> Facade : checkPermission(operatorId, requiredPermission)

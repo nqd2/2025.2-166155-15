@@ -3,9 +3,9 @@ title Subsystem Sequence Diagram - OrderTransmissionSubsystem (PlaceOverseasOrde
 
 participant "OverseasOrderingController" as Client
 box "OrderTransmissionSubsystem" #LightBlue
-  participant "OrderTransmissionFacade" as Facade <<subsystem>>
-  participant "XMLGeneratorService" as XMLGen <<service>>
-  participant "SFTPUploadService" as SFTP <<service>>
+  participant "Facade:OrderTransmissionFacade" as Facade
+  participant "XMLGen:XMLGeneratorService" as XMLGen
+  participant "SFTP:SFTPUploadService" as SFTP
 end box
 
 Client -> Facade : transmitOrder(siteCode, orderDetails)

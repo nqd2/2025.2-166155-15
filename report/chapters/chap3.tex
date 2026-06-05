@@ -1,0 +1,67 @@
+\chapter{Tài liệu phân tích use case}
+
+\section{Biểu đồ lớp mức phân tích tổng quan}
+
+Mô hình phân tích xoay quanh các entity nghiệp vụ chính. \ucname{ImportRequest} chứa danh sách \ucname{ImportRequestItem}. \ucname{ImportSite} cung cấp catalog và thời gian vận chuyển. \ucname{InventoryRecord} ghi tồn kho theo Site và mặt hàng. \ucname{AllocationPlan} chia nhu cầu thành các \ucname{AllocationLine}. \ucname{OverseasOrder} gom các \ucname{OrderLine}. \ucname{GoodsReceipt} và \ucname{ReceiptLine} ghi nhận hàng thực nhận. \ucname{UserAccount} và \ucname{OperationLog} phục vụ quản trị.
+
+\diagramfigure{diagram/overview/ClassDiagram_0_000.png}{Biểu đồ lớp phân tích tổng quan của hệ thống đặt hàng nhập khẩu.}{fig:class-analysis-overview}
+
+\begin{table}[H]
+\centering
+\begin{tblr}{
+  width = \textwidth,
+  colspec = {Q[0.22\textwidth, l] X[l] X[l]},
+  hlines,
+  vlines,
+}
+\textbf{Nhóm lớp} & \textbf{Lớp chính} & \textbf{Vai trò} \\
+Yêu cầu nhập & \ucname{ImportRequest}, \ucname{ImportRequestItem} & Lưu nhu cầu nhập hàng và trạng thái xử lý. \\
+Site và tồn kho & \ucname{ImportSite}, \ucname{InventoryRecord} & Lưu catalog, thời gian vận chuyển và số lượng tồn kho. \\
+Phân bổ và đặt hàng & \ucname{AllocationPlan}, \ucname{AllocationLine}, \ucname{OverseasOrder}, \ucname{OrderLine} & Chuyển nhu cầu thành đơn đặt hàng theo Site. \\
+Nhận hàng & \ucname{GoodsReceipt}, \ucname{ReceiptLine}, \ucname{WarehouseStock} & Đối chiếu hàng nhận và cập nhật tồn kho nội bộ. \\
+Quản trị & \ucname{UserAccount}, \ucname{OperationLog} & Quản lý người dùng, vai trò và log. \\
+\end{tblr}
+\caption{Nhóm lớp phân tích tổng quan.}
+\end{table}
+
+\section{Use Case \ucname{ManageImportRequests}}
+
+\diagramfigure{diagram/UC001_ManageImportRequests_all/SequenceDiagram_7_000.png}{Sequence phân tích của \ucname{ManageImportRequests}.}{fig:seq-analysis-uc001}
+\diagramfigure{diagram/UC001_ManageImportRequests_all/ClassDiagram_4_000.png}{Communication phân tích của \ucname{ManageImportRequests}.}{fig:comm-analysis-uc001}
+\diagramfigure{diagram/UC001_ManageImportRequests_all/ClassDiagram_1_000.png}{Lớp phân tích của \ucname{ManageImportRequests}.}{fig:class-analysis-uc001}
+
+\section{Use Case \ucname{ManageSiteInformation}}
+
+\diagramfigure{diagram/UC002_ManageSiteInformation_all/SequenceDiagram_7_000.png}{Sequence phân tích của \ucname{ManageSiteInformation}.}{fig:seq-analysis-uc002}
+\diagramfigure{diagram/UC002_ManageSiteInformation_all/ClassDiagram_4_000.png}{Communication phân tích của \ucname{ManageSiteInformation}.}{fig:comm-analysis-uc002}
+\diagramfigure{diagram/UC002_ManageSiteInformation_all/ClassDiagram_1_000.png}{Lớp phân tích của \ucname{ManageSiteInformation}.}{fig:class-analysis-uc002}
+
+\section{Use Case \ucname{CollectInventoryData}}
+
+\diagramfigure{diagram/UC003_CollectInventoryData_all/SequenceDiagram_7_000.png}{Sequence phân tích của \ucname{CollectInventoryData}.}{fig:seq-analysis-uc003}
+\diagramfigure{diagram/UC003_CollectInventoryData_all/ClassDiagram_4_000.png}{Communication phân tích của \ucname{CollectInventoryData}.}{fig:comm-analysis-uc003}
+\diagramfigure{diagram/UC003_CollectInventoryData_all/ClassDiagram_1_000.png}{Lớp phân tích của \ucname{CollectInventoryData}.}{fig:class-analysis-uc003}
+
+\section{Use Case \ucname{PlanImportAllocation}}
+
+\diagramfigure{diagram/UC004_PlanImportAllocation_all/SequenceDiagram_7_000.png}{Sequence phân tích của \ucname{PlanImportAllocation}.}{fig:seq-analysis-uc004}
+\diagramfigure{diagram/UC004_PlanImportAllocation_all/ClassDiagram_4_000.png}{Communication phân tích của \ucname{PlanImportAllocation}.}{fig:comm-analysis-uc004}
+\diagramfigure{diagram/UC004_PlanImportAllocation_all/ClassDiagram_1_000.png}{Lớp phân tích của \ucname{PlanImportAllocation}.}{fig:class-analysis-uc004}
+
+\section{Use Case \ucname{PlaceOverseasOrders}}
+
+\diagramfigure{diagram/UC005_PlaceOverseasOrders_all/SequenceDiagram_7_000.png}{Sequence phân tích của \ucname{PlaceOverseasOrders}.}{fig:seq-analysis-uc005}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders_all/ClassDiagram_4_000.png}{Communication phân tích của \ucname{PlaceOverseasOrders}.}{fig:comm-analysis-uc005}
+\diagramfigure{diagram/UC005_PlaceOverseasOrders_all/ClassDiagram_1_000.png}{Lớp phân tích của \ucname{PlaceOverseasOrders}.}{fig:class-analysis-uc005}
+
+\section{Use Case \ucname{ReceiveAndReconcileGoods}}
+
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods_all/SequenceDiagram_7_000.png}{Sequence phân tích của \ucname{ReceiveAndReconcileGoods}.}{fig:seq-analysis-uc006}
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods_all/ClassDiagram_4_000.png}{Communication phân tích của \ucname{ReceiveAndReconcileGoods}.}{fig:comm-analysis-uc006}
+\diagramfigure{diagram/UC006_ReceiveAndReconcileGoods_all/ClassDiagram_1_000.png}{Lớp phân tích của \ucname{ReceiveAndReconcileGoods}.}{fig:class-analysis-uc006}
+
+\section{Use Case \ucname{ManageSystem}}
+
+\diagramfigure{diagram/UC007_ManageSystem_all/SequenceDiagram_7_000.png}{Sequence phân tích của \ucname{ManageSystem}.}{fig:seq-analysis-uc007}
+\diagramfigure{diagram/UC007_ManageSystem_all/ClassDiagram_4_000.png}{Communication phân tích của \ucname{ManageSystem}.}{fig:comm-analysis-uc007}
+\diagramfigure{diagram/UC007_ManageSystem_all/ClassDiagram_1_000.png}{Lớp phân tích của \ucname{ManageSystem}.}{fig:class-analysis-uc007}

@@ -253,9 +253,9 @@ SC00504 --> SC005 : done
 title Analysis Sequence Diagram - PlaceOverseasOrders
 
 actor InternationalOrderingDepartment as Actor
-participant "OverseasOrderingUI" as Boundary <<boundary>>
-participant "OverseasOrderingController" as Control <<control>>
-entity "OverseasOrder" as Entity <<entity>>
+boundary "Boundary:OverseasOrderingUI" as Boundary
+control "Control:OverseasOrderingController" as Control
+entity "Entity:OverseasOrder" as Entity
 actor OverseasImportSite as SiteActor
 
 Actor -> Boundary : triggerOrderGeneration(planId)
@@ -348,9 +348,9 @@ title Subsystem Sequence Diagram - OrderTransmissionSubsystem (PlaceOverseasOrde
 
 participant "OverseasOrderingController" as Client
 box "OrderTransmissionSubsystem" #LightBlue
-  participant "OrderTransmissionFacade" as Facade <<subsystem>>
-  participant "XMLGeneratorService" as XMLGen <<service>>
-  participant "SFTPUploadService" as SFTP <<service>>
+  participant "Facade:OrderTransmissionFacade" as Facade
+  participant "XMLGen:XMLGeneratorService" as XMLGen
+  participant "SFTP:SFTPUploadService" as SFTP
 end box
 
 Client -> Facade : transmitOrder(siteCode, orderDetails)

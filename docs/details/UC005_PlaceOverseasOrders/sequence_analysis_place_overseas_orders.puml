@@ -2,9 +2,9 @@
 title Analysis Sequence Diagram - PlaceOverseasOrders
 
 actor InternationalOrderingDepartment as Actor
-participant "OverseasOrderingUI" as Boundary <<boundary>>
-participant "OverseasOrderingController" as Control <<control>>
-entity "OverseasOrder" as Entity <<entity>>
+boundary "Boundary:OverseasOrderingUI" as Boundary
+control "Control:OverseasOrderingController" as Control
+entity "Entity:OverseasOrder" as Entity
 actor OverseasImportSite as SiteActor
 
 Actor -> Boundary : triggerOrderGeneration(planId)

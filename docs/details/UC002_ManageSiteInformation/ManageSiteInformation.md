@@ -87,51 +87,49 @@
     <td><strong>Hậu điều kiện</strong></td>
     <td colspan="3">Thông tin Site, thời gian vận chuyển và danh mục hàng kinh doanh được cập nhật đồng bộ, InternationalOrderingDepartment nhận được thông báo thay đổi.</td>
   </tr>
+</table>
+<br/>
+
+**Dữ liệu đầu vào:**
+<table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
   <tr>
-    <td><strong>Dữ liệu đầu vào</strong></td>
-    <td colspan="3">
-      <table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <tr>
-          <th>STT</th>
-          <th>Trường dữ liệu</th>
-          <th>Mô tả</th>
-          <th>Bắt buộc</th>
-          <th>Điều kiện hợp lệ</th>
-          <th>Ví dụ</th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>siteCode</td>
-          <td>Mã định danh Site</td>
-          <td>Có</td>
-          <td>Tồn tại và còn hiệu lực trong hệ thống</td>
-          <td>SITE-SEA-01</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>deliveryDaysByShip</td>
-          <td>Số ngày vận chuyển bằng tàu</td>
-          <td>Có</td>
-          <td>Số nguyên dương</td>
-          <td>18</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>deliveryDaysByAir</td>
-          <td>Số ngày vận chuyển bằng hàng không</td>
-          <td>Có</td>
-          <td>Số nguyên dương</td>
-          <td>5</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>merchandiseCatalog</td>
-          <td>Danh sách mặt hàng Site kinh doanh</td>
-          <td>Có</td>
-          <td>Mỗi mặt hàng có mã hợp lệ, không trùng lặp trong danh sách</td>
-          <td>MH-001, MH-005, MH-014</td>
-        </tr>
-      </table>
-    </td>
+    <th>STT</th>
+    <th>Trường dữ liệu</th>
+    <th>Mô tả</th>
+    <th>Bắt buộc</th>
+    <th>Điều kiện hợp lệ</th>
+    <th>Ví dụ</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>siteCode</td>
+    <td>Mã định danh Site</td>
+    <td>Có</td>
+    <td>Tồn tại và còn hiệu lực trong hệ thống</td>
+    <td>SITE-SEA-01</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>deliveryDaysByShip</td>
+    <td>Số ngày vận chuyển bằng tàu</td>
+    <td>Có</td>
+    <td>Số nguyên dương</td>
+    <td>18</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>deliveryDaysByAir</td>
+    <td>Số ngày vận chuyển bằng hàng không</td>
+    <td>Có</td>
+    <td>Số nguyên dương</td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>merchandiseCatalog</td>
+    <td>Danh sách mặt hàng Site kinh doanh</td>
+    <td>Có</td>
+    <td>Mỗi mặt hàng có mã hợp lệ, không trùng lặp trong danh sách</td>
+    <td>MH-001, MH-005, MH-014</td>
   </tr>
 </table>
