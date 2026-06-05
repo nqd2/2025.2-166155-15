@@ -1,53 +1,95 @@
-\chapter{Nhật ký làm việc nhóm}
+\chapter{Xây dựng chương trình minh họa}
 
-\section{Kế hoạch làm việc nhóm}
+\section{Công nghệ sử dụng}
 
-Nhóm làm Homework07 theo bốn giai đoạn. Giai đoạn đầu khởi tạo Maven project, thống nhất package, cấu trúc test và skeleton giao diện. Giai đoạn hai mỗi thành viên triển khai use case được phân công trên nhánh riêng. Giai đoạn ba tích hợp luồng nghiệp vụ từ tạo yêu cầu nhập đến nhận hàng. Giai đoạn bốn ổn định, kiểm thử, hoàn thiện tài liệu và đóng gói bài nộp.
+Chương trình minh họa được triển khai trong thư mục \texttt{Homework07/Group}. Ứng dụng là JavaFX desktop app, chạy bằng Maven và JDK 22. Tầng lưu trữ thật dùng Supabase REST API; tầng test dùng \ucname{InMemoryStore} để kiểm thử nhanh và không phụ thuộc mạng.
 
 \begin{longtblr}{
-  colspec = {Q[0.16\textwidth, l] Q[0.32\textwidth, l] X[l]},
+  width = \textwidth,
+  colspec = {Q[0.24\textwidth, l] Q[0.26\textwidth, l] X[l]},
   hlines,
   vlines,
   rowhead = 1,
+  row{1} = {font=\bfseries},
 }
-\textbf{Giai đoạn} & \textbf{Mục tiêu} & \textbf{Kết quả cần có} \\
-Phase 1 & Khởi tạo nền kiến trúc & Maven project, JDK 22, cấu trúc package, test skeleton, README build/run. \\
-Phase 2 & Triển khai từng use case & Code và unit test cho UC001--UC007 trên nhánh cá nhân. \\
-Phase 3 & Tích hợp end-to-end & Luồng tạo yêu cầu, hỏi tồn kho, phân bổ, đặt hàng, nhận hàng chạy liền mạch. \\
-Phase 4 & Ổn định và nộp bài & Build, test, package, tài liệu báo cáo và ảnh minh họa hoàn chỉnh. \\
+Nhóm công nghệ & Công nghệ & Vai trò \\
+Ngôn ngữ và runtime & JDK 22 & Biên dịch và chạy ứng dụng; cấu hình Maven đặt \texttt{maven.compiler.release=22}. \\
+Quản lý build & Maven 3.9+ & Chạy build, test, package và JavaFX app. \\
+Giao diện & JavaFX 22.0.2 & Xây dựng màn hình đăng nhập, dashboard và các màn hình nghiệp vụ. \\
+Kiểm thử & JUnit Jupiter 5.10.3 & Viết unit/integration test cho domain rule, facade, Supabase adapter và ma trận tính năng. \\
+Lưu trữ thật & Supabase REST & Lưu request, Site, tồn kho, allocation plan, order, receipt, user và log. \\
+Lưu trữ kiểm thử & \ucname{InMemoryStore} & Chạy test tự động không cần Supabase thật. \\
 \end{longtblr}
 
-\section{Nhật ký họp nhóm}
+\section{Cấu trúc thư mục}
 
 \begin{longtblr}{
-  colspec = {Q[0.16\textwidth, l] Q[0.28\textwidth, l] X[l]},
+  width = \textwidth,
+  colspec = {Q[0.36\textwidth, l] X[l]},
   hlines,
   vlines,
   rowhead = 1,
+  row{1} = {font=\bfseries},
 }
-\textbf{Thời điểm} & \textbf{Nội dung} & \textbf{Kết luận} \\
-Tuần 1 & Chốt phạm vi final project & Chọn JavaFX, Maven, JDK 22, Supabase REST; giữ 7 UC theo phân công. \\
-Tuần 2 & Rà soát thiết kế và dữ liệu dùng chung & Thống nhất các field lõi: \fieldname{requestId}, \fieldname{siteCode}, \fieldname{merchandiseCode}, \fieldname{quantity}, \fieldname{unit}, \fieldname{desiredDeliveryDate}. \\
-Tuần 3 & Tích hợp service và giao diện & Tách màn hình theo use case; dùng \ucname{ImportOrderingFacade} để giảm phụ thuộc trực tiếp. \\
-Tuần 4 & Kiểm thử và hoàn thiện báo cáo & Chạy Maven test, kiểm tra luồng demo, hoàn thiện nội dung thiết kế và nhật ký nhóm. \\
+Thư mục/package & Nội dung chính \\
+\pathtext{src/main/java/vn/edu/hust/itss/group15/app} & JavaFX entrypoint, session và wiring giao diện. \\
+\pathtext{app/ui} & Các màn hình \ucname{LoginView}, \ucname{DashboardView}, \ucname{RequestView}, \ucname{SiteView}, \ucname{InventoryView}, \ucname{AllocationView}, \ucname{OrderView}, \ucname{ReceivingView}, \ucname{AdminView}. \\
+\pathtext{application} & Service theo use case: import request, Site, inventory, allocation, order, receipt, admin, auth và \ucname{ImportOrderingFacade}. \\
+\pathtext{domain} & Entity, enum, record và rule nghiệp vụ thuần như \ucname{AllocationPolicy}. \\
+\pathtext{application/port} & Interface \ucname{Store}, tách tầng application khỏi chi tiết lưu trữ. \\
+\pathtext{infrastructure/persistence/supabase} & Adapter Supabase REST, cấu hình môi trường và JSON mapping. \\
+\pathtext{infrastructure/persistence/memory} & Adapter bộ nhớ phục vụ test. \\
+\pathtext{src/main/resources/db/schema.sql} & SQL tạo bảng Supabase. \\
+\pathtext{src/test/java} & JUnit tests cho chính sách phân bổ, facade, bảo mật mật khẩu, Supabase adapter và ma trận tính năng. \\
 \end{longtblr}
 
-\section{Khó khăn và cách giải quyết}
+\section{Sơ đồ dịch chuyển màn hình}
 
-\begin{longtblr}{
-  colspec = {Q[0.30\textwidth, l] Q[0.30\textwidth, l] X[l]},
-  hlines,
-  vlines,
-  rowhead = 1,
-}
-\textbf{Khó khăn} & \textbf{Ảnh hưởng} & \textbf{Cách giải quyết} \\
-Dữ liệu giữa các UC phụ thuộc nhau & UC004, UC005, UC006 không chạy nếu thiếu dữ liệu từ UC001, UC002, UC003. & Thiết kế facade và store chung, tích hợp theo thứ tự phụ thuộc. \\
-Rule phân bổ có nhiều tiêu chí & Dễ tạo kết quả khác nhau giữa tài liệu và code. & Tách \ucname{AllocationPolicy}, viết test cho ưu tiên tồn kho, ngày nhận và phương thức vận chuyển. \\
-Kết nối Supabase cần cấu hình môi trường & Ứng dụng có thể lỗi khi chạy lần đầu. & Đưa biến môi trường vào hướng dẫn chạy và dùng \ucname{InMemoryStore} cho test. \\
-Giao diện nhiều màn hình & Dễ trùng logic xử lý form và thông báo lỗi. & Tạo component hỗ trợ như \ucname{FormFieldFactory}, \ucname{StatusBadge}, \ucname{Toast}, \ucname{ConfirmDialog}. \\
-Quản lý role và dữ liệu master dễ lấn sang nghiệp vụ chính & UC007 có thể làm rối luồng nhập hàng tuyến tính. & Giữ UC007 trong màn hình quản trị riêng, chỉ cung cấp quyền, user, log và cấu hình. \\
-\end{longtblr}
+Ứng dụng bắt đầu tại màn hình đăng nhập. Sau khi đăng nhập, dashboard hiển thị thanh điều hướng trái và mở các màn hình theo quyền của người dùng. \actorname{SystemAdministrator} truy cập được toàn bộ màn hình, các vai trò nghiệp vụ chỉ truy cập nhóm chức năng liên quan.
 
-\section{Kết quả đạt được}
+\diagramfigure{diagram/overview/ClassDiagram_1_000.png}{Sơ đồ chuyển đổi màn hình tổng quan.}{fig:build-screen-transition-overview}
 
-Nhóm hoàn thành mô hình nghiệp vụ chính của hệ thống đặt hàng nhập khẩu. Ứng dụng có giao diện JavaFX, service theo use case, domain model, adapter Supabase, adapter bộ nhớ cho test và cấu hình Maven chạy trên JDK 22. Báo cáo mô tả thống nhất đặc tả yêu cầu, phân tích use case, thiết kế giao diện, subsystem, thiết kế chi tiết, nguyên lý thiết kế và nhật ký làm việc nhóm.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth,height=0.32\textheight,keepaspectratio]{diagram/UC001_ManageImportRequests_all/ClassDiagram_6_000.png}
+  \includegraphics[width=0.48\textwidth,height=0.32\textheight,keepaspectratio]{diagram/UC004_PlanImportAllocation_all/ClassDiagram_6_000.png}
+  \caption{Ví dụ sơ đồ chuyển màn hình theo use case.}
+  \label{fig:build-screen-transition-samples}
+\end{figure}
+
+\section{Giao diện minh họa}
+
+Các hình dưới đây minh họa giao diện JavaFX theo cấu trúc màn hình thật của chương trình. Ảnh được dựng từ dữ liệu demo tương ứng với \ucname{InMemoryStore} để không phụ thuộc Supabase thật khi biên soạn báo cáo.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth,height=0.60\textheight,keepaspectratio]{screenshots/login.png}
+  \caption{Màn hình tạo tài khoản quản trị đầu tiên.}
+  \label{fig:ui-login}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth,height=0.60\textheight,keepaspectratio]{screenshots/overview.png}
+  \caption{Dashboard tổng quan vận hành.}
+  \label{fig:ui-overview}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth,height=0.33\textheight,keepaspectratio]{screenshots/requests.png}
+  \includegraphics[width=0.48\textwidth,height=0.33\textheight,keepaspectratio]{screenshots/sites.png}
+  \includegraphics[width=0.48\textwidth,height=0.33\textheight,keepaspectratio]{screenshots/inventory.png}
+  \includegraphics[width=0.48\textwidth,height=0.33\textheight,keepaspectratio]{screenshots/allocation.png}
+  \caption{Các màn hình tạo yêu cầu nhập, quản lý Site, thu thập tồn kho và lập phân bổ.}
+  \label{fig:ui-core-flow-1}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth,height=0.33\textheight,keepaspectratio]{screenshots/orders.png}
+  \includegraphics[width=0.48\textwidth,height=0.33\textheight,keepaspectratio]{screenshots/receiving.png}
+  \includegraphics[width=0.48\textwidth,height=0.33\textheight,keepaspectratio]{screenshots/admin.png}
+  \caption{Các màn hình đặt hàng, nhận hàng và quản trị hệ thống.}
+  \label{fig:ui-core-flow-2}
+\end{figure}

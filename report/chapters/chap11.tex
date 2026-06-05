@@ -1,0 +1,22 @@
+\chapter{Kết luận và hướng phát triển}
+
+\section{Kết luận}
+
+Nhóm đã xây dựng được chương trình minh họa cho hệ thống đặt hàng nhập khẩu theo phạm vi Homework07. Ứng dụng bao phủ luồng nghiệp vụ chính từ tạo yêu cầu nhập, quản lý Site, thu thập tồn kho, lập phân bổ, phát hành đơn đặt hàng đến nhận hàng và đối chiếu sai lệch. Use case \ucname{ManageSystem} cung cấp phần quản trị tài khoản, role, log và lịch sao lưu.
+
+Về kỹ thuật, dự án sử dụng Maven, JDK 22 và JavaFX. Code được chia theo các tầng \ucname{app}, \ucname{application}, \ucname{domain}, \ucname{application.port} và \ucname{infrastructure.persistence}. Cách tách này giúp rule nghiệp vụ quan trọng nằm trong service/domain, còn giao diện chỉ điều phối thao tác. Adapter Supabase phục vụ lưu trữ thật, trong khi adapter bộ nhớ giúp test tự động chạy nhanh và ổn định.
+
+Bộ kiểm thử JUnit đã bao phủ các tính năng chính của UC001--UC007, bao gồm cả các trường hợp dữ liệu sai, thiếu tồn kho, Site không kinh doanh mã hàng, đơn bị từ chối và sai lệch khi nhận hàng. Ma trận kiểm thử cho thấy từng chức năng đều có test tự động tương ứng.
+
+\section{Hướng phát triển}
+
+Trong các phiên bản sau, hệ thống có thể được mở rộng theo các hướng sau:
+
+\begin{itemize}
+  \item Bổ sung import/export dữ liệu yêu cầu nhập, tồn kho, phương án phân bổ và đơn đặt hàng bằng Excel hoặc CSV.
+  \item Tách phân quyền chi tiết đến từng thao tác như tạo, sửa, hủy, xác nhận và xem log.
+  \item Tạo báo cáo vận hành theo thời gian: tỷ lệ đơn đúng hạn, tỷ lệ thiếu/thừa hàng, Site thường xuyên từ chối đơn.
+  \item Thêm cảnh báo tự động khi sai lệch số lượng vượt ngưỡng hoặc khi ngày nhận mong muốn có nguy cơ trễ.
+  \item Tích hợp API thật của Site để gửi yêu cầu tồn kho và đơn đặt hàng thay cho dữ liệu nhập tay.
+  \item Bổ sung cơ chế audit nâng cao, backup/restore tự động và theo dõi trạng thái kết nối Supabase.
+\end{itemize}

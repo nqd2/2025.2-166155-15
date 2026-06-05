@@ -51,3 +51,8 @@ replay_pid*
 *.toc
 *.fls
 *.synctex.gz
+
+# Generated homework LaTeX sources
+Homework0*/**/*.tex
+
+**/_shared/

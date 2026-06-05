@@ -1,0 +1,53 @@
+\chapter{Nhật ký làm việc nhóm}
+
+\section{Kế hoạch làm việc nhóm}
+
+Nhóm làm Homework07 theo bốn giai đoạn. Giai đoạn đầu khởi tạo Maven project, thống nhất package, cấu trúc test và skeleton giao diện. Giai đoạn hai mỗi thành viên triển khai use case được phân công trên nhánh riêng. Giai đoạn ba tích hợp luồng nghiệp vụ từ tạo yêu cầu nhập đến nhận hàng. Giai đoạn bốn ổn định, kiểm thử, hoàn thiện tài liệu và đóng gói bài nộp.
+
+\begin{longtblr}{
+  colspec = {Q[0.16\textwidth, l] Q[0.32\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{Giai đoạn} & \textbf{Mục tiêu} & \textbf{Kết quả cần có} \\
+Phase 1 & Khởi tạo nền kiến trúc & Maven project, JDK 22, cấu trúc package, test skeleton, README build/run. \\
+Phase 2 & Triển khai từng use case & Code và unit test cho UC001--UC007 trên nhánh cá nhân. \\
+Phase 3 & Tích hợp end-to-end & Luồng tạo yêu cầu, hỏi tồn kho, phân bổ, đặt hàng, nhận hàng chạy liền mạch. \\
+Phase 4 & Ổn định và nộp bài & Build, test, package, tài liệu báo cáo và ảnh minh họa hoàn chỉnh. \\
+\end{longtblr}
+
+\section{Nhật ký họp nhóm}
+
+\begin{longtblr}{
+  colspec = {Q[0.16\textwidth, l] Q[0.28\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{Thời điểm} & \textbf{Nội dung} & \textbf{Kết luận} \\
+Tuần 1 & Chốt phạm vi final project & Chọn JavaFX, Maven, JDK 22, Supabase REST; giữ 7 UC theo phân công. \\
+Tuần 2 & Rà soát thiết kế và dữ liệu dùng chung & Thống nhất các field lõi: \fieldname{requestId}, \fieldname{siteCode}, \fieldname{merchandiseCode}, \fieldname{quantity}, \fieldname{unit}, \fieldname{desiredDeliveryDate}. \\
+Tuần 3 & Tích hợp service và giao diện & Tách màn hình theo use case; dùng \ucname{ImportOrderingFacade} để giảm phụ thuộc trực tiếp. \\
+Tuần 4 & Kiểm thử và hoàn thiện báo cáo & Chạy Maven test, kiểm tra luồng demo, hoàn thiện nội dung thiết kế và nhật ký nhóm. \\
+\end{longtblr}
+
+\section{Khó khăn và cách giải quyết}
+
+\begin{longtblr}{
+  colspec = {Q[0.30\textwidth, l] Q[0.30\textwidth, l] X[l]},
+  hlines,
+  vlines,
+  rowhead = 1,
+}
+\textbf{Khó khăn} & \textbf{Ảnh hưởng} & \textbf{Cách giải quyết} \\
+Dữ liệu giữa các UC phụ thuộc nhau & UC004, UC005, UC006 không chạy nếu thiếu dữ liệu từ UC001, UC002, UC003. & Thiết kế facade và store chung, tích hợp theo thứ tự phụ thuộc. \\
+Rule phân bổ có nhiều tiêu chí & Dễ tạo kết quả khác nhau giữa tài liệu và code. & Tách \ucname{AllocationPolicy}, viết test cho ưu tiên tồn kho, ngày nhận và phương thức vận chuyển. \\
+Kết nối Supabase cần cấu hình môi trường & Ứng dụng có thể lỗi khi chạy lần đầu. & Đưa biến môi trường vào hướng dẫn chạy và dùng \ucname{InMemoryStore} cho test. \\
+Giao diện nhiều màn hình & Dễ trùng logic xử lý form và thông báo lỗi. & Tạo component hỗ trợ như \ucname{FormFieldFactory}, \ucname{StatusBadge}, \ucname{Toast}, \ucname{ConfirmDialog}. \\
+Quản lý role và dữ liệu master dễ lấn sang nghiệp vụ chính & UC007 có thể làm rối luồng nhập hàng tuyến tính. & Giữ UC007 trong màn hình quản trị riêng, chỉ cung cấp quyền, user, log và cấu hình. \\
+\end{longtblr}
+
+\section{Kết quả đạt được}
+
+Nhóm hoàn thành mô hình nghiệp vụ chính của hệ thống đặt hàng nhập khẩu. Ứng dụng có giao diện JavaFX, service theo use case, domain model, adapter Supabase, adapter bộ nhớ cho test và cấu hình Maven chạy trên JDK 22. Báo cáo mô tả thống nhất đặc tả yêu cầu, phân tích use case, thiết kế giao diện, subsystem, thiết kế chi tiết, nguyên lý thiết kế và nhật ký làm việc nhóm.
