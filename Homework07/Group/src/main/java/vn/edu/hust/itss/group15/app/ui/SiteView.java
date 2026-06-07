@@ -23,6 +23,7 @@ public class SiteView extends BorderPane implements DashboardView.Refreshable {
   private final TextField shipDays = FormFieldFactory.number("Ship days");
   private final TextField airDays = FormFieldFactory.number("Air days");
   private final VBox catalogChecks = new VBox(4);
+  private final TextField newMerchField = FormFieldFactory.text("");
 
   public SiteView(AppSession session) {
     this.session = session;
@@ -37,18 +38,25 @@ public class SiteView extends BorderPane implements DashboardView.Refreshable {
     table.getStyleClass().add("data-table");
     table.getSelectionModel().selectedItemProperty().addListener((obs, old, site) -> fill(site));
 
-    session.facade().store().merchandiseCatalog().forEach(code -> catalogChecks.getChildren().add(new CheckBox(code)));
-    HBox checkWrap = new HBox(12, catalogChecks);
+    newMerchField.setPromptText("e.g. MH-015");
+    var addMerchBtn = UiSupport.secondary("Add Item");
+    addMerchBtn.setOnAction(event -> addMerchandise());
+    HBox addMerchBox = new HBox(6, newMerchField, addMerchBtn);
+    VBox catalogContainer = new VBox(8, catalogChecks, addMerchBox);
+    HBox checkWrap = new HBox(12, catalogContainer);
 
+    var create = UiSupport.primary("Create Site");
+    create.setOnAction(event -> createSite());
     var update = UiSupport.primary("Update Site");
     update.setOnAction(event -> run());
+
     GridPane form = UiSupport.form();
     UiSupport.row(form, 0, "Site code", siteCode);
     UiSupport.row(form, 1, "Site name", siteName);
     UiSupport.row(form, 2, "Ship days", shipDays);
     UiSupport.row(form, 3, "Air days", airDays);
     UiSupport.row(form, 4, "Catalog", checkWrap);
-    form.add(UiSupport.actions(update), 1, 5);
+    form.add(UiSupport.actions(create, update), 1, 5);
     setTop(UiSupport.panel(UiSupport.title("Site information"), UiSupport.subtitle("Maintain delivery lead times and merchandise catalogs."), form));
     setCenter(table);
     refresh();
@@ -57,6 +65,13 @@ public class SiteView extends BorderPane implements DashboardView.Refreshable {
   @Override
   public void refresh() {
     table.setItems(FXCollections.observableArrayList(session.facade().sites().listSites()));
+    rebuildCatalogChecks();
+    fill(table.getSelectionModel().getSelectedItem());
+  }
+
+  private void rebuildCatalogChecks() {
+    catalogChecks.getChildren().clear();
+    session.facade().store().merchandiseCatalog().forEach(code -> catalogChecks.getChildren().add(new CheckBox(code)));
   }
 
   private void fill(ImportSite site) {
@@ -74,12 +89,34 @@ public class SiteView extends BorderPane implements DashboardView.Refreshable {
     }
   }
 
+  private void createSite() {
+    try {
+      session.facade().sites().createSite(siteCode.getText(), siteName.getText(), UiSupport.intValue(shipDays), UiSupport.intValue(airDays), selectedCatalog());
+      refresh();
+      session.refresh();
+      Toast.info("Site created");
+    } catch (RuntimeException exception) {
+      Toast.error(exception.getMessage());
+    }
+  }
+
   private void run() {
     try {
       session.facade().sites().updateSite(siteCode.getText(), siteName.getText(), UiSupport.intValue(shipDays), UiSupport.intValue(airDays), selectedCatalog());
       refresh();
       session.refresh();
       Toast.info("Site saved");
+    } catch (RuntimeException exception) {
+      Toast.error(exception.getMessage());
+    }
+  }
+
+  private void addMerchandise() {
+    try {
+      session.facade().sites().createMerchandise(newMerchField.getText());
+      refresh();
+      newMerchField.clear();
+      Toast.info("Merchandise added");
     } catch (RuntimeException exception) {
       Toast.error(exception.getMessage());
     }

@@ -30,7 +30,7 @@ public class InMemoryStore implements Store {
   private final Map<String, UserAccount> users = new LinkedHashMap<>();
   private final List<OperationLog> logs = new ArrayList<>();
   private final Map<String, AtomicInteger> sequences = new ConcurrentHashMap<>();
-  private final Set<String> merchandiseCatalog = Set.of("MH-001", "MH-002", "MH-003", "MH-004", "MH-005", "MH-014");
+  private final Set<String> merchandiseCatalog = new java.util.LinkedHashSet<>(java.util.List.of("MH-001", "MH-002", "MH-003", "MH-004", "MH-005", "MH-014"));
   private final Set<String> units = Set.of("box", "piece", "kg");
 
   public InMemoryStore() {
@@ -165,6 +165,11 @@ public class InMemoryStore implements Store {
   @Override
   public void appendLog(OperationLog log) {
     logs.add(log);
+  }
+
+  @Override
+  public void saveMerchandise(String merchandiseCode) {
+    merchandiseCatalog.add(merchandiseCode);
   }
 
   @Override

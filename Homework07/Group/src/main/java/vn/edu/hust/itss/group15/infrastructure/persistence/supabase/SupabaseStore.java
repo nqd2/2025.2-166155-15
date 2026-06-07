@@ -54,6 +54,13 @@ public class SupabaseStore implements Store {
   }
 
   @Override
+  public void saveMerchandise(String merchandiseCode) {
+    Map<String, Object> row = new LinkedHashMap<>();
+    row.put("merchandise_code", merchandiseCode);
+    insert("merchandise_catalog", row);
+  }
+
+  @Override
   public Set<String> units() {
     return rows("units", "select=unit_code&order=unit_code")
         .stream()

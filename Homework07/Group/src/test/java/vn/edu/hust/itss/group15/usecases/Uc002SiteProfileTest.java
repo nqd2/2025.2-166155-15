@@ -31,6 +31,29 @@ class Uc002SiteProfileTest {
     assertThrows(BusinessException.class, () -> facade.sites().updateSite("SITE-SEA-01", "Site", 10, 5, Set.of("UNKNOWN")));
   }
 
+  @Test
+  void tcUc00203CreatesSiteAndMerchandise() {
+    ImportOrderingFacade facade = facade();
+
+    // 1. Create a new merchandise
+    String formatted = facade.sites().createMerchandise("MH-015");
+    assertEquals("MH-015", formatted);
+    assertTrue(facade.store().merchandiseCatalog().contains("MH-015"));
+
+    // 2. Create a new site utilizing the new merchandise
+    var site = facade.sites().createSite("SITE-US-05", "USA Site", 25, 6, Set.of("MH-001", "MH-015"));
+    assertEquals("USA Site", site.siteName());
+    assertEquals(25, site.deliveryDaysByShip());
+    assertEquals(6, site.deliveryDaysByAir());
+    assertTrue(site.merchandiseCatalog().contains("MH-015"));
+
+    // 3. Reject duplicate site code
+    assertThrows(BusinessException.class, () -> facade.sites().createSite("SITE-US-05", "Duplicate", 10, 2, Set.of("MH-001")));
+
+    // 4. Reject duplicate merchandise code
+    assertThrows(BusinessException.class, () -> facade.sites().createMerchandise("MH-015"));
+  }
+
   private ImportOrderingFacade facade() {
     return new ImportOrderingFacade(new InMemoryStore());
   }

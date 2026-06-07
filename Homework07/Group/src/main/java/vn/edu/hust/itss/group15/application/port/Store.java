@@ -16,6 +16,8 @@ import vn.edu.hust.itss.group15.domain.WarehouseStock;
 public interface Store {
   Set<String> merchandiseCatalog();
 
+  void saveMerchandise(String merchandiseCode);
+
   Set<String> units();
 
   String nextId(String sequenceName, String prefix);
