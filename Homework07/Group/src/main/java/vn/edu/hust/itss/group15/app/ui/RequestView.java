@@ -32,10 +32,19 @@ public class RequestView extends BorderPane implements DashboardView.Refreshable
     table.getColumns().addAll(java.util.List.of(
         UiSupport.column("Request", ImportRequest::requestId, 120),
         UiSupport.column("Status", request -> request.status().name(), 120),
-        UiSupport.column("Items", request -> request.items().toString(), 520),
+        UiSupport.column("Items", request -> request.items().size() + " item(s) (Double-click to view)", 520),
         UiSupport.column("Created", request -> request.createdAt().toString(), 190)
     ));
     table.getStyleClass().add("data-table");
+    table.setRowFactory(tv -> {
+      javafx.scene.control.TableRow<ImportRequest> row = new javafx.scene.control.TableRow<>();
+      row.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 2 && (!row.isEmpty())) {
+          showItemsPopup(row.getItem());
+        }
+      });
+      return row;
+    });
 
     var create = UiSupport.primary("Create request");
     create.setOnAction(event -> run(() -> session.facade().importRequests().create(List.of(item()))));
@@ -77,6 +86,20 @@ public class RequestView extends BorderPane implements DashboardView.Refreshable
       throw new IllegalArgumentException("select a request first");
     }
     return request;
+  }
+
+  private void showItemsPopup(ImportRequest request) {
+    UiSupport.showDetailsDialog(
+        "Request Items - " + request.requestId(),
+        "Items for Import Request " + request.requestId(),
+        request.items(),
+        List.of(
+            UiSupport.column("Merchandise", ImportRequestItem::merchandiseCode, 150),
+            UiSupport.column("Quantity", item -> String.valueOf(item.quantityOrdered()), 100),
+            UiSupport.column("Unit", ImportRequestItem::unit, 100),
+            UiSupport.column("Desired Date", item -> item.desiredDeliveryDate().toString(), 250)
+        )
+    );
   }
 
   private void run(Runnable action) {

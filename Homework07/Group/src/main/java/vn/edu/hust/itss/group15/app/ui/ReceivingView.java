@@ -32,9 +32,18 @@ public class ReceivingView extends BorderPane implements DashboardView.Refreshab
         UiSupport.column("Receipt", GoodsReceipt::receiptId, 120),
         UiSupport.column("Order", GoodsReceipt::orderReference, 120),
         UiSupport.column("Discrepancy", receipt -> receipt.hasDiscrepancy() ? "YES" : "NO", 120),
-        UiSupport.column("Lines", receipt -> receipt.lines().toString(), 620)
+        UiSupport.column("Lines", receipt -> receipt.lines().size() + " line(s) (Double-click to view)", 620)
     ));
     receiptTable.getStyleClass().add("data-table");
+    receiptTable.setRowFactory(tv -> {
+      javafx.scene.control.TableRow<GoodsReceipt> row = new javafx.scene.control.TableRow<>();
+      row.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 2 && (!row.isEmpty())) {
+          showReceiptLinesPopup(row.getItem());
+        }
+      });
+      return row;
+    });
 
     order.setOnAction(event -> fillFirstLine());
     var receive = UiSupport.primary("Save receipt");
@@ -72,6 +81,22 @@ public class ReceivingView extends BorderPane implements DashboardView.Refreshab
           merchandise.setText(line.merchandiseCode());
           receivedQty.setText(String.valueOf(line.quantityOrdered()));
         });
+  }
+
+  private void showReceiptLinesPopup(GoodsReceipt receipt) {
+    UiSupport.showDetailsDialog(
+        "Receipt Lines - " + receipt.receiptId(),
+        "Lines for Goods Receipt " + receipt.receiptId(),
+        receipt.lines(),
+        java.util.List.of(
+            UiSupport.column("Merchandise", vn.edu.hust.itss.group15.domain.ReceiptLine::merchandiseCode, 120),
+            UiSupport.column("Ordered", line -> String.valueOf(line.orderedQuantity()), 90),
+            UiSupport.column("Received", line -> String.valueOf(line.receivedQuantity()), 90),
+            UiSupport.column("Discrepancy", line -> String.valueOf(line.discrepancyQuantity()), 100),
+            UiSupport.column("Type", vn.edu.hust.itss.group15.domain.ReceiptLine::discrepancyType, 100),
+            UiSupport.column("Note", vn.edu.hust.itss.group15.domain.ReceiptLine::discrepancyNote, 180)
+        )
+    );
   }
 
   private void run() {

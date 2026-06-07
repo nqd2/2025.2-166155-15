@@ -22,9 +22,18 @@ public class OrderView extends BorderPane implements DashboardView.Refreshable {
         UiSupport.column("Site", OverseasOrder::siteCode, 140),
         UiSupport.column("Status", order -> order.status().name(), 130),
         UiSupport.column("Ack", OverseasOrder::acknowledgementToken, 160),
-        UiSupport.column("Lines", order -> order.orderLines().toString(), 560)
+        UiSupport.column("Lines", order -> order.orderLines().size() + " line(s) (Double-click to view)", 560)
     ));
     table.getStyleClass().add("data-table");
+    table.setRowFactory(tv -> {
+      javafx.scene.control.TableRow<OverseasOrder> row = new javafx.scene.control.TableRow<>();
+      row.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 2 && (!row.isEmpty())) {
+          showOrderLinesPopup(row.getItem());
+        }
+      });
+      return row;
+    });
 
     var generate = UiSupport.primary("Generate orders");
     generate.setOnAction(event -> run(() -> session.facade().orders().generateOrders(plan.getValue()), "Orders generated"));
@@ -55,6 +64,20 @@ public class OrderView extends BorderPane implements DashboardView.Refreshable {
       throw new IllegalArgumentException("select an order first");
     }
     return order;
+  }
+
+  private void showOrderLinesPopup(OverseasOrder order) {
+    UiSupport.showDetailsDialog(
+        "Order Lines - " + order.orderId(),
+        "Lines for Order " + order.orderId(),
+        order.orderLines(),
+        java.util.List.of(
+            UiSupport.column("Merchandise", vn.edu.hust.itss.group15.domain.OrderLine::merchandiseCode, 150),
+            UiSupport.column("Quantity", line -> String.valueOf(line.quantityOrdered()), 110),
+            UiSupport.column("Unit", vn.edu.hust.itss.group15.domain.OrderLine::unit, 100),
+            UiSupport.column("Means", line -> line.deliveryMeans().name(), 120)
+        )
+    );
   }
 
   private void run(Runnable action, String message) {

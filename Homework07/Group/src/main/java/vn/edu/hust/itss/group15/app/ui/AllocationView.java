@@ -24,9 +24,18 @@ public class AllocationView extends BorderPane implements DashboardView.Refresha
     table.getColumns().addAll(java.util.List.of(
         UiSupport.column("Plan", AllocationPlan::planId, 120),
         UiSupport.column("Request", AllocationPlan::requestId, 120),
-        UiSupport.column("Lines", plan -> plan.lines().toString(), 680)
+        UiSupport.column("Lines", plan -> plan.lines().size() + " line(s) (Double-click to view)", 680)
     ));
     table.getStyleClass().add("data-table");
+    table.setRowFactory(tv -> {
+      javafx.scene.control.TableRow<AllocationPlan> row = new javafx.scene.control.TableRow<>();
+      row.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 2 && (!row.isEmpty())) {
+          showLinesPopup(row.getItem());
+        }
+      });
+      return row;
+    });
 
     var previewButton = UiSupport.secondary("Preview");
     previewButton.setOnAction(event -> runPreview());
@@ -50,10 +59,43 @@ public class AllocationView extends BorderPane implements DashboardView.Refresha
     table.setItems(FXCollections.observableArrayList(session.facade().allocation().list()));
   }
 
+  private void showLinesPopup(AllocationPlan plan) {
+    UiSupport.showDetailsDialog(
+        "Allocation Lines - " + plan.planId(),
+        "Lines for Allocation Plan " + plan.planId(),
+        plan.lines(),
+        java.util.List.of(
+            UiSupport.column("Request", vn.edu.hust.itss.group15.domain.AllocationLine::requestId, 100),
+            UiSupport.column("Merchandise", vn.edu.hust.itss.group15.domain.AllocationLine::merchandiseCode, 120),
+            UiSupport.column("Site", vn.edu.hust.itss.group15.domain.AllocationLine::siteCode, 120),
+            UiSupport.column("Quantity", line -> String.valueOf(line.quantityOrdered()), 100),
+            UiSupport.column("Unit", vn.edu.hust.itss.group15.domain.AllocationLine::unit, 80),
+            UiSupport.column("Means", line -> line.deliveryMeans().name(), 100)
+        )
+    );
+  }
+
+  private String formatLines(java.util.List<vn.edu.hust.itss.group15.domain.AllocationLine> lines) {
+    StringBuilder sb = new StringBuilder();
+    for (var line : lines) {
+      sb.append(line.merchandiseCode())
+        .append(": ")
+        .append(line.quantityOrdered())
+        .append(" ")
+        .append(line.unit())
+        .append(" from ")
+        .append(line.siteCode())
+        .append(" via ")
+        .append(line.deliveryMeans())
+        .append("\n");
+    }
+    return sb.toString();
+  }
+
   private void runPreview() {
     try {
       AllocationPlan plan = session.facade().allocation().preview(request.getValue());
-      preview.setText(plan.lines().toString());
+      preview.setText(formatLines(plan.lines()));
     } catch (RuntimeException exception) {
       Toast.error(exception.getMessage());
     }
@@ -62,7 +104,7 @@ public class AllocationView extends BorderPane implements DashboardView.Refresha
   private void runSave() {
     try {
       AllocationPlan plan = session.facade().allocation().plan(request.getValue());
-      preview.setText(plan.lines().toString());
+      preview.setText(formatLines(plan.lines()));
       refresh();
       session.refresh();
       Toast.info("Allocation committed");

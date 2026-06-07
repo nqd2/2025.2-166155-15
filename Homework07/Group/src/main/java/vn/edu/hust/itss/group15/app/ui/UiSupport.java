@@ -87,4 +87,25 @@ final class UiSupport {
     }
     return Integer.parseInt(field.getText().trim());
   }
+
+  static <T> void showDetailsDialog(String title, String header, java.util.List<T> items, java.util.List<TableColumn<T, String>> columns) {
+    javafx.scene.control.Dialog<Void> dialog = new javafx.scene.control.Dialog<>();
+    dialog.setTitle(title);
+    dialog.setHeaderText(header);
+
+    javafx.scene.control.TableView<T> detailsTable = new javafx.scene.control.TableView<>();
+    detailsTable.setItems(javafx.collections.FXCollections.observableArrayList(items));
+    detailsTable.getColumns().addAll(columns);
+    detailsTable.setPrefWidth(640);
+    detailsTable.setPrefHeight(320);
+    detailsTable.getStyleClass().add("data-table");
+
+    dialog.getDialogPane().setContent(detailsTable);
+    dialog.getDialogPane().getButtonTypes().add(javafx.scene.control.ButtonType.CLOSE);
+
+    dialog.getDialogPane().getStylesheets().addAll(
+        UiSupport.class.getResource("/styles/app.css").toExternalForm()
+    );
+    dialog.showAndWait();
+  }
 }
