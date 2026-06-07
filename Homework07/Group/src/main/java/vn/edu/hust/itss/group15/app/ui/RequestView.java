@@ -19,15 +19,18 @@ import vn.edu.hust.itss.group15.domain.ImportRequestItem;
 public class RequestView extends BorderPane implements DashboardView.Refreshable {
   private final AppSession session;
   private final TableView<ImportRequest> table = new TableView<>();
-  private final ComboBox<String> merchandise;
+  private final javafx.scene.control.MenuButton merchandiseMenu = new javafx.scene.control.MenuButton("Select items");
   private final TextField quantity = FormFieldFactory.number("Quantity");
   private final ComboBox<String> unit;
   private final DatePicker desiredDate = FormFieldFactory.futureDate();
 
   public RequestView(AppSession session) {
     this.session = session;
-    merchandise = FormFieldFactory.combo(session.facade().store().merchandiseCatalog());
     unit = FormFieldFactory.combo(session.facade().store().units());
+    for (String code : session.facade().store().merchandiseCatalog()) {
+      javafx.scene.control.CheckMenuItem checkItem = new javafx.scene.control.CheckMenuItem(code);
+      merchandiseMenu.getItems().add(checkItem);
+    }
     getStyleClass().add("view");
     table.getColumns().addAll(java.util.List.of(
         UiSupport.column("Request", ImportRequest::requestId, 120),
@@ -47,9 +50,9 @@ public class RequestView extends BorderPane implements DashboardView.Refreshable
     });
 
     var create = UiSupport.primary("Create request");
-    create.setOnAction(event -> run(() -> session.facade().importRequests().create(List.of(item()))));
+    create.setOnAction(event -> run(() -> session.facade().importRequests().create(selectedItems())));
     var update = UiSupport.secondary("Update selected");
-    update.setOnAction(event -> run(() -> session.facade().importRequests().update(selected().requestId(), List.of(item()))));
+    update.setOnAction(event -> run(() -> session.facade().importRequests().update(selected().requestId(), selectedItems())));
     var cancel = UiSupport.danger("Cancel selected");
     cancel.setOnAction(event -> {
       ImportRequest request = selected();
@@ -59,7 +62,7 @@ public class RequestView extends BorderPane implements DashboardView.Refreshable
     });
 
     GridPane form = UiSupport.form();
-    UiSupport.row(form, 0, "Merchandise", merchandise);
+    UiSupport.row(form, 0, "Merchandise", merchandiseMenu);
     UiSupport.row(form, 1, "Quantity", quantity);
     UiSupport.row(form, 2, "Unit", unit);
     UiSupport.row(form, 3, "Desired date", desiredDate);
@@ -75,9 +78,18 @@ public class RequestView extends BorderPane implements DashboardView.Refreshable
     table.setItems(FXCollections.observableArrayList(session.facade().importRequests().list()));
   }
 
-  private ImportRequestItem item() {
+  private List<ImportRequestItem> selectedItems() {
+    List<ImportRequestItem> items = new java.util.ArrayList<>();
     LocalDate date = desiredDate.getValue() == null ? LocalDate.now() : desiredDate.getValue();
-    return new ImportRequestItem(merchandise.getValue(), UiSupport.intValue(quantity), unit.getValue(), date);
+    for (var menuItem : merchandiseMenu.getItems()) {
+      if (menuItem instanceof javafx.scene.control.CheckMenuItem checkItem && checkItem.isSelected()) {
+        items.add(new ImportRequestItem(checkItem.getText(), UiSupport.intValue(quantity), unit.getValue(), date));
+      }
+    }
+    if (items.isEmpty()) {
+      throw new IllegalArgumentException("Select at least one merchandise");
+    }
+    return items;
   }
 
   private ImportRequest selected() {
